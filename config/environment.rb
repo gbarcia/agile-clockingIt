@@ -145,7 +145,21 @@ load_from_env("SMTP_AUTHENTICATION", :authentication, ActionMailer::Base.smtp_se
 # puts "\n"
 
 # Load any $CONFIG settings from ENV
-$CONFIG ||= {}
+$CONFIG = {
+	:domain => "mail.cantv.net",  # The client specific hostname will be prepended to this domain
+	:email_domain => "aclocking.com",
+	:replyto => "admin",  # Note that this is not a full email address, just the part before the @
+	:from => "admin",  # Note that this is not a full email address, just the part before the @
+	:prefix => "[ClockingIT]",
+	:productName => "ClockingIT",
+	:SSL => false
+}
+
+ActionMailer::Base.smtp_settings = {
+  :address  => "mail.cantv.net",
+  :port  => 25,
+  :domain  => 'aclocking.com'
+}
 load_from_env("DOMAIN", :domain, $CONFIG)
 load_from_env("REPLYTO", :replyto, $CONFIG)
 load_from_env("FROM", :from, $CONFIG)
