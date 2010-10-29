@@ -30,6 +30,7 @@ class Milestone < ActiveRecord::Base
   def to_tip(options = { })
     res = "<table cellpadding=0 cellspacing=0>"
     res << "<tr><th>#{_('Name')}</th><td> #{escape_twice(self.name)}</td></tr>"
+    res << "<tr><th>#{_('Begin Date')}</th><td> #{options[:user].tz.utc_to_local(init_date).strftime_localized("%A, %d %B %Y")}</td></tr>" unless self.init_date.nil?
     res << "<tr><th>#{_('Due Date')}</th><td> #{options[:user].tz.utc_to_local(due_at).strftime_localized("%A, %d %B %Y")}</td></tr>" unless self.due_at.nil?
     res << "<tr><th>#{_('Project')}</th><td> #{escape_twice(self.project.name)}</td></tr>"
     res << "<tr><th>#{_('Client')}</th><td> #{escape_twice(self.project.customer.name)}</td></tr>"
