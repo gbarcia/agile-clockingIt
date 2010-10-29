@@ -1,7 +1,7 @@
 ActionController::Routing::Routes.draw do |map|
   map.resources :triggers
   #had not previously specified, add new in aclocking
-  map.resources :tasks, :as => 'user-histories', :collection => {:list => :get}
+  map.resources :tasks, :as => 'user-stories', :collection => {:list => :get}
 
   map.connect '', :controller => 'login', :action => 'login'
 
