@@ -29,7 +29,7 @@
           <% if current_user.can?( @project, 'milestone' ) %>
             <div style="float:right;padding-top:0.1em;"><%= link_to _('New'), :controller => "milestones", :action => 'new', :project_id => @project %></div>
           <% end %>
-            <div><%=_ 'Milestones' %></div>
+            <div><%=_ 'Iterations' %></div>
           </td>
         </tr>
         <tr>

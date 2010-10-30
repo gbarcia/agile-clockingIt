@@ -19,7 +19,7 @@
     <div class="information-header"><%= _('Created') %></div>
     <div class="information-value"><%= tz.utc_to_local(@project.created_at).strftime("#{current_user.time_format} #{current_user.date_format}") %></div>
 
-    <div class="information-header"><%= _('Tasks') %></div>
+    <div class="information-header"><%= _('User stories') %></div>
     <div class="information-value"><%= @project.tasks.count(:conditions => ["completed_at IS NULL"]) %> <%=_ 'Open' %> / <%= @project.tasks.count %> <%= _ 'Total' %></div>
 
     <% done = @project.tasks.sum('work_logs.duration', :conditions => ['completed_at IS NULL'], :include => :work_logs )

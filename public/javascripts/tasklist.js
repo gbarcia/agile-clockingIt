@@ -104,11 +104,11 @@ function initTaskList() {
         shrinkToFit: true,
 
         pager: '#task_pager',
-        emptyrecords: 'No tasks found.',
+        emptyrecords: 'No user stories found.',
         pgbuttons:false,
         pginput:false,
         rowNum:200,
-        recordtext: '{2} tasks found.',
+        recordtext: '{2} user stories found.',
 
         footerrow: true,
         userDataOnFooter: true,
