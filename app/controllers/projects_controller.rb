@@ -45,6 +45,16 @@ class ProjectsController < ApplicationController
       @project_permission.set('all')
       @project_permission.save
 
+      #add permision for leader
+      if !@project.leader_id.nil?
+      @project_permission_l ||= ProjectPermission.new
+      @project_permission_l.user_id = @project.leader_id
+      @project_permission_l.project_id = @project.id
+      @project_permission_l.company_id = current_user.company_id
+      @project_permission_l.set('all')
+      @project_permission_l.save
+      end
+
       if @project.company.users.size == 1
         flash['notice'] = _('Project was successfully created.')
         redirect_to :action => 'list'

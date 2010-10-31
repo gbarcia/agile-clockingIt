@@ -14,6 +14,10 @@
       <div class="information-header"><%= _('Members') %></div>
       <div class="information-value" style="float:left;"><%= @project.users.collect{|user| link_to_tasks_filtered_by(user, :class=>'tooltip',:title=> _('Tasks') + ':' +  user.tasks.count(:conditions => ["project_id=? AND completed_at IS NULL",@project.id]).to_s) }.join(", ").html_safe %></div>
     </div>
+    <div>
+      <div class="information-header"><%= _('Leader') %></div>
+      <div class="information-value" style="float:left;"><%= get_leader_name(@project.leader_id) %></div>
+    </div>
     <% end %>
     <div style="clear:both;"></div>
     <div class="information-header"><%= _('Created') %></div>

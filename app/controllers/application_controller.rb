@@ -231,6 +231,20 @@ class ApplicationController < ActionController::Base
     end
   end
 
+    ###
+  # Returns the list to use for auto completes for user names only company.
+  ###
+  def auto_complete_for_user_name_only_company
+    text = params[:term]
+    if !text.blank?
+      # the next line searches for names starting with given text OR surname (space started) starting with text
+      @users = current_user.company.users.find(:all, :order => 'name', :conditions => [ '(name LIKE ? OR name LIKE ?) AND customer_id = ?', text + '%', '% ' + text + '%', current_user.company.id], :limit => 50)
+      render :json=> @users.collect{|user| {:value => user.name + ' (' + user.customer.name + ')', :id=> user.id} }.to_json
+    else
+      render :nothing=> true
+    end
+  end
+
   ###
   # Returns the layout to use to display the current request.
   # Add a "layout" param to the request to use a different layout.
