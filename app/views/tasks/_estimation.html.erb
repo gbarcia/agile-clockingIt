@@ -1,6 +1,13 @@
 <fieldset id="task_project_selection">
    <legend><%=_ "Estimation:"%></legend>
   <% if current_user.option_tracktime.to_i == 1 %>
+    <label for="task[points_expert_judgment]"><%=_ 'Points' %></label>
+    <%= text_field 'task', 'points_expert_judgment', {:size => 12, :value => @task.points_expert_judgment, :class => 'tooltip', :title => _('Expert Judgment Points')} %>
+    <label for="task[points_team_velocity]"><%=_ 'Velocity Points' %></label>
+    <%= text_field 'task', 'points_team_velocity', {:size => 12, :value => @task.points_team_velocity, :class => 'tooltip', :title => _('Team Velocity Points')} %>
+    <label for="task[points_planning_poker]"><%=_ 'Planning Poker Points' %></label>
+    <%= text_field 'task', 'points_planning_poker', {:size => 12, :value => @task.points_planning_poker, :class => 'tooltip', :title => _('Planning Poker Points')} %>
+
     <label for="task_duration"><%=_ 'Time Estimate' %></label>
     <%= text_field 'task', 'duration', {:size => 12, :value => (@task.duration.to_i > 0 ? worked_nice(@task.duration) : ""), :class => 'tooltip', :title => _('2w 3d 1h')} %><br/>
   <% else %>

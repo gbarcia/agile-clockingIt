@@ -6,7 +6,7 @@
       <%= link_to(image_tag("delete.png", :border => 0, :title => _("Delete <b>%s</b>", @project.name), :class => "tooltip"), { :controller => 'projects', :action => 'destroy', :id => @project}, :confirm => _("Are you sure?")) %>
     </div>
     <% end %>
-    <div class="project-name"><%= link_to_tasks_filtered_by(@project) %></div>
+    <div class="project-name"><%= link_to @project.name, :controller => "projects", :action => "edit", :id => @project.id %> </div>
   </div>
   <div class="information-block">
     <% if @project.users.size > 0 %>
@@ -20,10 +20,14 @@
     </div>
     <% end %>
     <div style="clear:both;"></div>
+    
     <div class="information-header"><%= _('Created') %></div>
     <div class="information-value"><%= tz.utc_to_local(@project.created_at).strftime("#{current_user.time_format} #{current_user.date_format}") %></div>
 
-    <div class="information-header"><%= _('User stories') %></div>
+    <div class="information-header"><%= _('Currency') %></div>
+    <div class="information-value"><%= @project.currency_iso_code  %></div>
+
+    <div class="information-header"><%= link_to_tasks_filtered_by(_("User stories"), @project) %></div>
     <div class="information-value"><%= @project.tasks.count(:conditions => ["completed_at IS NULL"]) %> <%=_ 'Open' %> / <%= @project.tasks.count %> <%= _ 'Total' %></div>
 
     <% done = @project.tasks.sum('work_logs.duration', :conditions => ['completed_at IS NULL'], :include => :work_logs )

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101031034038) do
+ActiveRecord::Schema.define(:version => 20101101151640) do
 
   create_table "access_levels", :force => true do |t|
     t.string   "name"
@@ -377,23 +377,24 @@ ActiveRecord::Schema.define(:version => 20101031034038) do
   add_index "project_permissions", ["user_id"], :name => "project_permissions_user_id_index"
 
   create_table "projects", :force => true do |t|
-    t.string   "name",             :limit => 200, :default => "",   :null => false
-    t.integer  "user_id",                         :default => 0,    :null => false
-    t.integer  "company_id",                      :default => 0,    :null => false
-    t.integer  "customer_id",                     :default => 0,    :null => false
+    t.string   "name",              :limit => 200, :default => "",   :null => false
+    t.integer  "user_id",                          :default => 0,    :null => false
+    t.integer  "company_id",                       :default => 0,    :null => false
+    t.integer  "customer_id",                      :default => 0,    :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "completed_at"
-    t.integer  "critical_count",                  :default => 0
-    t.integer  "normal_count",                    :default => 0
-    t.integer  "low_count",                       :default => 0
+    t.integer  "critical_count",                   :default => 0
+    t.integer  "normal_count",                     :default => 0
+    t.integer  "low_count",                        :default => 0
     t.text     "description"
-    t.boolean  "create_forum",                    :default => true
+    t.boolean  "create_forum",                     :default => true
     t.integer  "open_tasks"
     t.integer  "total_tasks"
     t.integer  "total_milestones"
     t.integer  "open_milestones"
     t.integer  "leader_id"
+    t.string   "currency_iso_code"
   end
 
   add_index "projects", ["company_id"], :name => "projects_company_id_index"
@@ -623,24 +624,24 @@ ActiveRecord::Schema.define(:version => 20101031034038) do
   add_index "task_users", ["user_id"], :name => "index_task_users_on_user_id"
 
   create_table "tasks", :force => true do |t|
-    t.string   "name",               :limit => 200, :default => "",     :null => false
-    t.integer  "project_id",                        :default => 0,      :null => false
-    t.integer  "position",                          :default => 0,      :null => false
-    t.datetime "created_at",                                            :null => false
+    t.string   "name",                   :limit => 200, :default => "",     :null => false
+    t.integer  "project_id",                            :default => 0,      :null => false
+    t.integer  "position",                              :default => 0,      :null => false
+    t.datetime "created_at",                                                :null => false
     t.datetime "due_at"
-    t.datetime "updated_at",                                            :null => false
+    t.datetime "updated_at",                                                :null => false
     t.datetime "completed_at"
-    t.integer  "duration",                          :default => 1
-    t.integer  "hidden",                            :default => 0
+    t.integer  "duration",                              :default => 1
+    t.integer  "hidden",                                :default => 0
     t.integer  "milestone_id"
     t.text     "description"
     t.integer  "company_id"
-    t.integer  "priority",                          :default => 0
+    t.integer  "priority",                              :default => 0
     t.integer  "updated_by_id"
-    t.integer  "severity_id",                       :default => 0
-    t.integer  "type_id",                           :default => 0
-    t.integer  "task_num",                          :default => 0
-    t.integer  "status",                            :default => 0
+    t.integer  "severity_id",                           :default => 0
+    t.integer  "type_id",                               :default => 0
+    t.integer  "task_num",                              :default => 0
+    t.integer  "status",                                :default => 0
     t.string   "requested_by"
     t.integer  "creator_id"
     t.string   "notify_emails"
@@ -648,9 +649,12 @@ ActiveRecord::Schema.define(:version => 20101031034038) do
     t.datetime "hide_until"
     t.datetime "scheduled_at"
     t.integer  "scheduled_duration"
-    t.boolean  "scheduled",                         :default => false
-    t.integer  "worked_minutes",                    :default => 0
-    t.string   "type",                              :default => "Task"
+    t.boolean  "scheduled",                             :default => false
+    t.integer  "worked_minutes",                        :default => 0
+    t.string   "type",                                  :default => "Task"
+    t.integer  "points_expert_judgment",                :default => 0
+    t.integer  "points_team_velocity",                  :default => 0
+    t.integer  "points_planning_poker",                 :default => 0
   end
 
   add_index "tasks", ["company_id"], :name => "tasks_company_id_index"
