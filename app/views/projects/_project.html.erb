@@ -26,6 +26,9 @@
 
     <div class="information-header"><%= _('Currency') %></div>
     <div class="information-value"><%= @project.currency_iso_code  %></div>
+    
+    <div class="information-header"><%= _('Cost/h') %></div>
+    <div class="information-value"><%= @project.cost_per_hour  %></div>
 
     <div class="information-header"><%= link_to_tasks_filtered_by(_("User stories"), @project) %></div>
     <div class="information-value"><%= @project.tasks.count(:conditions => ["completed_at IS NULL"]) %> <%=_ 'Open' %> / <%= @project.tasks.count %> <%= _ 'Total' %></div>
