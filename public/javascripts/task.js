@@ -1,5 +1,5 @@
 // -------------------------
-//  Task edit
+//  Task edit for javascript
 // -------------------------
 
 /* Load a task into the edit panel by ajax */
