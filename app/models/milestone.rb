@@ -34,6 +34,7 @@ class Milestone < ActiveRecord::Base
     res << "<tr><th>#{_('Due Date')}</th><td> #{options[:user].tz.utc_to_local(due_at).strftime_localized("%A, %d %B %Y")}</td></tr>" unless self.due_at.nil?
     res << "<tr><th>#{_('Project')}</th><td> #{escape_twice(self.project.name)}</td></tr>"
     res << "<tr><th>#{_('Client')}</th><td> #{escape_twice(self.project.customer.name)}</td></tr>"
+    res << "<tr><th>#{_('Budget')}</th><td> #{escape_twice(self.budget) << ' ' << get_project_currency(self.project_id) }</td></tr>" unless self.budget.nil?
     res << "<tr><th>#{_('Owner')}</th><td> #{escape_twice(self.user.name)}</td></tr>" unless self.user.nil?
     res << "<tr><th>#{_('Progress')}</th><td> #{self.completed_tasks.to_i} / #{self.total_tasks.to_i} #{_('Complete')}</td></tr>"
     res << "<tr><th>#{_('Description')}</th><td class=\"tip_description\">#{escape_twice(self.description_wrapped).gsub(/\n/, '<br/>').gsub(/\"/,'&quot;')}</td></tr>" unless self.description.blank?
@@ -90,6 +91,11 @@ class Milestone < ActiveRecord::Base
 
   def to_s
     name
+  end
+
+  def get_project_currency(project_id)
+    project = Project.find project_id
+    project.currency_iso_code
   end
 
 end

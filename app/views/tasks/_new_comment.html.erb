@@ -9,6 +9,7 @@
       <li class="ui-menu-item"><a href="/pages/new">Create a snippet...</a></li>
     </ul>
   </div>
+  <label for="task_name" style="text-align: left">Messages</label>
   <%= text_area_tag 'comment', params[:comment], { :rows => 3, :class => 'autogrow'}.merge( perms['comment'] )  %>
 
   <%= cit_submit_tag(@task) %>

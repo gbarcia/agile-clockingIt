@@ -4,6 +4,7 @@ class MilestonesController < ApplicationController
     @milestone = Milestone.new
     @milestone.user = current_user
     @milestone.project_id = params[:project_id]
+    @project_currency = @milestone.get_project_currency(params[:project_id])
   end
 
   def quick_new
@@ -43,14 +44,14 @@ class MilestonesController < ApplicationController
 
     if @milestone.save
       unless request.xhr?
-        flash[:notice] = _('Milestone was successfully created.')
+        flash[:notice] = _('Iteration was successfully created.')
         redirect_to :controller => 'projects', :action => 'edit', :id => @milestone.project
       else
         render :update do |page|
-        logger.debug "Milestone saved, reloading popup with 'parent.refreshMilestones(#{@milestone.project_id}, #{@milestone.id});'"
-        # TODO: this could be replaced with "page[task_milestone_id].replace :partial => get_milestones
-        # except that get_milestone currently returns json, not html
-        page << "parent.refreshMilestones(#{@milestone.project_id}, #{@milestone.id});"
+          logger.debug "Milestone saved, reloading popup with 'parent.refreshMilestones(#{@milestone.project_id}, #{@milestone.id});'"
+          # TODO: this could be replaced with "page[task_milestone_id].replace :partial => get_milestones
+          # except that get_milestone currently returns json, not html
+          page << "parent.refreshMilestones(#{@milestone.project_id}, #{@milestone.id});"
         end
       end
       Notifications::deliver_milestone_changed(current_user, @milestone, 'created', due_date) rescue nil
@@ -63,6 +64,7 @@ class MilestonesController < ApplicationController
     @milestone = Milestone.find(params[:id], :conditions => ["company_id = ?", current_user.company_id])
     @milestone.init_date = tz.utc_to_local(@milestone.init_date) unless @milestone.init_date.nil?
     @milestone.due_at = tz.utc_to_local(@milestone.due_at) unless @milestone.due_at.nil?
+    @project_currency = @milestone.get_project_currency(@milestone.project_id)
   end
 
   def update
