@@ -1,8 +1,9 @@
 <%= hidden_field("task", "id") %>
 <%= error_messages_for 'task' %>
 <div id="task_sidebar">
-  <small><%= link_to(@task.issue_num, :controller => "tasks", :action => "edit", :id => @task.task_num) %><span class="right"><%= "created " + time_ago_in_words(@task.created_at) + " ago" unless @task.created_at.nil?%></span></small>
+  <small><%= link_to("User story ".concat(@task.issue_num), :controller => "tasks", :action => "edit", :id => @task.task_num) %><span class="right"><%= "created " + time_ago_in_words(@task.created_at) + " ago" unless @task.created_at.nil?%></span></small>
   <%= render(:partial => "tasks/details") %>
+  <%= render(:partial => "tasks/estimation") %>
   <%= render(:partial => "tasks/attributes") %>
   <%= render(:partial => "tasks/notifications") %>
   <% if !@task.new_record? -%>

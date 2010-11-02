@@ -130,7 +130,7 @@ class Task < AbstractTask
     end
   end
   def csv_header
-    ['Client', 'Project', 'Num', 'Name', 'Tags', 'User', 'Milestone', 'Due', 'Created', 'Completed', 'Worked', 'Estimated', 'Resolution'] +
+    ['Client', 'Project', 'Num', 'Name', 'Tags', 'User', 'Iteration', 'Due', 'Created', 'Completed', 'Worked', 'Estimated', 'Resolution'] +
       company.properties.collect { |property| property.name }
   end
 

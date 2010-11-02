@@ -85,11 +85,13 @@ end
 #  total_tasks      :integer(4)
 #  total_milestones :integer(4)
 #  open_milestones  :integer(4)
+#  leader_id        :integer(4)
 #
 # Indexes
 #
 #  projects_company_id_index   (company_id)
 #  projects_customer_id_index  (customer_id)
 #  fk_projects_user_id         (user_id)
+#  fk_projects_leader_id       (user_id)
 #
 

@@ -6,7 +6,7 @@
   Client:       <%= @task.project.customer.name %>
   Project:      <%= @task.project.name %>
 <% if !@task.milestone.nil?  -%>
-  Milestone:    <%= @task.milestone.name %>
+  Iteration:    <%= @task.milestone.name %>
 <% end
   @task.company.properties.each do |p| %>
   <%= p.name + ": " + " "*((12-p.name.size)>0 ? 12-p.name.size : 1) + @task.property_value(p).to_s %>

@@ -1,5 +1,5 @@
 // -------------------------
-//  Task edit
+//  Task edit for javascript
 // -------------------------
 
 /* Load a task into the edit panel by ajax */
@@ -372,7 +372,7 @@ function highlightWatchers() {
 
 function add_milestone_popup() {
   if (jQuery("#task_project_id").val() == "") {
-    alert("Please select project before adding milestone !!")
+    alert("Please select project before adding iteration !!")
   } else {
     jQuery("#milestone_name").val(" ");
     jQuery("#milestone_due_at").val(" ");
@@ -380,7 +380,7 @@ function add_milestone_popup() {
     jQuery("#milestone_description").val(" ");
     var popup = jQuery("span#ui_popup_dialog").dialog({
         autoOpen: false,
-	    title: 'New Milestone',
+	    title: 'New Iteration',
         width: 370,
         draggable: true
 	});

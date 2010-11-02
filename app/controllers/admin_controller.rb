@@ -1,5 +1,4 @@
 # Controller handling admin activities
-
 class AdminController < ApplicationController
 
   before_filter :authorize

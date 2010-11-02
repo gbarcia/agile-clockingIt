@@ -19,6 +19,8 @@ class TasksController < ApplicationController
     @task = current_company_task_new
     @task.duration = 0
     @task.users << current_user
+    @task.owners << current_user
+#    @task.owners << current_user
     render :template=>'tasks/new'
   end
 
@@ -110,7 +112,7 @@ class TasksController < ApplicationController
     params[:todos].collect { |todo| @task.todos.build(todo) } if params[:todos]
 
     unless current_user.can?(@task.project, 'create')
-      flash['notice'] = _("You don't have access to create tasks on this project.")
+      flash['notice'] = _("You don't have access to create user stories on this project.")
       return if request.xhr?
       init_attributes_for_new_template
       render :template => 'tasks/new'
@@ -128,7 +130,7 @@ class TasksController < ApplicationController
       session[:last_project_id] = @task.project_id
       set_last_task(@task)
 
-      flash['notice'] ||= (link_to_task(@task) + " - #{_('Task was successfully created.')}")
+      flash['notice'] ||= (link_to_task(@task) + " - #{_('User story was successfully created.')}")
 
       return if request.xhr?
       redirect_to :action => :list

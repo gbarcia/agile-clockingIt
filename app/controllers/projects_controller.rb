@@ -45,6 +45,18 @@ class ProjectsController < ApplicationController
       @project_permission.set('all')
       @project_permission.save
 
+      #add permision for leader
+      if !@project.leader_id.nil?
+        if current_user.id != @project.leader_id
+          @project_permission_l ||= ProjectPermission.new
+          @project_permission_l.user_id = @project.leader_id
+          @project_permission_l.project_id = @project.id
+          @project_permission_l.company_id = current_user.company_id
+          @project_permission_l.set('all')
+          @project_permission_l.save
+        end
+      end
+
       if @project.company.users.size == 1
         flash['notice'] = _('Project was successfully created.')
         redirect_to :action => 'list'
@@ -130,8 +142,22 @@ class ProjectsController < ApplicationController
     @project = current_user.projects.find(params[:id])
     old_client = @project.customer_id
     old_name = @project.name
+    old_project = @project
 
     if @project.update_attributes(params[:project])
+
+      #Need to update leader? => add permision for project if no exist
+      if (leader_change(params[:project][:leader_id], old_project))
+        if (!leader_already_member(params[:project][:leader_id], old_project))
+          @project_permission = ProjectPermission.new
+          @project_permission.user_id = params[:project][:leader_id]
+          @project_permission.project_id = @project.id
+          @project_permission.company_id = current_user.company_id
+          @project_permission.set('all')
+          @project_permission.save
+        end
+      end
+
       # Need to update forum names?
       forums = Forum.find(:all, :conditions => ["project_id = ?", params[:id]])
       if(forums.size > 0 and (@project.name != old_name))
@@ -205,10 +231,10 @@ class ProjectsController < ApplicationController
 
   def list
     @projects = current_user.projects.paginate(:all,
-                                               :order => 'customer_id',
-                                               :page => params[:page],
-                                               :per_page => 100,
-                                               :include => [ :customer, :milestones]);
+      :order => 'customer_id',
+      :page => params[:page],
+      :per_page => 100,
+      :include => [ :customer, :milestones]);
     @completed_projects = current_user.completed_projects.find(:all)
   end
   private
@@ -221,5 +247,16 @@ class ProjectsController < ApplicationController
       redirect_from_last
       return false
     end
+  end
+
+  def leader_change (form_leader_id, project)
+    old_project = Project.find project.id
+    actual_leader = old_project.leader_id
+    return form_leader_id != actual_leader
+  end
+  
+  def leader_already_member(form_leader_id,project)
+    project_permissions = ProjectPermission.find(:first, :conditions => ['user_id = ? AND project_id = ?',form_leader_id,project.id])
+    return !project_permissions.nil?
   end
 end

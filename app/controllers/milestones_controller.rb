@@ -4,6 +4,7 @@ class MilestonesController < ApplicationController
     @milestone = Milestone.new
     @milestone.user = current_user
     @milestone.project_id = params[:project_id]
+    @project_currency = @milestone.get_project_currency(params[:project_id])
   end
 
   def quick_new
@@ -18,6 +19,17 @@ class MilestonesController < ApplicationController
 
     @milestone = Milestone.new(params[:milestone])
     logger.debug "Creating new milestone #{@milestone.name}"
+
+    init_date = nil
+    if !params[:milestone][:init_date].nil? && params[:milestone][:init_date].length > 0
+      begin
+        init_date = DateTime.strptime( params[:milestone][:init_date], current_user.date_format )
+      rescue
+        init_date = nil
+      end
+      @milestone.init_date = tz.local_to_utc(init_date.to_time + 1.day - 1.minute) if init_date
+    end
+
     due_date = nil
     if !params[:milestone][:due_at].nil? && params[:milestone][:due_at].length > 0
       begin
@@ -32,14 +44,14 @@ class MilestonesController < ApplicationController
 
     if @milestone.save
       unless request.xhr?
-        flash[:notice] = _('Milestone was successfully created.')
+        flash[:notice] = _('Iteration was successfully created.')
         redirect_to :controller => 'projects', :action => 'edit', :id => @milestone.project
       else
         render :update do |page|
-        logger.debug "Milestone saved, reloading popup with 'parent.refreshMilestones(#{@milestone.project_id}, #{@milestone.id});'"
-        # TODO: this could be replaced with "page[task_milestone_id].replace :partial => get_milestones
-        # except that get_milestone currently returns json, not html
-        page << "parent.refreshMilestones(#{@milestone.project_id}, #{@milestone.id});"
+          logger.debug "Milestone saved, reloading popup with 'parent.refreshMilestones(#{@milestone.project_id}, #{@milestone.id});'"
+          # TODO: this could be replaced with "page[task_milestone_id].replace :partial => get_milestones
+          # except that get_milestone currently returns json, not html
+          page << "parent.refreshMilestones(#{@milestone.project_id}, #{@milestone.id});"
         end
       end
       Notifications::deliver_milestone_changed(current_user, @milestone, 'created', due_date) rescue nil
@@ -50,7 +62,9 @@ class MilestonesController < ApplicationController
 
   def edit
     @milestone = Milestone.find(params[:id], :conditions => ["company_id = ?", current_user.company_id])
+    @milestone.init_date = tz.utc_to_local(@milestone.init_date) unless @milestone.init_date.nil?
     @milestone.due_at = tz.utc_to_local(@milestone.due_at) unless @milestone.due_at.nil?
+    @project_currency = @milestone.get_project_currency(@milestone.project_id)
   end
 
   def update
@@ -59,6 +73,17 @@ class MilestonesController < ApplicationController
     @old = @milestone.clone
 
     @milestone.attributes = params[:milestone]
+
+    init_date = nil
+    if !params[:milestone][:init_date].nil? && params[:milestone][:init_date].length > 0
+      begin
+        init_date = DateTime.strptime( params[:milestone][:init_date], current_user.date_format )
+        @milestone.init_date = tz.local_to_utc(init_date.to_time + 1.day - 1.minute)
+      rescue Exception => e
+        @milestone.init_date = @old.init_date
+      end
+    end
+
     due_date = nil
     if !params[:milestone][:due_at].nil? && params[:milestone][:due_at].length > 0
       begin
@@ -70,11 +95,11 @@ class MilestonesController < ApplicationController
     end
     if @milestone.save
 
-      if(@old.due_at != @milestone.due_at || @old.name != @milestone.name || @old.description != @milestone.description )
+      if(@old.init_date != @milestone.init_date || @old.due_at != @milestone.due_at || @old.name != @milestone.name || @old.description != @milestone.description )
         if( @old.name != @milestone.name)
-          Notifications::deliver_milestone_changed(current_user, @milestone, 'renamed', @milestone.due_at, @old.name) rescue nil
+          Notifications::deliver_milestone_changed(current_user, @milestone, 'renamed', @milestone.init_date, @milestone.due_at, @old.name) rescue nil
         else
-          Notifications::deliver_milestone_changed(current_user, @milestone, 'updated', @milestone.due_at) rescue nil
+          Notifications::deliver_milestone_changed(current_user, @milestone, 'updated', @milestone.init_date, @milestone.due_at) rescue nil
         end
       end
 
@@ -87,7 +112,7 @@ class MilestonesController < ApplicationController
 
   def destroy
     @milestone = Milestone.find(params[:id], :conditions => ["company_id = ?", current_user.company_id])
-    Notifications::deliver_milestone_changed(current_user, @milestone, 'deleted', @milestone.due_at) rescue nil
+    Notifications::deliver_milestone_changed(current_user, @milestone, 'deleted', @milestone.init_date, @milestone.due_at) rescue nil
     @milestone.destroy
 
     redirect_from_last

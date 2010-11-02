@@ -82,8 +82,8 @@ class Notifications < ActionMailer::Base
     @sent_on    = Time.now
   end
 
-  def milestone_changed(user, milestone, action, due_date = nil, old_name = nil)
-    @body       = { :user => user, :milestone => milestone, :action => action, :due_date => due_date, :old_name => old_name }
+  def milestone_changed(user, milestone, action, init_date = nil, due_date = nil, old_name = nil)
+    @body       = { :user => user, :milestone => milestone, :action => action, :init_date => init_date, :due_date => due_date, :old_name => old_name }
     if old_name.nil?
       @subject    = "#{$CONFIG[:prefix]} #{_('Milestone')} #{action}: #{milestone.name} [#{milestone.project.customer.name} / #{milestone.project.name}]"
     else
