@@ -1,4 +1,7 @@
-<script type="text/javascript">jQuery("#milestone_due_at").datepicker({dateFormat: '<%= current_user.dateFormat %>'});</script>
+<script type="text/javascript">
+  jQuery("#milestone_init_date").datepicker({dateFormat: '<%= current_user.dateFormat %>'});
+  jQuery("#milestone_due_at").datepicker({dateFormat: '<%= current_user.dateFormat %>'});
+</script>
 <%= error_messages_for 'milestone' %>
 
 <label for="milestone_name"><%=_ 'Name' %></label><%= text_field 'milestone', 'name'  %><br/>

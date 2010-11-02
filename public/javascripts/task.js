@@ -376,6 +376,7 @@ function add_milestone_popup() {
     alert("Please select project before adding iteration !!")
   } else {
     jQuery("#milestone_name").val(" ");
+    jQuery("#milestone_init_date").val(" ");
     jQuery("#milestone_due_at").val(" ");
     jQuery("#milestone_user_id").val(" ");
     jQuery("#milestone_description").val(" ");
