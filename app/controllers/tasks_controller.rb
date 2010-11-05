@@ -20,7 +20,6 @@ class TasksController < ApplicationController
     @task.duration = 0
     @task.users << current_user
     @task.owners << current_user
-#    @task.owners << current_user
     render :template=>'tasks/new'
   end
 

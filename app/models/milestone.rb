@@ -28,6 +28,7 @@ class Milestone < ActiveRecord::Base
     h(String.new(h(attr)))
   end
   def to_tip(options = { })
+    balance = get_balance
     res = "<table cellpadding=0 cellspacing=0>"
     res << "<tr><th>#{_('Name')}</th><td> #{escape_twice(self.name)}</td></tr>"
     res << "<tr><th>#{_('Begin Date')}</th><td> #{options[:user].tz.utc_to_local(init_date).strftime_localized("%A, %d %B %Y")}</td></tr>" unless self.init_date.nil?
@@ -35,6 +36,15 @@ class Milestone < ActiveRecord::Base
     res << "<tr><th>#{_('Project')}</th><td> #{escape_twice(self.project.name)}</td></tr>"
     res << "<tr><th>#{_('Client')}</th><td> #{escape_twice(self.project.customer.name)}</td></tr>"
     res << "<tr><th>#{_('Budget')}</th><td> #{escape_twice(self.budget) << ' ' << get_project_currency(self.project_id) }</td></tr>" unless self.budget.nil?
+    res << "<tr><th>#{_('Real Cost')}</th><td> #{escape_twice(self.get_real_cost) << ' ' << get_project_currency(self.project_id) }</td></tr>" unless self.budget.nil?
+    res << "<tr><th>" 
+    if balance < 0
+      res <<  "<div style = 'color:red'>"
+    end
+    res << "#{_('Balance')}</th><td> #{escape_twice(self.get_balance_presentation) << ' ' << '%' }</td></tr>" unless self.budget.nil?
+    if balance < 0
+      res << "</div>"
+    end
     res << "<tr><th>#{_('Owner')}</th><td> #{escape_twice(self.user.name)}</td></tr>" unless self.user.nil?
     res << "<tr><th>#{_('Progress')}</th><td> #{self.completed_tasks.to_i} / #{self.total_tasks.to_i} #{_('Complete')}</td></tr>"
     res << "<tr><th>#{_('Description')}</th><td class=\"tip_description\">#{escape_twice(self.description_wrapped).gsub(/\n/, '<br/>').gsub(/\"/,'&quot;')}</td></tr>" unless self.description.blank?
@@ -44,10 +54,44 @@ class Milestone < ActiveRecord::Base
 
   def description_wrapped
     unless description.blank?
-       truncate( word_wrap(self.description, :line_width => 80), :length => 1000)
+      truncate( word_wrap(self.description, :line_width => 80), :length => 1000)
     else
       nil
     end
+  end
+  # get the real cost of project by adding user stories for iteration
+  def get_real_cost
+    if self.id
+      total_cost = 0.0
+      user_stories = self.tasks
+      user_stories.each do |user_story|
+        total_cost += ((user_story.duration / 60.0) * self.project.cost_per_hour) rescue 0
+      end
+      return total_cost
+    end
+  end
+  # get the balance of estimate cost and real cost in percent
+  def get_balance
+    estimate_cost = self.budget
+    real_cost = get_real_cost
+    balance = ((estimate_cost - real_cost)/estimate_cost) * 100 rescue 0
+    if balance.nan?
+      balance = 0.0
+    end
+    return balance
+  end
+  #get the balance in presentation for user interface
+  def get_balance_presentation
+    balance_amount = get_balance
+    word = 'Profit '
+    if balance_amount < 0
+      word = 'Deficit '
+      balance_amount = balance_amount * -1
+    else if balance_amount == 0
+        word = ""
+      end
+    end
+    return word + balance_amount.to_i.to_s
   end
 
   def due_date
@@ -83,9 +127,9 @@ class Milestone < ActiveRecord::Base
   end
 
   def update_counts
-     self.completed_tasks = Task.count( :conditions => ["milestone_id = ? AND completed_at is not null", self.id] )
-     self.total_tasks = Task.count( :conditions => ["milestone_id = ?", self.id] )
-     self.save
+    self.completed_tasks = Task.count( :conditions => ["milestone_id = ? AND completed_at is not null", self.id] )
+    self.total_tasks = Task.count( :conditions => ["milestone_id = ?", self.id] )
+    self.save
 
   end
 

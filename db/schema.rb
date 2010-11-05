@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101102114103) do
+ActiveRecord::Schema.define(:version => 20101104151127) do
 
   create_table "access_levels", :force => true do |t|
     t.string   "name"
@@ -378,25 +378,27 @@ ActiveRecord::Schema.define(:version => 20101102114103) do
   add_index "project_permissions", ["user_id"], :name => "project_permissions_user_id_index"
 
   create_table "projects", :force => true do |t|
-    t.string   "name",              :limit => 200, :default => "",   :null => false
-    t.integer  "user_id",                          :default => 0,    :null => false
-    t.integer  "company_id",                       :default => 0,    :null => false
-    t.integer  "customer_id",                      :default => 0,    :null => false
+    t.string   "name",                                    :limit => 200, :default => "",   :null => false
+    t.integer  "user_id",                                                :default => 0,    :null => false
+    t.integer  "company_id",                                             :default => 0,    :null => false
+    t.integer  "customer_id",                                            :default => 0,    :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "completed_at"
-    t.integer  "critical_count",                   :default => 0
-    t.integer  "normal_count",                     :default => 0
-    t.integer  "low_count",                        :default => 0
+    t.integer  "critical_count",                                         :default => 0
+    t.integer  "normal_count",                                           :default => 0
+    t.integer  "low_count",                                              :default => 0
     t.text     "description"
-    t.boolean  "create_forum",                     :default => true
+    t.boolean  "create_forum",                                           :default => true
     t.integer  "open_tasks"
     t.integer  "total_tasks"
     t.integer  "total_milestones"
     t.integer  "open_milestones"
     t.integer  "leader_id"
     t.string   "currency_iso_code"
-    t.float    "cost_per_hour",                    :default => 0.0
+    t.float    "cost_per_hour",                                          :default => 0.0
+    t.integer  "limit_points_per_user_stories",                          :default => 100
+    t.integer  "limit_points_per_business_value_stories",                :default => 100
   end
 
   add_index "projects", ["company_id"], :name => "projects_company_id_index"

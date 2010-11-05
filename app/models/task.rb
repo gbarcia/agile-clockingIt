@@ -12,6 +12,15 @@ class Task < AbstractTask
   has_many      :sheets
 
   has_one       :ical_entry
+
+  validate      :validate_limit_of_points_business_value
+
+  validate      :validate_limit_of_points_user_stories
+
+  validates_numericality_of :business_value, :greater_than_or_equal_to => 0, :message => "Must be greater than or equal to 0 "
+
+  validates_numericality_of :points_expert_judgment, :greater_than_or_equal_to => 0, :message => "Must be greater than or equal to 0 "
+  
   after_validation :fix_work_log_error
 
   after_create { |t| Trigger.fire(t, "create") }
@@ -304,6 +313,24 @@ class Task < AbstractTask
         pv = PropertyValue.find_by_icon_url_and_property_id(icon, prop.id)
       end
       self.set_property_value(prop, pv)
+    end
+  end
+
+  protected
+  #validate limit of business value points
+  def validate_limit_of_points_business_value
+    if self.project_id
+      project = Project.find self.project_id
+      limit = project.limit_points_per_business_value_stories
+      errors.add(:business_value, "Must be less than or equal #{limit}") if business_value > limit.to_i
+    end
+  end
+  #validate limit of stories value points
+  def validate_limit_of_points_user_stories
+    if self.project_id
+      project = Project.find self.project_id
+      limit = project.limit_points_per_user_stories
+      errors.add(:points_expert_judgment, "Must be less than or equal #{limit}") if points_expert_judgment > limit.to_i
     end
   end
 

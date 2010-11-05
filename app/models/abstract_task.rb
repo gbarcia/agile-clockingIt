@@ -52,7 +52,6 @@ class AbstractTask < ActiveRecord::Base
 
   validates_presence_of   :company
   validates_presence_of   :project_id
-  validates_numericality_of :business_value, :greater_than_or_equal_to => 0, :less_than_or_equal_to => 20, :message => "Must be a number between 0 and 20"
 
   before_create :set_task_num
 
@@ -625,6 +624,7 @@ class AbstractTask < ActiveRecord::Base
   def notify_emails_array
     (notify_emails || "").split(/$| |,/).map{ |email| email.strip.empty? ? nil : email.strip }.compact
   end
+
 private
 
   def set_task_num
