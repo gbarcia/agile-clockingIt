@@ -35,7 +35,7 @@ class Milestone < ActiveRecord::Base
     res << "<tr><th>#{_('Due Date')}</th><td> #{options[:user].tz.utc_to_local(due_at).strftime_localized("%A, %d %B %Y")}</td></tr>" unless self.due_at.nil?
     res << "<tr><th>#{_('Project')}</th><td> #{escape_twice(self.project.name)}</td></tr>"
     res << "<tr><th>#{_('Client')}</th><td> #{escape_twice(self.project.customer.name)}</td></tr>"
-    res << "<tr><th>#{_('Budget')}</th><td> #{escape_twice(self.budget) << ' ' << get_project_currency(self.project_id) }</td></tr>" unless self.budget.nil?
+    res << "<tr><th>#{_('Budget')}</th><td> #{escape_twice(self.get_estimate_cost) << ' ' << get_project_currency(self.project_id) }</td></tr>" unless self.budget.nil?
     res << "<tr><th>#{_('Real Cost')}</th><td> #{escape_twice(self.get_real_cost) << ' ' << get_project_currency(self.project_id) }</td></tr>" unless self.budget.nil?
     res << "<tr><th>" 
     if balance < 0
@@ -59,8 +59,8 @@ class Milestone < ActiveRecord::Base
       nil
     end
   end
-  # get the real cost of project by adding user stories for iteration
-  def get_real_cost
+  # get the estimate cost of project by adding user stories for iteration
+  def get_estimate_cost
     if self.id
       total_cost = 0.0
       user_stories = self.tasks
@@ -70,9 +70,22 @@ class Milestone < ActiveRecord::Base
       return total_cost
     end
   end
+
+  # get the real cost of project by adding user stories worked minutos per iteration
+  def get_real_cost
+    if self.id
+      total_cost = 0.0
+      user_stories = self.tasks
+      user_stories.each do |user_story|
+        total_cost += ((user_story.worked_minutes / 60.0) * self.project.cost_per_hour) rescue 0
+      end
+      return total_cost
+    end
+  end
+  
   # get the balance of estimate cost and real cost in percent
   def get_balance
-    estimate_cost = self.budget
+    estimate_cost = get_estimate_cost
     real_cost = get_real_cost
     balance = ((estimate_cost - real_cost)/estimate_cost) * 100 rescue 0
     if balance.nan?
