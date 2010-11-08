@@ -174,6 +174,13 @@ class Task < AbstractTask
   end
 
   ###
+  # a task is closed, status == 1
+  ###
+  def closed?
+    return self.status == 1
+  end
+
+  ###
   # A task is normal if it is not critical or low.
   ###
   def normal?

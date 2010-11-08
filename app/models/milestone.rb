@@ -37,6 +37,7 @@ class Milestone < ActiveRecord::Base
     res << "<tr><th>#{_('Client')}</th><td> #{escape_twice(self.project.customer.name)}</td></tr>"
     res << "<tr><th>#{_('Budget')}</th><td> #{escape_twice(self.get_estimate_cost) << ' ' << get_project_currency(self.project_id) }</td></tr>" unless self.budget.nil?
     res << "<tr><th>#{_('Real Cost')}</th><td> #{escape_twice(self.get_real_cost) << ' ' << get_project_currency(self.project_id) }</td></tr>" unless self.budget.nil?
+    res << "<tr><th>#{_('Earned Value')}</th><td> #{escape_twice(self.get_earned_value) << ' ' << get_project_currency(self.project_id) }</td></tr>" unless self.budget.nil?
     res << "<tr><th>" 
     if balance < 0
       res <<  "<div style = 'color:red'>"
@@ -80,6 +81,20 @@ class Milestone < ActiveRecord::Base
         total_cost += ((user_story.worked_minutes / 60.0) * self.project.cost_per_hour) rescue 0
       end
       return total_cost
+    end
+  end
+
+  # The earned value for iteration
+  def get_earned_value
+    if self.id
+      total_ev = 0.0
+      user_stories = self.tasks
+      user_stories.each do |user_story|
+        if user_story.closed?
+          total_ev = ((user_story.worked_minutes / 60.0) * self.project.cost_per_hour) rescue 0
+        end
+      end
+      return total_ev
     end
   end
   
