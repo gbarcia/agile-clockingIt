@@ -1,4 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :roadmap_milestones
+
   map.resources :triggers
   #had not previously specified, add new in aclocking
   #map.resources :tasks, :as => 'user-stories', :collection => {:list => :get}

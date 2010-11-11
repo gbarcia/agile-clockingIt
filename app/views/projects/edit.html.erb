@@ -54,7 +54,16 @@
       </table>
     </td>
   </tr>
-
+  <% if @project.milestones.size > 0 %>
+  <tr>
+    <td valign="top">
+      <fieldset>
+        <legend><%=_ 'Financial Aspects in ' + @project.currency_iso_code %></legend>
+        <div id="permission_list"><%= render :partial => "finance_list" %></div>
+      </fieldset>
+    </td>
+  </tr>
+  <%end%>
   <% if current_user.can?( @project, 'grant' ) %>
   <tr>
     <td valign="top">

@@ -11,4 +11,10 @@ module ProjectsHelper
       @leader_Name = 'No asigned'
     end
   end
+
+  def currency_is_selected? (actual_currency, select_option)
+    if (actual_currency == select_option)
+    return "selected='" + (actual_currency == select_option).to_s + "'"
+    end
+  end
 end

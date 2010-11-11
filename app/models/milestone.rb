@@ -37,7 +37,7 @@ class Milestone < ActiveRecord::Base
     res << "<tr><th>#{_('Client')}</th><td> #{escape_twice(self.project.customer.name)}</td></tr>"
     res << "<tr><th>#{_('Budget')}</th><td> #{escape_twice(self.get_estimate_cost) << ' ' << get_project_currency(self.project_id) }</td></tr>" unless self.budget.nil?
     res << "<tr><th>#{_('Real Cost')}</th><td> #{escape_twice(self.get_real_cost) << ' ' << get_project_currency(self.project_id) }</td></tr>" unless self.budget.nil?
-    res << "<tr><th>#{_('Earned Value')}</th><td> #{escape_twice(self.get_earned_value) << ' ' << get_project_currency(self.project_id) }</td></tr>" unless self.budget.nil?
+    res << "<tr><th>#{_('EV')}</th><td> #{escape_twice(self.get_earned_value) << ' ' << get_project_currency(self.project_id) }</td></tr>" unless self.budget.nil?
     res << "<tr><th>" 
     if balance < 0
       res <<  "<div style = 'color:red'>"
@@ -46,6 +46,8 @@ class Milestone < ActiveRecord::Base
     if balance < 0
       res << "</div>"
     end
+    res << "<tr><th>#{_('ROI')}</th><td> #{escape_twice(self.get_roi) << ' %' }</td></tr>" unless self.budget.nil?
+    res << "<tr><th>#{_('B/CR')}</th><td> #{escape_twice(self.get_ratio_cost_benefist) << ':1' }</td></tr>" unless self.budget.nil?
     res << "<tr><th>#{_('Owner')}</th><td> #{escape_twice(self.user.name)}</td></tr>" unless self.user.nil?
     res << "<tr><th>#{_('Progress')}</th><td> #{self.completed_tasks.to_i} / #{self.total_tasks.to_i} #{_('Complete')}</td></tr>"
     res << "<tr><th>#{_('Description')}</th><td class=\"tip_description\">#{escape_twice(self.description_wrapped).gsub(/\n/, '<br/>').gsub(/\"/,'&quot;')}</td></tr>" unless self.description.blank?
@@ -60,7 +62,7 @@ class Milestone < ActiveRecord::Base
       nil
     end
   end
-  # get the estimate cost of project by adding user stories for iteration
+  # get the estimate cost of iteration by adding user stories for iteration
   def get_estimate_cost
     if self.id
       total_cost = 0.0
@@ -72,7 +74,7 @@ class Milestone < ActiveRecord::Base
     end
   end
 
-  # get the real cost of project by adding user stories worked minutos per iteration
+  # get the real cost of iteration by adding user stories worked minutos per iteration
   def get_real_cost
     if self.id
       total_cost = 0.0
@@ -84,6 +86,11 @@ class Milestone < ActiveRecord::Base
     end
   end
 
+  #return benefist of milestone
+  def get_benefist
+    return get_estimate_cost - get_real_cost
+  end
+
   # The earned value for iteration
   def get_earned_value
     if self.id
@@ -91,7 +98,7 @@ class Milestone < ActiveRecord::Base
       user_stories = self.tasks
       user_stories.each do |user_story|
         if user_story.closed?
-          total_ev = ((user_story.worked_minutes / 60.0) * self.project.cost_per_hour) rescue 0
+          total_ev = ((user_story.duration / 60.0) * self.project.cost_per_hour) rescue 0
         end
       end
       return total_ev
@@ -120,6 +127,40 @@ class Milestone < ActiveRecord::Base
       end
     end
     return word + balance_amount.to_i.to_s
+  end
+
+  #return the roi of the itaration
+  def get_roi
+    estimate_cost = get_estimate_cost
+    real_cost = get_real_cost
+    benefist = estimate_cost
+    roi = ((benefist - real_cost)/ real_cost) * 100 rescue 0
+    if roi.nan?
+      roi = 0.0
+    end
+    return (roi * 10**2).round.to_f / 10**2 #round two decimals
+  end
+
+  # return ratio of benefist/costr
+  def get_ratio_cost_benefist
+    estimate_cost = get_estimate_cost
+    real_cost = get_real_cost
+    benefist = estimate_cost - real_cost
+    cb = benefist / real_cost
+    if cb.nan?
+      cb = 0.0
+    end
+    return (cb * 10**1).round.to_f / 10**1 #round one decimals
+  end
+
+  #return de net present value in one year projection
+  def get_npv
+    benefist = get_estimate_cost - get_real_cost
+    npv = benefist / (1 + (self.project.inflation_rate/100))
+    if npv.nan?
+      npv = 0.0
+    end
+    return (npv * 10**2).round.to_f / 10**2 #round two decimals
   end
 
   def due_date

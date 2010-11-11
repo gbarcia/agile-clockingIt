@@ -1,0 +1,12 @@
+<h1>Editing roadmap_milestone</h1>
+
+<% form_for(@roadmap_milestone) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.submit 'Update' %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @roadmap_milestone %> |
+<%= link_to 'Back', roadmap_milestones_path %>

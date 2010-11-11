@@ -15,13 +15,19 @@
 
 <label for="project_currency_iso_code"><%=_ 'Currency' %></label>
 <select id="project_currency_iso_code" name="project[currency_iso_code]">
-  <option value="USD"><%=_ 'Dolar (USD)' %></option>
-  <option value="EUR"><%=_ 'Euro (EUR)' %></option>
-  <option value="VEF"><%=_ 'Bolivar (VEF)' %></option>
+  <%
+  selected_currency = @project ? @project.currency_iso_code : "USD"
+%>
+  <option value="USD" <%= currency_is_selected?(selected_currency, "USD")%>><%=_ 'Dolar (USD)' %></option>
+  <option value="EUR" <%= currency_is_selected?(selected_currency, "EUR")%>><%=_ 'Euro (EUR)' %></option>
+  <option value="VEF" <%= currency_is_selected?(selected_currency, "VEF")%>><%=_ 'Bolivar (VEF)' %></option>
 </select>
 
 <label for="project_cost_per_hour"><%=_ 'Cost/h' %></label>
-<%= text_field 'project', 'cost_per_hour', {  :id => 'project_cost_per_hour', :size => 16, :value => @project.cost_per_hour } %>
+<%= text_field 'project', 'cost_per_hour', {  :id => 'project_cost_per_hour', :size => 16, :value => @project.cost_per_hour, :class => 'tooltip', :title => _('Cost per hour') } %>
+
+<label for="project_inflation_rate"><%=_ "IRate/I" %></label>
+<%= text_field 'project', 'inflation_rate', {  :id => 'project_inflation_rate', :size => 16, :value => @project.inflation_rate, :class => 'tooltip', :title => _('Inflation rate per iteration in percent') } %>
 
 <label for="project_name"><%=_ 'Description' %></label>
 <%= text_area 'project', 'description', :rows => 5  %><br/>

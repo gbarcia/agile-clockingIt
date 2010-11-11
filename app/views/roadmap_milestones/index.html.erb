@@ -1,0 +1,18 @@
+<h1>Listing roadmap_milestones</h1>
+
+<table>
+  <tr>
+  </tr>
+
+<% @roadmap_milestones.each do |roadmap_milestone| %>
+  <tr>
+    <td><%= link_to 'Show', roadmap_milestone %></td>
+    <td><%= link_to 'Edit', edit_roadmap_milestone_path(roadmap_milestone) %></td>
+    <td><%= link_to 'Destroy', roadmap_milestone, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New roadmap_milestone', new_roadmap_milestone_path %>

@@ -1,3 +1,5 @@
+require 'money'
+require 'money/bank/google_currency'
 # Handle Projects for a company, including permissions
 class ProjectsController < ApplicationController
   before_filter :protect_admin_area, :except=>[:new, :create, :list_completed, :list ]
@@ -139,10 +141,16 @@ class ProjectsController < ApplicationController
   end
 
   def update
+    Money.default_bank = Money::Bank::GoogleCurrency.new
     @project = current_user.projects.find(params[:id])
     old_client = @project.customer_id
     old_name = @project.name
     old_project = @project
+
+    if (@project.currency_change?(params[:project][:currency_iso_code]))
+      new_cost_per_hour = @project.cost_per_hour.to_money(@project.currency_iso_code.to_sym).exchange_to(params[:project][:currency_iso_code].to_sym)
+      params[:project][:cost_per_hour] = new_cost_per_hour
+    end
 
     if @project.update_attributes(params[:project])
 
@@ -259,4 +267,5 @@ class ProjectsController < ApplicationController
     project_permissions = ProjectPermission.find(:first, :conditions => ['user_id = ? AND project_id = ?',form_leader_id,project.id])
     return !project_permissions.nil?
   end
+  
 end
