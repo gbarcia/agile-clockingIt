@@ -31,30 +31,35 @@
       },
       :event_band   => :days,
       :bands       => {
+        :weeks => {
+          :trackGap       => '0.1',
+          :trackHeight    => '0.2',
+          :showEventText  => 'false',
+          :width          => '"10%"',
+          :intervalUnit   => 'Timeline.DateTime.WEEK',
+          :intervalPixels => '200'
+        },
         :months => {
           :trackGap       => '0.1',
+          :trackHeight    => '0.2',
           :showEventText  => 'false',
-          :width          => '"8%"',
+          :width          => '"10%"',
           :intervalUnit   => 'Timeline.DateTime.MONTH',
           :intervalPixels => '200'
         },
         :days => {
           :trackGap       => '0.1',
-          :showEventText  => 'false',
-          :width          => '"8%"',
+          :trackHeight    => '1',
+          :showEventText  => 'true',
+          :width          => '"80%"',
           :intervalUnit   => 'Timeline.DateTime.DAY',
-          :intervalPixels => '200'
-        },
-        :hours => {
-          :width          => '"84%"',
-          :intervalUnit   => 'Timeline.DateTime.HOUR',
-          :intervalPixels => '10'
+          :intervalPixels => '50'
         }
       },
-      :bands_order => [ :months, :days, :hours ],
+      :bands_order => [:months, :weeks, :days],
       :synchronize => {
-        :months => :hours,
-        :days   => :hours
+        :months => :weeks,
+        :weeks => :days
       },
       :highlight => [ :months, :days ]
     )
@@ -65,7 +70,7 @@
   </div>
   <div id="project_select">
     <fieldset>
-      <label>Project</label><select id="project_id" name="project_id" onchange="reload_roadmap(this.value)"><%= options_for_user_projects(get_first_project) %> </select>
+      <label>Project</label><select id="project_id" name="project_id" onchange="reload_roadmap(this.value)"><%= options_for_user_projects(session[:id_prj]) %> </select>
     </fieldset>
   </div>
 </div>

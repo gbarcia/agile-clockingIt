@@ -9,16 +9,6 @@ class Milestone < ActiveRecord::Base
   belongs_to :user
   has_many :tasks, :dependent => :nullify
 
-  acts_as_simile_timeline_event(
-    :fields => {
-      :start        => :init_date,
-      :end          => :due_at,
-      :durationEvent => :true,
-      :title        => :name,
-      :description  => :description
-    }
-  )
-
   after_save { |r|
     r.project.total_milestones = nil
     r.project.open_milestones = nil
@@ -220,8 +210,8 @@ class Milestone < ActiveRecord::Base
     project = Project.find project_id
     project.currency_iso_code
   end
-
 end
+
 
 
 # == Schema Information
