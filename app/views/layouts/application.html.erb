@@ -20,8 +20,12 @@
     <%= javascript_include_tag "fullcalendar" %>
     <%= yield :head %>
     <%= javascript_include_tag "beast" if ['forums', 'posts', 'topics'].include? controller.controller_name %>
+    <% if controller.controller_name == "roadmap" %>  
+      <%= javascript_include_tag 'http://simile.mit.edu/timeline/api/timeline-api.js' -%>
+      <%= javascript_include_tag 'prototype' -%>
+    <% end %>
     <% if ['activities'].include? controller.controller_name %>
-      <!--[if IE]><%= javascript_include_tag "excanvas" %><![endif]-->
+    <!--[if IE]><%= javascript_include_tag "excanvas" %><![endif]-->
         <%= javascript_include_tag "builder", "portal", "flotr" %>
     <% end %>
 

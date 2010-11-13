@@ -1,3 +1,4 @@
+require 'simile_timeline'
 # Logical grouping of tasks from one project.
 #
 # Can have a due date, and be completed
@@ -6,8 +7,17 @@ class Milestone < ActiveRecord::Base
   belongs_to :company
   belongs_to :project
   belongs_to :user
-
   has_many :tasks, :dependent => :nullify
+
+  acts_as_simile_timeline_event(
+    :fields => {
+      :start        => :init_date,
+      :end          => :due_at,
+      :durationEvent => :true,
+      :title        => :name,
+      :description  => :description
+    }
+  )
 
   after_save { |r|
     r.project.total_milestones = nil
@@ -135,7 +145,7 @@ class Milestone < ActiveRecord::Base
     real_cost = get_real_cost
     benefist = estimate_cost
     roi = ((benefist - real_cost)/ real_cost) * 100 rescue 0
-    if roi.nan?
+    if roi.nan? || roi.infinite?
       roi = 0.0
     end
     return (roi * 10**2).round.to_f / 10**2 #round two decimals
@@ -147,7 +157,7 @@ class Milestone < ActiveRecord::Base
     real_cost = get_real_cost
     benefist = estimate_cost - real_cost
     cb = benefist / real_cost
-    if cb.nan?
+    if cb.nan? || cb.infinite?
       cb = 0.0
     end
     return (cb * 10**1).round.to_f / 10**1 #round one decimals

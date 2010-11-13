@@ -2888,3 +2888,8 @@ tr.jqgroup td{
 select#chngroup {
   margin-left:5px;
 }
+
+.default_timeline{
+    width: 100%;
+    height: 200px;
+}

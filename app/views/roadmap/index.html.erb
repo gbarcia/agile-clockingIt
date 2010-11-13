@@ -1,2 +1,71 @@
-<h1>Roadmap#index</h1>
-<p>Find me in app/views/roadmap/index.html.erb</p>
+<div id="content">
+  <ul class="tabs">
+    <%
+    links = []
+    links << [ "List", { :controller => "tasks", :action => "list" } ]
+    links << [ "RoadMap", { :controller => "roadmap", :action => "index" } ]
+    links << [ "Schedule", { :controller => "tasks", :action => "calendar" } ]
+    links << [ "Gantt", { :controller => "schedule", :action => "gantt" } ]
+
+    link_list = ""
+    links.each_with_index do |opts, i|
+      name, url_opts = opts
+      link = link_to(name, url_opts)
+      class_names = []
+      class_names << "first" if i == 0
+      class_names << "last" if i == links.length - 1
+      class_names << "active" if params.merge(url_opts) == params
+
+      link_list += content_tag(:li, link, :class => class_names.join(" "))
+    end
+    -%>
+    <%= link_list.html_safe %>
+  </ul>
+  <div id="roadmap">
+    <%
+    roadmap_timeline = ::Simile::Timeline::Timeline.new(
+      :name        => "Roadmap",
+      :event_source => {
+        :controller => 'roadmap',
+        :action     => 'recent'
+      },
+      :event_band   => :days,
+      :bands       => {
+        :months => {
+          :trackGap       => '0.1',
+          :showEventText  => 'false',
+          :width          => '"8%"',
+          :intervalUnit   => 'Timeline.DateTime.MONTH',
+          :intervalPixels => '200'
+        },
+        :days => {
+          :trackGap       => '0.1',
+          :showEventText  => 'false',
+          :width          => '"8%"',
+          :intervalUnit   => 'Timeline.DateTime.DAY',
+          :intervalPixels => '200'
+        },
+        :hours => {
+          :width          => '"84%"',
+          :intervalUnit   => 'Timeline.DateTime.HOUR',
+          :intervalPixels => '10'
+        }
+      },
+      :bands_order => [ :months, :days, :hours ],
+      :synchronize => {
+        :months => :hours,
+        :days   => :hours
+      },
+      :highlight => [ :months, :days ]
+    )
+
+  %>
+
+    <%= simile_timeline(roadmap_timeline, { :class => 'default_timeline' } ) %>
+  </div>
+  <div id="project_select">
+    <fieldset>
+      <label>Project</label><select name="project_id" onchange="<%= "hola"  %>"><%= options_for_user_projects(get_first_project) %> </select>
+    </fieldset>
+  </div>
+</div>

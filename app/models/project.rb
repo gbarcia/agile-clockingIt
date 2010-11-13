@@ -140,7 +140,7 @@ class Project < ActiveRecord::Base
     iterations.each do |iteration|
       total_ev += iteration.get_earned_value
     end
-    if total_ev.nan?
+    if total_ev.nan? || total_ev.infinite?
       total_ev = 0.0
     end
     return (total_ev * 10**2).round.to_f / 10**2 #round two decimals
@@ -150,7 +150,7 @@ class Project < ActiveRecord::Base
   def get_cost_benefis_ratio
     benefist = get_estimate_cost - get_real_cost
     cb = benefist / get_real_cost rescue 0
-    if cb.nan?
+    if cb.nan? || cb.infinite?
       cb = 0.0
     end
     return (cb * 10**1).round.to_f / 10**1 #round one decimals
@@ -161,7 +161,7 @@ class Project < ActiveRecord::Base
     estimate_cost = get_estimate_cost
     real_cost = get_real_cost
     balance = ((estimate_cost - real_cost)/estimate_cost) * 100 rescue 0
-    if balance.nan?
+    if balance.nan? || balance.infinite?
       balance = 0.0
     end
     return balance
@@ -187,7 +187,7 @@ class Project < ActiveRecord::Base
     real_cost = get_real_cost
     benefist = estimate_cost
     roi = ((benefist - real_cost)/ real_cost) * 100 rescue 0
-    if roi.nan?
+    if roi.nan? || roi.infinite?
       roi = 0.0
     end
     return (roi * 10**2).round.to_f / 10**2 #round two decimals
@@ -197,7 +197,7 @@ class Project < ActiveRecord::Base
   def get_npv
     benefist = get_estimate_cost - get_real_cost
     npv = benefist / (1 + (self.inflation_rate/100))
-    if npv.nan?
+    if npv.nan? || npv.infinite?
       npv = 0.0
     end
     return (npv * 10**2).round.to_f / 10**2 #round two decimals

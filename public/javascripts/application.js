@@ -5,8 +5,8 @@ jQuery.noConflict();
 //
 
 jQuery(function() {
-  jQuery("input:submit").button();
-  //jQuery("#tabmenu").tabs();
+    jQuery("input:submit").button();
+//jQuery("#tabmenu").tabs();
 });
 
 
@@ -16,35 +16,38 @@ jQuery(function() {
 //
 
 function showProgress() {
-  jQuery('#loading').show('fast');
+    jQuery('#loading').show('fast');
 }
 function hideProgress() {
-  jQuery('#loading').hide('fast');
+    jQuery('#loading').hide('fast');
 }
 
 jQuery(document).mousemove(function(e) {
-  if (jQuery('#loading').is(':visible')) {
-    jQuery("#loading").css({
-      top: (e.pageY  - 8) + "px",
-      left: (e.pageX + 10) + "px"
-    });
-  }
+    if (jQuery('#loading').is(':visible')) {
+        jQuery("#loading").css({
+            top: (e.pageY  - 8) + "px",
+            left: (e.pageX + 10) + "px"
+        });
+    }
 });
 
 jQuery("#loading").bind("ajaxSend", function(){
-   jQuery(this).show('fast');
- }).bind("ajaxComplete", function(){
-   jQuery(this).hide('fast');
+    jQuery(this).show('fast');
+}).bind("ajaxComplete", function(){
+    jQuery(this).hide('fast');
 });
 
 
 /* this function is deprecated and subject to removal */
 function inline_image(el) {
-  $(el).setStyle({width:'auto', visibility:'hidden'});
-  if (el.width > 500) {
-    el.style.width = '500px';
-  }
-  el.style.visibility = 'visible';
+    $(el).setStyle({
+        width:'auto',
+        visibility:'hidden'
+    });
+    if (el.width > 500) {
+        el.style.width = '500px';
+    }
+    el.style.visibility = 'visible';
 }
 
 /*
@@ -53,24 +56,26 @@ function inline_image(el) {
  sets up tooltips in page.
 */
 function updateTooltips() {
-    jQuery('.tooltip').tooltip({showURL: false });
+    jQuery('.tooltip').tooltip({
+        showURL: false
+    });
 }
 
 function UpdateDnD() {
-  updateTooltips();
+    updateTooltips();
 }
 
 function do_update(user, url) {
-  if( user != userId ) {
-      jQuery.get(url);
-  }
+    if( user != userId ) {
+        jQuery.get(url);
+    }
 }
 
 function rebuildSelect(select, data) {
-   select.options.length = 0;
-   for( var i=0; i<data.length; i++ ) {
-     select.options[i] = new Option(data[i].text,data[i].value,null,false);
-   }
+    select.options.length = 0;
+    for( var i=0; i<data.length; i++ ) {
+        select.options[i] = new Option(data[i].text,data[i].value,null,false);
+    }
 }
 
 
@@ -116,9 +121,9 @@ function dateToWords(elem) {
 }
 
 jQuery.fn.dateToWords = function() {
-  return this.each(function() {
-    dateToWords(jQuery(this));
-  });
+    return this.each(function() {
+        dateToWords(jQuery(this));
+    });
 };
 
 
@@ -127,7 +132,9 @@ function addProjectToUser(event, ui) {
 
     var url = document.location.toString();
     url = url.replace("/edit/", "/project/");
-    jQuery.get(url, { project_id: value }, function(data) {
+    jQuery.get(url, {
+        project_id: value
+    }, function(data) {
         jQuery("#add_user").before(data);
     });
 
@@ -139,14 +146,16 @@ function addUserToProject(event, ui) {
     var value = ui.item.id;
     var url = document.location.toString();
     url = url.replace("/edit/", "/ajax_add_permission/");
-    jQuery.get(url, { user_id : value }, function(data) {
+    jQuery.get(url, {
+        user_id : value
+    }, function(data) {
         jQuery("#user_table").html(data);
     });
     return false;
 }
 
 function addUserToProjectOnlyCompany(event,ui){
-jQuery('#project_leader_id').val(ui.item.id);
+    jQuery('#project_leader_id').val(ui.item.id);
 }
 
 
@@ -193,7 +202,9 @@ function addAttribute(link) {
 
     var removeLink = newAttribute.find("a.remove_attribute");
     // for some reason this onclick needs to be manually set after cloning
-    removeLink.click(function() { removeAttribute(removeLink); });
+    removeLink.click(function() {
+        removeAttribute(removeLink);
+    });
     removeLink.show();
 
     origAttribute.after(newAttribute);
@@ -246,7 +257,9 @@ function appendPartial(url, selector, callback) {
     jQuery.get(url, { }, function(data) {
         jQuery(selector).append(data);
 
-        if (callback) { callback.call(); }
+        if (callback) {
+            callback.call();
+        }
     });
 }
 
@@ -255,7 +268,9 @@ function appendPopup(url, selector, callback) {
         var html = "<span style='display: none' id='ui_popup_dialog'>"+ data +"</span>"
         jQuery(selector).prepend(html);
 
-        if (callback) { callback.call(); }
+        if (callback) {
+            callback.call();
+        }
     });
 }
 
@@ -274,7 +289,9 @@ function updatePositionFields(listSelector) {
 */
 function addAttributeChoices(sender) {
     var choices = jQuery(sender).parent().find('.choices');
-    var callback = function() { updatePositionFields(choices); };
+    var callback = function() {
+        updatePositionFields(choices);
+    };
 
     var attribute = jQuery(sender).parents(".attribute");
     var attrId = attribute.attr("id").split("_").pop();
@@ -294,7 +311,9 @@ function addAttributeChoices(sender) {
 function addDependencyToTask(event, ui) {
     var id = ui.item.id;
     jQuery(this).val("");
-    jQuery.get("/tasks/dependency/", { dependency_id : id }, function(data) {
+    jQuery.get("/tasks/dependency/", {
+        dependency_id : id
+    }, function(data) {
         jQuery("#task_dependencies .dependencies").append(data);
     });
     return false;
@@ -306,7 +325,9 @@ function addDependencyToTask(event, ui) {
 function addResourceToTask(event, ui) {
     var id = ui.item.id;
     jQuery(this).val("");
-    jQuery.get("/tasks/resource/", { resource_id : id }, function(data) {
+    jQuery.get("/tasks/resource/", {
+        resource_id : id
+    }, function(data) {
         jQuery("#task_resources").append(data);
     });
     return false;
@@ -344,7 +365,7 @@ function nestedCheckboxChanged(checkbox) {
 
     var hiddenField = checkbox.prev();
     if (hiddenField.attr("name") == checkbox.attr("name")) {
-                hiddenField.attr("disabled", checked);
+        hiddenField.attr("disabled", checked);
     }
 }
 
@@ -355,10 +376,10 @@ function nestedCheckboxChanged(checkbox) {
     failed a validation.
 */
 function fixNestedCheckboxes() {
-  var checkboxes = jQuery(".nested_checkbox");
-  for (var i = 0; i < checkboxes.length; i++) {
-    nestedCheckboxChanged(checkboxes[i]);
-  }
+    var checkboxes = jQuery(".nested_checkbox");
+    for (var i = 0; i < checkboxes.length; i++) {
+        nestedCheckboxChanged(checkboxes[i]);
+    }
 }
 
 /*
@@ -392,7 +413,8 @@ function toggleWorkLogApproval(sender, workLogId) {
 
     jQuery.post("/tasks/update_work_log", {
         id : workLogId,
-        "work_log[approved]" : checked });
+        "work_log[approved]" : checked
+    });
 }
 
 function setPageTarget(event, ui) {
@@ -409,35 +431,35 @@ function setPageTarget(event, ui) {
   instead of removed helper method task_project_watchers_js
 */
 function attach_behaviour_to_project_select() {
-  var projectSelect = jQuery('#task_project_id');
-  if(projectSelect.size()){
-    projectSelect.change(function(){
-      projectId=jQuery('#task_project_id option:selected').val();
-      refreshMilestones(projectId,0);
-      addAutoAddUsersToTask('', '', projectId);
-      addClientLinkForTask(projectId);
-      if (projectId == "") {
-        projectId = jQuery('#task_project_id option:nth-child(2)').attr('value');
-      }
-      jQuery('#add_milestone a').attr('href', '/milestones/quick_new?project_id=' + projectId);
-    });
-  }
+    var projectSelect = jQuery('#task_project_id');
+    if(projectSelect.size()){
+        projectSelect.change(function(){
+            projectId=jQuery('#task_project_id option:selected').val();
+            refreshMilestones(projectId,0);
+            addAutoAddUsersToTask('', '', projectId);
+            addClientLinkForTask(projectId);
+            if (projectId == "") {
+                projectId = jQuery('#task_project_id option:nth-child(2)').attr('value');
+            }
+            jQuery('#add_milestone a').attr('href', '/milestones/quick_new?project_id=' + projectId);
+        });
+    }
 }
 
 //return path to tasks or task_templates controller
 //based on current page path
 //so we can reuse tasks code, views and javasript in taks_templates
 function tasks_path(action_name) {
-  if (/tasks\//.test(document.location.pathname)) {
-    return "/tasks/" + action_name ;
-  }
-  else if ( /task_templates\//.test(document.location.pathname)) {
-    return "/task_templates/" + action_name ;
-  }
-  else if (jQuery('#template_clone').val() == '1') {
-    return "/tasks/" + action_name ;
-  }
-  return action_name;
+    if (/tasks\//.test(document.location.pathname)) {
+        return "/tasks/" + action_name ;
+    }
+    else if ( /task_templates\//.test(document.location.pathname)) {
+        return "/task_templates/" + action_name ;
+    }
+    else if (jQuery('#template_clone').val() == '1') {
+        return "/tasks/" + action_name ;
+    }
+    return action_name;
 }
 
 
@@ -451,57 +473,65 @@ function updateAutoCompleteField(event, ui) {
 }
 
 jQuery(document).ready(function() {
-  fixNestedCheckboxes();
+    fixNestedCheckboxes();
 
-  highlightWatchers();
-  init_task_form();
+    highlightWatchers();
+    init_task_form();
 
-  jQuery(function() {
-    jQuery('#target').catcomplete({
-          source: '/pages/target_list',
-          select: setPageTarget,
-          delay: 800,
-          minLength: 1
+    jQuery(function() {
+        jQuery('#target').catcomplete({
+            source: '/pages/target_list',
+            select: setPageTarget,
+            delay: 800,
+            minLength: 1
+        });
     });
-  });
-  autocomplete('#resource_customer_name', '/users/auto_complete_for_customer_name', updateAutoCompleteField);
-  autocomplete('#project_customer_name', '/application/auto_complete_for_customer_name', addCustomerToProject);
-  autocomplete('#user_project_name_autocomplete', '/users/auto_complete_for_project_name', addProjectToUser);
-  autocomplete('#project_user_name_autocomplete', '/application/auto_complete_for_user_name', addUserToProject);
-  autocomplete('#auto_complete_for_user_name_only_company','/application/auto_complete_for_user_name_only_company',addUserToProjectOnlyCompany);
+    autocomplete('#resource_customer_name', '/users/auto_complete_for_customer_name', updateAutoCompleteField);
+    autocomplete('#project_customer_name', '/application/auto_complete_for_customer_name', addCustomerToProject);
+    autocomplete('#user_project_name_autocomplete', '/users/auto_complete_for_project_name', addProjectToUser);
+    autocomplete('#project_user_name_autocomplete', '/application/auto_complete_for_user_name', addUserToProject);
+    autocomplete('#auto_complete_for_user_name_only_company','/application/auto_complete_for_user_name_only_company',addUserToProjectOnlyCompany);
 
-  jQuery(".datefield").datepicker({ constrainInput: false, dateFormat: userDateFormat});
+    jQuery(".datefield").datepicker({
+        constrainInput: false,
+        dateFormat: userDateFormat
+    });
 });
 
 function toggleAccess() {
-  if (jQuery('#accessLevel_container div').hasClass('private')) {
-    jQuery('#accessLevel_container div').removeClass('private');
-    jQuery('#work_log_access_level_id').val('1');
-  } else {
-    jQuery('#accessLevel_container div').addClass('private');
-    jQuery('#work_log_access_level_id').val('2');
-  }
-  highlightWatchers();
+    if (jQuery('#accessLevel_container div').hasClass('private')) {
+        jQuery('#accessLevel_container div').removeClass('private');
+        jQuery('#work_log_access_level_id').val('1');
+    } else {
+        jQuery('#accessLevel_container div').addClass('private');
+        jQuery('#work_log_access_level_id').val('2');
+    }
+    highlightWatchers();
 }
 
 
 
 function autocomplete(input_field, path, after_callback) {
-  jQuery(input_field).autocomplete({source: path, select: after_callback, delay: 800, minLength: 3});
+    jQuery(input_field).autocomplete({
+        source: path,
+        select: after_callback,
+        delay: 800,
+        minLength: 3
+    });
 }
 
 jQuery.widget("custom.catcomplete", jQuery.ui.autocomplete, {
-  _renderMenu: function( ul, items ) {
-    var self = this,
-      currentCategory = "";
-    jQuery.each( items, function( index, item ) {
-      if ( item.category != currentCategory ) {
-        ul.append( "<li class='ui-autocomplete-category'>" + item.category + "</li>" );
-        currentCategory = item.category;
-      }
-      self._renderItem( ul, item );
-    });
-  }
+    _renderMenu: function( ul, items ) {
+        var self = this,
+        currentCategory = "";
+        jQuery.each( items, function( index, item ) {
+            if ( item.category != currentCategory ) {
+                ul.append( "<li class='ui-autocomplete-category'>" + item.category + "</li>" );
+                currentCategory = item.category;
+            }
+            self._renderItem( ul, item );
+        });
+    }
 });
 
 
@@ -510,61 +540,69 @@ jQuery.widget("custom.catcomplete", jQuery.ui.autocomplete, {
 function autocomplete_multiple_remote(input_field, path){
     jQuery(function(){
         function split(val) {
-                 return val.split(/,\s*/);
+            return val.split(/,\s*/);
         }
         function extractLast(term) {
-                 return split(term).pop();
-                }
+            return split(term).pop();
+        }
         jQuery(input_field).autocomplete({
             source: function(request, response) {
-                                jQuery.getJSON(path, {
-                                        term: extractLast(request.term)
-                                }, response);
+                jQuery.getJSON(path, {
+                    term: extractLast(request.term)
+                }, response);
             },
             search: function() {
-                                var term = extractLast(this.value);
-                                if (term.length < 2) {
-                                        return false;
-                                }
-                        },
-            focus: function() {
+                var term = extractLast(this.value);
+                if (term.length < 2) {
                     return false;
+                }
+            },
+            focus: function() {
+                return false;
             },
             select: function(event, ui) {
-                    var terms = split( this.value );
-                    terms.pop();
-                    terms.push( ui.item.value );
-                    terms.push("");
-                    this.value = terms.join(", ");
-                    return false;
+                var terms = split( this.value );
+                terms.pop();
+                terms.push( ui.item.value );
+                terms.push("");
+                this.value = terms.join(", ");
+                return false;
             }
 
         });
 
-     });
+    });
 
 }
 
 
 /* Events */
-jQuery('#flash_message').click(function(){ jQuery('#flash').remove();});
+jQuery('#flash_message').click(function(){
+    jQuery('#flash').remove();
+});
 
 jQuery('#worklog_body').blur(function(){
-        jQuery.ajax({
-                'url': '/tasks/updatelog',
-                'data': jQuery('#worklog_form').serialize(),
-                'dataType': 'text',
-                'type': 'POST',
-                'success': function(data){jQuery('#worklog-saved').html(data) ;}
-        });
+    jQuery.ajax({
+        'url': '/tasks/updatelog',
+        'data': jQuery('#worklog_form').serialize(),
+        'dataType': 'text',
+        'type': 'POST',
+        'success': function(data){
+            jQuery('#worklog-saved').html(data) ;
+        }
+    });
 });
 
 function mark_as_default(sender) {
-   jQuery("label[for=user_email]").text("");
-   jQuery(sender).parent().siblings("label").text("Email");
-   jQuery("span#user_email_addresses span input[type=hidden]").val("");
-   jQuery(sender).parent().siblings("input[type=hidden]").attr("value","1");
-   jQuery("span#user_email_addresses span b").replaceWith("<span class='email_link_actions'><a class='action_email' href='#' onclick='mark_as_default(this); return false;'>Mark As Default</a><a class='action_email' href='#' onclick='jQuery(this).parent().parent().remove(); return false;'>Remove</a></span>");
-   jQuery(sender).parent().parent().prependTo("span#user_email_addresses");
-   jQuery(sender).parent().replaceWith("<b>Default</b>");
+    jQuery("label[for=user_email]").text("");
+    jQuery(sender).parent().siblings("label").text("Email");
+    jQuery("span#user_email_addresses span input[type=hidden]").val("");
+    jQuery(sender).parent().siblings("input[type=hidden]").attr("value","1");
+    jQuery("span#user_email_addresses span b").replaceWith("<span class='email_link_actions'><a class='action_email' href='#' onclick='mark_as_default(this); return false;'>Mark As Default</a><a class='action_email' href='#' onclick='jQuery(this).parent().parent().remove(); return false;'>Remove</a></span>");
+    jQuery(sender).parent().parent().prependTo("span#user_email_addresses");
+    jQuery(sender).parent().replaceWith("<b>Default</b>");
+}
+
+function reload_roadmap(sender){
+    jQuery("#roadmap").html();
 }
