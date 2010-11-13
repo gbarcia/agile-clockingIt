@@ -1,12 +1,14 @@
 class RoadmapController < ApplicationController
   def index
     if !params[:id].nil?
-    session[:id_prj] = params[:id]
+      session[:id_prj] = params[:id]
+      project_id = params[:id]
     else
-    roadmap_project = current_user.projects.find :first
-    project_id = roadmap_project.id
-    session[:id_prj] = project_id
+      roadmap_project = current_user.projects.find :first
+      project_id = roadmap_project.id
+      session[:id_prj] = project_id
     end
+    @project = Project.find project_id
   end
 
   def recent
