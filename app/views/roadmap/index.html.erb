@@ -76,7 +76,7 @@
         <tr>
           <td align="left" class="page_header">
           <% if current_user.can?( @project, 'milestone' ) %>
-            <div style="float:right;padding-top:0.1em;"><%= link_to _('New'), :controller => "milestones", :action => 'new', :project_id => @project %></div>
+            <div style="float:right;padding-top:0.1em;"><%= link_to _('New'), :controller => "milestones", :action => 'new', :project_id => @project, :redirect => '/roadmap/index?id=' << @project.id.to_s %></div>
           <% end %>
             <div><%=_ 'Iterations' %></div>
           </td>

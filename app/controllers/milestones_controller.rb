@@ -5,6 +5,7 @@ class MilestonesController < ApplicationController
     @milestone.user = current_user
     @milestone.project_id = params[:project_id]
     @project_currency = @milestone.get_project_currency(params[:project_id])
+    session[:redirect_rm] = params[:redirect]
   end
 
   def quick_new
@@ -45,7 +46,11 @@ class MilestonesController < ApplicationController
     if @milestone.save
       unless request.xhr?
         flash[:notice] = _('Iteration was successfully created.')
-        redirect_to :controller => 'projects', :action => 'edit', :id => @milestone.project
+        if session[:redirect_rm].nil?
+          redirect_to session[:redirect_rm] #TODO: colocar redirect anterior
+        else
+          redirect_to session[:redirect_rm]
+        end
       else
         render :update do |page|
           logger.debug "Milestone saved, reloading popup with 'parent.refreshMilestones(#{@milestone.project_id}, #{@milestone.id});'"
