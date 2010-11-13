@@ -604,5 +604,8 @@ function mark_as_default(sender) {
 }
 
 function reload_roadmap(sender){
-    jQuery("#roadmap").html();
+    jQuery.post("/roadmap/rm?id=" + sender,function(data){
+        jQuery("#roadmap").html(data)
+    })
+    
 }

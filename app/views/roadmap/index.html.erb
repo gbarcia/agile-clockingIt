@@ -65,7 +65,7 @@
   </div>
   <div id="project_select">
     <fieldset>
-      <label>Project</label><select name="project_id" onchange="<%= "hola"  %>"><%= options_for_user_projects(get_first_project) %> </select>
+      <label>Project</label><select id="project_id" name="project_id" onchange="reload_roadmap(this.value)"><%= options_for_user_projects(get_first_project) %> </select>
     </fieldset>
   </div>
 </div>
