@@ -11,12 +11,15 @@
               <% end %>
               <br />
               <% if @project.user_id == current_user.id || current_user.admin > 0%>
-                <div style="float: right;"><%= link_to( _("Delete Project"), {:controller => 'projects', :action => 'destroy', :id => @project}, :confirm => "Really delete #{@project.name}?") %></div>
+                <div style="float: right; margin-right: 60px"><%= link_to( _("Delete Project"), {:controller => 'projects', :action => 'destroy', :id => @project}, :confirm => "Really delete #{@project.name}?") %></div>
+              <% end %>
+              <% if @project.user_id == current_user.id || current_user.admin > 0%>
+                <div style="float: right; margin-right: 60px"><%= link_to( _("View RoadMap"), {:controller => 'roadmap', :action => 'index', :id => @project}) %></div>
               <% end %>
               <% if current_user.can?( @project, 'grant' ) || current_user.admin > 0 %>
-                <div style="float: left;"> <%= link_to( _("Complete Project"), {:controller => 'projects', :action => 'complete', :id => @project}, :confirm => "Really complete #{@project.name}?") %> <%= "&nbsp;".html_safe if @project.user_id == current_user.id %></div>
+                <div style="float: left; margin-left: 60px;"> <%= link_to( _("Complete Project"), {:controller => 'projects', :action => 'complete', :id => @project}, :confirm => "Really complete #{@project.name}?") %> <%= "&nbsp;".html_safe if @project.user_id == current_user.id %></div>
               <% end %>
-              <div style="text-align:center;"><%= link_to_tasks_filtered_by(_("View User stories"), @project) %>
+              <div style="text-align:center;"><%= link_to_tasks_filtered_by(_("View User stories"), @project) %></div>
             </fieldset>
             </td>
           </tr>
@@ -43,7 +46,7 @@
               <% @completed_milestones = Milestone.count(:conditions => ["project_id = ? AND completed_at IS NOT NULL", @project.id])
                  if @completed_milestones.to_i > 0
                %>
-              <tr><td colspan=2 align=right class="milestone_completed"><%= link_to _('%d completed milestone', @completed_milestones), :controller => 'milestones', :action => 'list_completed', :id => @project %></td></tr>
+              <tr><td colspan=2 align=right class="milestone_completed"><%= link_to _('%d completed iterations', @completed_milestones), :controller => 'milestones', :action => 'list_completed', :id => @project %></td></tr>
               <% end %>
               <% else %>
               <tr><td>&nbsp;</td></tr>
@@ -59,7 +62,7 @@
     <td valign="top">
       <fieldset>
         <legend><%=_ 'Financial Aspects in ' + @project.currency_iso_code %></legend>
-        <div id="permission_list"><%= render :partial => "finance_list" %></div>
+        <div id="finance_list"><%= render :partial => "finance_list" %></div>
       </fieldset>
     </td>
   </tr>

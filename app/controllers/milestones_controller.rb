@@ -52,7 +52,9 @@ class MilestonesController < ApplicationController
         if session[:redirect_rm].nil?
           redirect_to :controller => 'projects', :action => 'edit', :id => @milestone.project
         else
-          redirect_to session[:redirect_rm]
+          ruta = session[:redirect_rm]
+          session[:redirect_rm] = nil
+          redirect_to ruta
         end
       else
         render :update do |page|
@@ -73,13 +75,16 @@ class MilestonesController < ApplicationController
     @milestone.init_date = tz.utc_to_local(@milestone.init_date) unless @milestone.init_date.nil?
     @milestone.due_at = tz.utc_to_local(@milestone.due_at) unless @milestone.due_at.nil?
     @project_currency = @milestone.get_project_currency(@milestone.project_id)
+    if !params[:redirect].nil?
+    session[:redirect_rm] = params[:redirect]
+    end
   end
 
   def update
     @milestone = Milestone.find(params[:id], :conditions => ["company_id = ?", current_user.company_id])
 
     @old = @milestone.clone
-
+    @project_currency = @milestone.get_project_currency(@milestone.project_id)
     @milestone.attributes = params[:milestone]
 
     init_date = nil
@@ -112,7 +117,13 @@ class MilestonesController < ApplicationController
       end
 
       flash[:notice] = _('Milestone was successfully updated.')
-      redirect_to :controller => 'projects', :action => 'edit', :id => @milestone.project
+      if session[:redirect_rm].nil?
+          redirect_to :controller => 'projects', :action => 'edit', :id => @milestone.project
+        else
+          ruta = session[:redirect_rm]
+          session[:redirect_rm] = nil
+          redirect_to ruta
+        end
     else
       render :action => 'edit'
     end

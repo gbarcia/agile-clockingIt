@@ -7,7 +7,7 @@ flag = false;
   data << "'start':" + milestone.date.to_json.gsub('"',"'")
   data << ",'title':" + "'" + milestone.title + "'"
   data << ",'durationEvent':" + false.to_s
-  data << ",'description':" + "'" + milestone.description + "'}"
+  data << ",'description':" + "'" + milestone.description_presentation + "'}"
   flag = true;
 end
 
@@ -22,7 +22,8 @@ flag = false;
   data << "'start':" + iteration.init_date.to_json.gsub('"',"'")
   data << ",'end':" + iteration.due_at.to_json.gsub('"',"'")
   data << ",'title':" + "'" + iteration.name + "'"
-  data << ",'description':" + "'" + iteration.description + "'}"
+  data << ",'color':" + "'" + iteration.color + "'"
+  data << ",'description':" + "'" + iteration.description_presentation + "'}"
   flag = true;
 end
 data << "]}"

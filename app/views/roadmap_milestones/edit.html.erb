@@ -1,12 +1,14 @@
-<h1>Editing roadmap_milestone</h1>
+<fieldset>
+<legend><%=_ 'Edit Milestone' %></legend>
 
-<% form_for(@roadmap_milestone) do |f| %>
-  <%= f.error_messages %>
-
-  <p>
-    <%= f.submit 'Update' %>
-  </p>
+<% form_tag :action => 'update', :id => @roadmap_milestone do %>
+  <%= render :partial => 'form' %>
+  <label>&nbsp;</label>
+  <%= submit_tag _('Save'), :class => 'nolabel' %>
 <% end %>
-
-<%= link_to 'Show', @roadmap_milestone %> |
-<%= link_to 'Back', roadmap_milestones_path %>
+<br/>
+  <% if current_user.can?( @roadmap_milestone.project, 'milestone' ) %>
+  <div style="clear:both;"></div>
+  <div style="float:right;"><%= link_to _("Delete Milestone"), {:controller => 'roadmap_milestones', :action => 'destroy', :id => @roadmap_milestone}, :confirm => "Really delete #{@roadmap_milestone.title}?"  %></div>
+  <% end %>
+</fieldset>

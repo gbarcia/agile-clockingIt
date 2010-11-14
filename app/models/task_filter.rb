@@ -37,9 +37,7 @@ class TaskFilter < ActiveRecord::Base
   # a default limit will be applied)
   def tasks(extra_conditions = nil, limit_tasks = true)
     limit = (limit_tasks ? 500 : nil)
-    return Task.all_accessed_by(user).all(:conditions => conditions(extra_conditions),
-                                  :include => to_include,
-                                  :limit => limit)
+    return Task.all_accessed_by(user).all
   end
 
   # Returns an array of all tasks matching the conditions from this filter.

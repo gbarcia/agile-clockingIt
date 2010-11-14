@@ -1,11 +1,9 @@
-<h1>New roadmap_milestone</h1>
+<fieldset>
+  <%= "<legend>#{_ 'New Milestone' }</legend>".html_safe %>
 
-<% form_for(@roadmap_milestone) do |f| %>
-  <%= f.error_messages %>
 
-  <p>
-    <%= f.submit 'Create' %>
-  </p>
-<% end %>
-
-<%= link_to 'Back', roadmap_milestones_path %>
+  <% form_tag :action => 'create' do %>
+    <%= render :partial => 'form' %>
+    <%= submit_tag _("Create"), :class => 'nolabel' %>
+  <% end %>
+  </fieldset>

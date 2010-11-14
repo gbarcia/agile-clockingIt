@@ -2339,6 +2339,12 @@ ul.clients img {
 	margin: 0 auto;
 	float: none;
 }
+#finance_list tbody tr td img {
+/* centre the image */
+	display: block;
+	margin: 0 auto;
+	float: none;
+}
 
 /* ------------------- */
 

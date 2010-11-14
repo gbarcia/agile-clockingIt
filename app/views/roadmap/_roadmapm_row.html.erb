@@ -1,0 +1,22 @@
+<tr class="milestone project_<%= milestone.project.id %>" id="milestone_<%=milestone.id%>"<%= " style=\"display:none;\"" if (session[:collapse_milestones] && session[:collapse_milestones][milestone.project.id.to_s].to_i == 1) %>><td colspan="2">
+        <div style="height:16px; position:relative;">
+          <div class="popout" id="edit_milestone_<%= milestone.id%>" style="position: absolute; z-index:10; top:0; left: 0; width: 16px; display: none;">
+            <% if current_user.can?(milestone.project, 'milestone') %>
+            <%= link_to image_tag("edit.png", :border => 0, :title => _("Edit milestone <b>%s</b>", escape_twice(milestone.title)), :class => "tooltip"),
+                  { :controller => 'roadmap_milestones', :action => 'edit', :id => milestone, :project_id => milestone.project_id} -%>
+            <% end %>
+          </div>
+          <div style="padding-top:2px;" class="milestones"><a href="#"><%= milestone.title %></a></div>
+        </div>
+      </td>
+    </tr>
+<% if current_user.can?(milestone.project, 'milestone') %>
+<script type="text/javascript" language="javascript" charset="utf-8">
+jQuery('#milestone_<%= milestone.id %>').hover( function () {
+    jQuery('#edit_milestone_<%=milestone.id%>:hidden').show();
+}, function () {
+    jQuery('#edit_milestone_<%=milestone.id%>:visible').hide();
+});
+</script>
+<% end %>
+
