@@ -9,6 +9,8 @@ class Milestone < ActiveRecord::Base
   belongs_to :user
   has_many :tasks, :dependent => :nullify
 
+  validate :validate_dates
+
   after_save { |r|
     r.project.total_milestones = nil
     r.project.open_milestones = nil
@@ -209,6 +211,11 @@ class Milestone < ActiveRecord::Base
   def get_project_currency(project_id)
     project = Project.find project_id
     project.currency_iso_code
+  end
+
+  private
+  def validate_dates
+     errors.add(:init_date, "Must be before due date ") if self.due_at < self.init_date
   end
 end
 

@@ -5,7 +5,9 @@ class MilestonesController < ApplicationController
     @milestone.user = current_user
     @milestone.project_id = params[:project_id]
     @project_currency = @milestone.get_project_currency(params[:project_id])
+    if !params[:redirect].nil?
     session[:redirect_rm] = params[:redirect]
+    end
   end
 
   def quick_new
@@ -19,6 +21,7 @@ class MilestonesController < ApplicationController
     params_milestone = params[:milestone]
 
     @milestone = Milestone.new(params[:milestone])
+    @project_currency = @milestone.get_project_currency(@milestone.project_id)
     logger.debug "Creating new milestone #{@milestone.name}"
 
     init_date = nil
@@ -47,7 +50,7 @@ class MilestonesController < ApplicationController
       unless request.xhr?
         flash[:notice] = _('Iteration was successfully created.')
         if session[:redirect_rm].nil?
-          redirect_to session[:redirect_rm] #TODO: colocar redirect anterior
+          redirect_to :controller => 'projects', :action => 'edit', :id => @milestone.project
         else
           redirect_to session[:redirect_rm]
         end
@@ -61,7 +64,7 @@ class MilestonesController < ApplicationController
       end
       Notifications::deliver_milestone_changed(current_user, @milestone, 'created', due_date) rescue nil
     else
-      render :action => 'new'
+      render :template => 'milestones/new'
     end
   end
 
