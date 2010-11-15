@@ -106,7 +106,7 @@ class Milestone < ActiveRecord::Base
       user_stories = self.tasks
       user_stories.each do |user_story|
         if user_story.closed?
-          total_ev = ((user_story.duration / 60.0) * self.project.cost_per_hour) rescue 0
+          total_ev += ((user_story.duration / 60.0) * self.project.cost_per_hour) rescue 0
         end
       end
       return total_ev
