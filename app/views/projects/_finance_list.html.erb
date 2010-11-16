@@ -1,19 +1,23 @@
-  <table class="content" id="finance_table" width="100%" style="margin-left:0;margin-right:0;">
-    <tr>
-      <th><%=_ 'Iterations' %></th>
-      <th><%=_ 'Estimate Cost' %></th>
-      <th><%=_ "Real Cost" %></th>
-      <th><%=_ "Benefist" %></th>
-      <th><%=_ 'Earned Value' %></th>
-      <th><%=_ 'B/CR' %></th>
-      <th><%=_ 'Balance' %></th>
-      <th><%=_ 'ROI' %></th>
-      <th><%=_ 'NPV' %></th>
-    </tr>
+<table class="content" id="finance_table" width="100%" style="margin-left:0;margin-right:0;">
+  <tr>
+    <th><%=_ 'Iterations' %></th>
+    <th><%=_ 'Estimate Cost' %></th>
+    <th><%=_ "Real Cost" %></th>
+    <th><%=_ "Benefist" %></th>
+    <th><%=_ 'Earned Value' %></th>
+    <th><%=_ 'B/CR' %></th>
+    <th><%=_ 'Balance' %></th>
+    <th><%=_ 'ROI' %></th>
+    <th><%=_ 'NPV' %></th>
+  </tr>
 
-     <% count = 1  %>
-    <% @project.milestones.each do |iteration| %>
-    <tr id="add_user" style="text-align: right">
+  <% count = 1  %>
+  <% @project.milestones.each do |iteration| %>
+    <% if count % 2 == 0 %>
+      <tr id="add_user" class="row_stripe" style="text-align: right">
+      <% else %>
+      <tr id="add_user" style="text-align: right">
+      <% end %>
       <td style="text-align: center">
         <%= 'Iteration ' + count.to_s %>
       </td>
@@ -43,34 +47,34 @@
       </td>
     </tr>
     <%count = count + 1%>
-    <% end %>
-    <tr style="text-align: right">
-      <td style="text-align: center">
-        <%= 'Total' %>
-      </td>
-      <td>
-        <%= @project.get_estimate_cost %>
-      </td>
-      <td>
-        <%= @project.get_real_cost %>
-      </td>
-      <td>
-        <%= @project.get_benefist %>
-      </td>
-      <td>
-        <%= @project.get_earned_value %>
-      </td>
-      <td>
-        <%= @project.get_cost_benefis_ratio.to_s + ':1' %>
-      </td>
-      <td>
-        <%= @project.get_balance_presentation + ' %' %>
-      </td>
-      <td>
-        <%= @project.get_roi.to_s + ' %' %>
-      </td>
-      <td>
-        <%= @project.get_npv %>
-      </td>
-    </tr>
+  <% end %>
+  <tr style="text-align: right" class="row_total">
+    <td style="text-align: center">
+      <%= 'Total' %>
+    </td>
+    <td>
+      <%= @project.get_estimate_cost %>
+    </td>
+    <td>
+      <%= @project.get_real_cost %>
+    </td>
+    <td>
+      <%= @project.get_benefist %>
+    </td>
+    <td>
+      <%= @project.get_earned_value %>
+    </td>
+    <td>
+      <%= @project.get_cost_benefis_ratio.to_s + ':1' %>
+    </td>
+    <td>
+      <%= @project.get_balance_presentation + ' %' %>
+    </td>
+    <td>
+      <%= @project.get_roi.to_s + ' %' %>
+    </td>
+    <td>
+      <%= @project.get_npv %>
+    </td>
+  </tr>
 </table>

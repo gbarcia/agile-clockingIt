@@ -1,10 +1,36 @@
-  <%content_for :head do %>
+<%content_for :head do %>
     <%= javascript_include_tag "prototype", "effects", "dragdrop", "controls", :cache => "prototype-all" %>
   <%end%>
 
 <script type="text/javascript">var userDateFormat='<%= current_user.dateFormat %>';</script>
 <script type="text/javascript" language="javascript" charset="utf-8" src="/javascripts/gantt.js"></script>
 <table id="content" width="100%" cellpadding="0" cellspacing="0" style="padding-right:1em;">
+  <tr>
+    <td colspan="2">
+      <ul class="tabs">
+	<%
+	links = []
+	links << [ "List", { :controller => "tasks", :action => "list" } ]
+	links << [ "RoadMap", { :controller => "roadmap", :action => "index" } ]
+	links << [ "Schedule", { :controller => "tasks", :action => "calendar" } ]
+	links << [ "Gantt", { :controller => "schedule", :action => "gantt" } ]
+
+	link_list = ""
+	links.each_with_index do |opts, i|
+	name, url_opts = opts
+	link = link_to(name, url_opts)
+	class_names = []
+	class_names << "first" if i == 0
+	class_names << "last" if i == links.length - 1
+	class_names << "active" if params.merge(url_opts) == params
+
+	link_list += content_tag(:li, link, :class => class_names.join(" "))
+	end
+	-%>
+	<%= link_list.html_safe %>
+	</ul>
+    </td>
+  </tr>
   <tr>
     <td class="page_header" colspan="2">
       <div style="float:left;"><%=_ 'Plan / GANTT' %></div>

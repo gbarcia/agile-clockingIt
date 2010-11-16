@@ -2899,3 +2899,16 @@ select#chngroup {
     width: 100%;
     height: 300px;
 }
+
+.roadmap_panel{
+    width: 50%;
+    float: left;
+}
+
+.row_stripe{
+    background-color: #eaeaea;
+}
+
+.row_total{
+    background-color: #e5eaef;
+}
