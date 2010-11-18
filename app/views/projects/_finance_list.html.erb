@@ -3,14 +3,14 @@
     <th><%=_ 'Iterations' %></th>
     <th><%=_ 'Estimate Cost' %></th>
     <th><%=_ "Real Cost" %></th>
+    <th><%=_ 'Balance' %></th>
     <th><%=_ "Benefist" %></th>
+    <th><%=_ 'B/CR' %></th>
+    <th><%=_ 'NPV' %></th>
     <th><%=_ 'EV' %></th>
     <th><%=_ 'CPI' %></th>
     <th><%=_ 'SPI' %></th>
-    <th><%=_ 'B/CR' %></th>
-    <th><%=_ 'Balance' %></th>
     <th><%=_ 'ROI' %></th>
-    <th><%=_ 'NPV' %></th>
   </tr>
 
   <% count = 1  %>
@@ -30,7 +30,16 @@
         <%= iteration.get_real_cost %>
       </td>
       <td>
+        <%= iteration.get_balance_presentation + " %" %>
+      </td>
+      <td>
         <%= iteration.get_benefist %>
+      </td>
+      <td>
+        <%= iteration.get_ratio_cost_benefist.to_s + ":1" %>
+      </td>
+      <td>
+        <%= iteration.get_npv%>
       </td>
       <td>
         <%= iteration.get_earned_value %>
@@ -42,16 +51,7 @@
         <%= iteration.get_spi %>
       </td>
       <td>
-        <%= iteration.get_ratio_cost_benefist.to_s + ":1" %>
-      </td>
-      <td>
-        <%= iteration.get_balance_presentation + " %" %>
-      </td>
-      <td>
         <%= iteration.get_roi.to_s + " %" %>
-      </td>
-      <td>
-        <%= iteration.get_npv%>
       </td>
     </tr>
     <%count = count + 1%>
@@ -67,7 +67,16 @@
       <%= @project.get_real_cost %>
     </td>
     <td>
+      <%= @project.get_balance_presentation + ' %' %>
+    </td>
+    <td>
       <%= @project.get_benefist %>
+    </td>
+    <td>
+      <%= @project.get_cost_benefis_ratio.to_s + ':1' %>
+    </td>
+    <td>
+      <%= @project.get_npv %>
     </td>
     <td>
       <%= @project.get_earned_value %>
@@ -79,16 +88,7 @@
       <%= @project.get_spi %>
     </td>
     <td>
-      <%= @project.get_cost_benefis_ratio.to_s + ':1' %>
-    </td>
-    <td>
-      <%= @project.get_balance_presentation + ' %' %>
-    </td>
-    <td>
       <%= @project.get_roi.to_s + ' %' %>
-    </td>
-    <td>
-      <%= @project.get_npv %>
     </td>
   </tr>
 </table>

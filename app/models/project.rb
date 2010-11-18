@@ -130,7 +130,8 @@ class Project < ActiveRecord::Base
 
   #the benefist of the project
   def get_benefist
-    return get_estimate_cost - get_real_cost
+    real_cost = get_real_cost * (1 - (self.tir_per_hour/100)) # add the roi per hour of company
+    return (get_estimate_cost - real_cost)
   end
 
   #the earned value of the project
@@ -148,7 +149,7 @@ class Project < ActiveRecord::Base
 
   #return the cost/benefist ratio
   def get_cost_benefis_ratio
-    benefist = get_estimate_cost - get_real_cost
+    benefist = get_benefist
     cb = benefist / get_real_cost rescue 0
     if cb.nan? || cb.infinite?
       cb = 0.0
@@ -158,9 +159,7 @@ class Project < ActiveRecord::Base
 
    # get the balance of estimate cost and real cost in percent in project
   def get_balance
-    estimate_cost = get_estimate_cost
-    real_cost = get_real_cost
-    balance = ((estimate_cost - real_cost)/estimate_cost) * 100 rescue 0
+    balance = (get_benefist/get_estimate_cost) * 100 rescue 0
     if balance.nan? || balance.infinite?
       balance = 0.0
     end
@@ -185,8 +184,8 @@ class Project < ActiveRecord::Base
   def get_roi
     estimate_cost = get_estimate_cost
     real_cost = get_real_cost
-    benefist = estimate_cost
-    roi = ((benefist - real_cost)/ real_cost) * 100 rescue 0
+    benefist = get_benefist
+    roi = ((benefist)/ real_cost) * 100 rescue 0
     if roi.nan? || roi.infinite?
       roi = 0.0
     end
@@ -195,7 +194,7 @@ class Project < ActiveRecord::Base
 
   #return de net present value in one year projection of the global project
   def get_npv
-    benefist = get_estimate_cost - get_real_cost
+    benefist = get_benefist
     npv = benefist / (1 + (self.inflation_rate/100))
     if npv.nan? || npv.infinite?
       npv = 0.0

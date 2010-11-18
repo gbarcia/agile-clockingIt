@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101118170021) do
+ActiveRecord::Schema.define(:version => 20101118210458) do
 
   create_table "access_levels", :force => true do |t|
     t.string   "name"
@@ -401,6 +401,7 @@ ActiveRecord::Schema.define(:version => 20101118170021) do
     t.integer  "limit_points_per_user_stories",                          :default => 100
     t.integer  "limit_points_per_business_value_stories",                :default => 100
     t.float    "inflation_rate",                                         :default => 0.0
+    t.float    "tir_per_hour",                                           :default => 0.0
   end
 
   add_index "projects", ["company_id"], :name => "projects_company_id_index"

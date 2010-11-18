@@ -26,6 +26,9 @@
 <label for="project_cost_per_hour"><%=_ 'Cost/h' %></label>
 <%= text_field 'project', 'cost_per_hour', {  :id => 'project_cost_per_hour', :size => 16, :value => @project.cost_per_hour, :class => 'tooltip', :title => _('Cost per hour') } %>
 
+<label for="project_tir_per_hour">ROI/h (%)</label>
+<%= text_field 'project', 'tir_per_hour', {  :id => 'projec_tir_per_hour', :size => 16, :value => @project.tir_per_hour, :class => 'tooltip', :title => _('Roi per hour in percent') } %>
+
 <label for="project_inflation_rate"><%=_ "IRate/I" %></label>
 <%= text_field 'project', 'inflation_rate', {  :id => 'project_inflation_rate', :size => 16, :value => @project.inflation_rate, :class => 'tooltip', :title => _('Inflation rate per iteration in percent') } %>
 
