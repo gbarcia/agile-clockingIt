@@ -4,7 +4,8 @@
     <label for="task_points_expert_judgment"><%=_ 'Points' %></label>
     <%= text_field 'task', 'points_expert_judgment', {:size => 12, :value => @task.points_expert_judgment, :class => 'tooltip', :title => _('Expert Judgment Points')} %>
     <label for="task_points_team_velocity"><%=_ 'Velocity Points' %></label>
-    <%= text_field 'task', 'points_team_velocity', {:size => 12, :value => @task.points_team_velocity, :class => 'tooltip', :readonly => true, :title => _('Team Velocity Points')} %>
+    <%= text_field 'task', 'points_team_velocity', {:size => 12, :value => @task.points_team_velocity, :class => 'tooltip',:title => _('Team Velocity Points Suggested')} %>
+    <div id="task_points_team_velocity_desviation" class="tooltip"></div>
     <label for="task_points_planning_poker"><%=_ 'Planning Poker Points' %></label>
     <%= text_field 'task', 'points_planning_poker', {:size => 12, :value => @task.points_planning_poker, :class => 'tooltip', :readonly => true, :title => _('Planning Poker Points')} %>
 

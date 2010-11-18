@@ -34,4 +34,8 @@
 	  <%= render_last_task %>
 	</div>
 </div>
-<%= render :partial => "/tags/panel" %>
+        <td id="side_panel">
+          <% # use content_for(:side_panel) to add extra content to this sidebar -%>
+          <%= yield(:side_panel) %>
+          <%= render :partial => "/tags/panel" %>
+        </td>

@@ -82,6 +82,16 @@ class Milestone < ActiveRecord::Base
     end
   end
 
+  #return total points per iteration
+  def total_points
+    total_points = 0
+    tasks = self.tasks
+    tasks.each do |task|
+      total_points += task.total_points
+    end
+    return total_points
+  end
+
   # get the real cost of iteration by adding user stories worked minutos per iteration
   def get_real_cost
     if self.id
@@ -169,6 +179,28 @@ class Milestone < ActiveRecord::Base
       npv = 0.0
     end
     return (npv * 10**2).round.to_f / 10**2 #round two decimals
+  end
+
+  # return a cost program index
+  def get_cpi
+    earned_value = get_earned_value
+    real_cost = get_real_cost
+    cpi = earned_value / real_cost
+    if cpi.nan? || cpi.infinite?
+      cpi = 0.0
+    end
+    return (cpi * 10**2).round.to_f / 10**2 #round two decimals
+  end
+
+  #return a plan program index
+  def get_spi
+    earned_value = get_earned_value
+    estimate_cost = get_estimate_cost
+    spi = earned_value / estimate_cost
+    if spi.nan? || spi.infinite?
+      spi = 0.0
+    end
+    return (spi * 10**2).round.to_f / 10**2 #round two decimals
   end
 
   def due_date

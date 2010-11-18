@@ -366,6 +366,51 @@ class TasksController < ApplicationController
     render :text => res
   end
 
+  #standard desviation for average velocity points
+  def velocity_deviation_for_client
+     if params[:milesonte_id].to_i > 0
+    desviation_velocity_points = 0
+    iteration = Milestone.find params[:milesonte_id].to_i
+    project = Project.find iteration.project_id
+    iterations_before = project.get_iterations_before(iteration.init_date)
+    total_points = Array.new
+    iterations_before.each do |iteration_s|
+      total_points << iteration_s.total_points
+    end
+    if total_points.size > 1
+    desviation_velocity_points = Statistics.standard_desviation(total_points)
+    res = desviation_velocity_points.to_s
+    else
+      res = "0"
+    end
+    else
+    res = "0"
+    end
+    render :text => res
+  end
+
+  def add_velocity_for_client
+    if params[:milesonte_id].to_i > 0
+    average_velocity_points = 0
+    iteration = Milestone.find params[:milesonte_id].to_i
+    project = Project.find iteration.project_id
+    iterations_before = project.get_iterations_before(iteration.init_date)
+    total_points = Array.new
+    iterations_before.each do |iteration_s|
+      total_points << iteration_s.total_points
+    end
+    if total_points.size > 0
+    average_velocity_points = Statistics.mean(total_points)
+    res = average_velocity_points.to_s
+    else
+      res = "0"
+    end
+    else
+    res = "0"
+    end
+    render :text => res
+  end
+
   def add_client_for_project
     project = current_user.projects.find(params[:project_id])
     res = ""

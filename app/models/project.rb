@@ -203,6 +203,34 @@ class Project < ActiveRecord::Base
     return (npv * 10**2).round.to_f / 10**2 #round two decimals
   end
 
+   # return a cost program index of project
+  def get_cpi
+    earned_value = get_earned_value
+    real_cost = get_real_cost
+    cpi = earned_value / real_cost
+    if cpi.nan? || cpi.infinite?
+      cpi = 0.0
+    end
+    return (cpi * 10**2).round.to_f / 10**2 #round two decimals
+  end
+
+  #return a plan program index of project
+  def get_spi
+    earned_value = get_earned_value
+    estimate_cost = get_estimate_cost
+    spi = earned_value / estimate_cost
+    if spi.nan? || spi.infinite?
+      spi = 0.0
+    end
+    return (spi * 10**2).round.to_f / 10**2 #round two decimals
+  end
+
+  # return iterations before a paramater date
+  def get_iterations_before (date_before)
+    iterations = Milestone.find(:all, :conditions => ["due_at < ?",date_before])
+    return iterations
+  end
+
   #boolean return if currency for project if change
   def currency_change? (new_currency_iso_code)
     return (new_currency_iso_code != self.currency_iso_code)

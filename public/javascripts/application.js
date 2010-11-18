@@ -445,6 +445,19 @@ function attach_behaviour_to_project_select() {
         });
     }
 }
+/*
+  Attach behavior to views/tasks/_details.html.erb,
+  instead of removed helper method task_project_watchers_js
+*/
+function attach_behaviour_to_milestone_select() {
+    var milestoneSelect = jQuery('#task_milestone_id');
+    if(milestoneSelect.size()){
+        milestoneSelect.change(function(){
+            milestoneId=jQuery('#task_milestone_id option:selected').val();
+            addVelocityToTask(milestoneId);
+        });
+    }
+}
 
 //return path to tasks or task_templates controller
 //based on current page path

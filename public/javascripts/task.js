@@ -25,7 +25,7 @@ function toggleTaskUnread(event, userId) {
 
     var taskId = task.attr("id").replace("task_row_", "");
     taskId = taskId.replace("task_", "");
-    var parameters = { "id" : taskId, "read" : unread };
+    var parameters = {"id" : taskId, "read" : unread};
     if (userId) {
         parameters.user_id = userId;
     }
@@ -86,7 +86,7 @@ function addUserToTask(event, ui) {
     var userId = ui.item.id;
     var taskId = jQuery("#task_id").val();
     var url = tasks_path('add_notification');
-    var params = { user_id : userId, id : taskId };
+    var params = {user_id : userId, id : taskId};
     addUser(url, params);
     jQuery(this).val("");
     return false;
@@ -99,10 +99,27 @@ function addUserToTask(event, ui) {
 */
 function addAutoAddUsersToTask(clientId, taskId, projectId) {
     var url = tasks_path("add_users_for_client");
-    var params = { client_id : clientId, id : taskId, project_id : projectId };
+    var params = {client_id : clientId, id : taskId, project_id : projectId};
     addUser(url, params);
 }
+function addVelocityToTask(milestoneId) {
+    var url = tasks_path("add_velocity_for_client");
+    var params = {milesonte_id : milestoneId};
+    addVelocity(url, params);
+    addVelocityDesviation("velocity_deviation_for_client", params)
+}
 
+function addVelocity(url, params){
+    jQuery.get(url, params, function(data) {
+        jQuery("#task_points_team_velocity").val(data);
+    });
+}
+
+function addVelocityDesviation(url, params){
+    jQuery.get(url, params, function(data) {
+        jQuery("#task_points_team_velocity_desviation").html("Standard Desviation: " + data);
+    });
+}
 function addUser(url, params){
     jQuery.get(url, params, function(data) {
         jQuery("#task_notify").append(data);
@@ -117,7 +134,7 @@ function addCustomerToTask(event, ui) {
     var taskId = jQuery("#task_id").val();
 
     var url = tasks_path("add_client");
-    var params = { client_id : clientId, id : taskId };
+    var params = {client_id : clientId, id : taskId};
     jQuery.get(url, params, function(data) {
                 jQuery("#task_customers").append(data);
     });
@@ -139,7 +156,7 @@ function addClientLinkForTask(projectId) {
 
     if (jQuery.trim(customers) == "") {
         var url = tasks_path("add_client_for_project");
-        var params = { project_id : projectId };
+        var params = {project_id : projectId};
         jQuery.get(url, params, function(data) {
             jQuery("#task_customers").html(data);
         });
@@ -281,6 +298,7 @@ function init_task_form() {
     jQuery('#comment').focus();
 
     attach_behaviour_to_project_select();
+    attach_behaviour_to_milestone_select();
     jQuery("div.log_history").tabs();
     jQuery('.autogrow').autogrow();
     jQuery('#comment').keyup(function() {
@@ -288,7 +306,7 @@ function init_task_form() {
     });
 
     jQuery('#task_attachments a.close-cross').click(function(){
-        if(!confirm(jQuery(this).attr('data-message'))) { return false; }
+        if(!confirm(jQuery(this).attr('data-message'))) {return false;}
         var div=jQuery(this).parent();
         div.fadeOut();
         div.html('<input type="hidden" name="delete_files[]" value="' + div.attr('id').split('-')[1] + '">');
@@ -316,7 +334,7 @@ function init_task_form() {
                       position.val(index+1);
                       todos[index]= {id: jQuery('input#id', element).val(), position: index+1} ;
                   });
-        jQuery.ajax({ url: '/todos/reorder', data: {task_id: jQuery('input#task_id').val(), todos: todos }, type: 'POST' });
+        jQuery.ajax({url: '/todos/reorder', data: {task_id: jQuery('input#task_id').val(), todos: todos}, type: 'POST'});
       }
     });
 
@@ -331,9 +349,9 @@ function init_task_form() {
     jQuery('#snippet ul li').click(function() {
       var id = jQuery(this).attr('id');
       id = id.split('-')[1];
-      jQuery.ajax({ url: '/pages/snippet/'+id, type:'GET', success: function(data) {
+      jQuery.ajax({url: '/pages/snippet/'+id, type:'GET', success: function(data) {
         jQuery('#comment').val(jQuery('#comment').val() + '\n' + data);
-      } });
+      }});
     });
 
     jQuery('#add_milestone img').click(add_milestone_popup);
