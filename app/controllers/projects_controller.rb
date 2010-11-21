@@ -142,6 +142,10 @@ class ProjectsController < ApplicationController
 
   def update
     Money.default_bank = Money::Bank::GoogleCurrency.new
+    Money.add_rate("USD", "VEF", 4.6000)
+    Money.add_rate("VEF", "USD", 1/4.6000)
+    Money.add_rate("EUR", "VEF", 5.0)
+    Money.add_rate("VEF", "EUR", 1/5.0)
     @project = current_user.projects.find(params[:id])
     old_client = @project.customer_id
     old_name = @project.name
