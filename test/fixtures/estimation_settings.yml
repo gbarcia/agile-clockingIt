@@ -1,0 +1,11 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  velocity: 
+  expert_judgment: 
+  planning_poker: 1.5
+
+two:
+  velocity: 
+  expert_judgment: 
+  planning_poker: 1.5

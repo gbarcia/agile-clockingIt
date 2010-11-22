@@ -25,6 +25,9 @@ class ProjectsController < ApplicationController
     @project.company_id = current_user.company_id
 
     if @project.save
+      estimation_settings = EstimationSetting.new
+      estimation_settings.project_id = @project.id
+      estimation_settings.save!
       if params[:copy_project].to_i > 0
         project = current_user.all_projects.find(params[:copy_project])
         project.project_permissions.each do |perm|

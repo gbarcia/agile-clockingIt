@@ -1,0 +1,14 @@
+<fieldset>
+      <label>Project</label><select id="project_id" name="project_id" onchange="reload_estimation_settings(this.value)"><%= options_for_user_projects(params[:project_id]) %> </select>
+    </fieldset>
+<fieldset>
+<legend><%=_ 'Estimation Settings for ' + @project.name %></legend>
+
+<% form_tag :action => 'update', :id => @estimation_setting do %>
+<div id="estimation-form">
+  <%= render :partial => 'form' %>
+  <label>&nbsp;</label>
+  <%= submit_tag _('Save'), :class => 'nolabel' %>
+<% end %>
+</div>
+</fieldset>

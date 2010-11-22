@@ -46,6 +46,8 @@ class WidgetsController < ApplicationController
       sheets_extracted_from_show
     when 12 then
       ev_extracted_from_show
+    when 13 then
+      ev_rc_pv_extracted_from_show
     end
 
     render :update do |page|
@@ -54,7 +56,7 @@ class WidgetsController < ApplicationController
         page.replace_html "content_#{@widget.dom_id}", :partial => 'tasks/task_list', :locals => { :tasks => @items }
       when 1 then
         page.replace_html "content_#{@widget.dom_id}", :partial => 'activities/project_overview'
-      when 12 then
+      when 12..13 then
         page.replace_html "content_#{@widget.dom_id}", :partial => "widgets/widget_#{@widget.widget_type}"
       when 3..7 then
         page.replace_html "content_#{@widget.dom_id}", :partial => "widgets/widget_#{@widget.widget_type}"
@@ -345,7 +347,36 @@ class WidgetsController < ApplicationController
     @mid = (@max.to_i / 2).ceil.to_s
   end
 
-
+  def  ev_rc_pv_extracted_from_show
+    project = Project.find @widget.filter_by.gsub('p', '').to_i
+    iterations = project.milestones
+    values_col =  Array.new
+    @currency = project.currency_iso_code
+    values_ev = ""
+    values_rc = ""
+    values_pc = ""
+    @iterations = ""
+    count = 1
+    iterations.each do |i|
+      values_col << i.get_earned_value
+      values_col << i.get_real_cost
+      values_col << i.get_estimate_cost
+      values_ev += i.get_earned_value > 0 ? (i.get_earned_value).to_s : 0.to_s
+      values_rc += i.get_real_cost > 0 ? (i.get_real_cost).to_s : 0.to_s
+      values_pc += i.get_estimate_cost > 0 ? (i.get_estimate_cost).to_s : 0.to_s
+      if count < iterations.size
+        values_ev += ","
+        values_rc += ","
+        values_pc += ","
+      end
+      @iterations += "|Iter" + count.to_s+ "|"
+      count = count + 1
+    end
+    @values = values_rc + '|' + values_ev + '|' + values_pc
+    @max = Statistics.greather_num(values_col) > 0 ? Statistics.greather_num(values_col).to_s : 1000.to_s
+    @mid = (@max.to_i / 2).ceil.to_s
+    @mid_2 = (@mid.to_i / 2).ceil.to_s
+  end
 
   def burnup_extracted_from_show
     start, step, interval, range, tick = @widget.calculate_start_step_interval_range_tick(tz)

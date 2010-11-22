@@ -619,3 +619,7 @@ function mark_as_default(sender) {
 function reload_roadmap(sender){
     window.location = "/roadmap/index?id=" + sender;
 }
+
+function reload_estimation_settings(sender) {
+    window.location ="/estimation_settings/edit?project_id=" + sender
+}

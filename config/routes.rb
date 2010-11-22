@@ -1,4 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
+  #map.resources :estimation_settings
+
 #  map.resources :roadmap_milestones
 
   map.resources :triggers

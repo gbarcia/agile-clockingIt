@@ -1,0 +1,18 @@
+<p>
+  <b>Velocity:</b>
+  <%=h @estimation_setting.velocity %>
+</p>
+
+<p>
+  <b>Expert judgment:</b>
+  <%=h @estimation_setting.expert_judgment %>
+</p>
+
+<p>
+  <b>Planning poker:</b>
+  <%=h @estimation_setting.planning_poker %>
+</p>
+
+
+<%= link_to 'Edit', edit_estimation_setting_path(@estimation_setting) %> |
+<%= link_to 'Back', estimation_settings_path %>

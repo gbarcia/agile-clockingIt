@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101118210458) do
+ActiveRecord::Schema.define(:version => 20101122165650) do
 
   create_table "access_levels", :force => true do |t|
     t.string   "name"
@@ -134,6 +134,15 @@ ActiveRecord::Schema.define(:version => 20101118210458) do
 
   add_index "emails", ["company_id"], :name => "fk_emails_company_id"
   add_index "emails", ["user_id"], :name => "fk_emails_user_id"
+
+  create_table "estimation_settings", :force => true do |t|
+    t.float    "velocity",        :default => 30.0
+    t.float    "expert_judgment", :default => 20.0
+    t.float    "planning_poker",  :default => 50.0
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "event_logs", :force => true do |t|
     t.integer  "company_id"

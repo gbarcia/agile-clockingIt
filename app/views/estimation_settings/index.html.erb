@@ -1,0 +1,24 @@
+<h1>Listing estimation_settings</h1>
+
+<table>
+  <tr>
+    <th>Velocity</th>
+    <th>Expert judgment</th>
+    <th>Planning poker</th>
+  </tr>
+
+<% @estimation_settings.each do |estimation_setting| %>
+  <tr>
+    <td><%=h estimation_setting.velocity %></td>
+    <td><%=h estimation_setting.expert_judgment %></td>
+    <td><%=h estimation_setting.planning_poker %></td>
+    <td><%= link_to 'Show', estimation_setting %></td>
+    <td><%= link_to 'Edit', edit_estimation_setting_path(estimation_setting) %></td>
+    <td><%= link_to 'Destroy', estimation_setting, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New estimation_setting', new_estimation_setting_path %>
