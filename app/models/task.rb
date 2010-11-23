@@ -13,6 +13,8 @@ class Task < AbstractTask
 
   has_one       :ical_entry
 
+  has_one       :planning_poker_game, :dependent => :destroy
+
   validate      :validate_limit_of_points_business_value
 
   validate      :validate_limit_of_points_user_stories

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101122165650) do
+ActiveRecord::Schema.define(:version => 20101123174342) do
 
   create_table "access_levels", :force => true do |t|
     t.string   "name"
@@ -302,6 +302,22 @@ ActiveRecord::Schema.define(:version => 20101122165650) do
   add_index "pages", ["company_id"], :name => "pages_company_id_index"
   add_index "pages", ["notable_id", "notable_type"], :name => "index_pages_on_notable_id_and_notable_type"
   add_index "pages", ["user_id"], :name => "fk_pages_user_id"
+
+  create_table "planning_poker_games", :force => true do |t|
+    t.datetime "due_at"
+    t.integer  "task_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "planning_poker_votes", :force => true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.float    "vote"
+    t.datetime "vote_date"
+    t.integer  "user_id"
+    t.integer  "planning_poker_game_id"
+  end
 
   create_table "posts", :force => true do |t|
     t.integer  "user_id"
