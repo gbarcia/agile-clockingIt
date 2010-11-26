@@ -4,3 +4,17 @@
 <% @project_users.each do |u| %>
 <li><%= u.name %> </li>
 <%end%>
+
+<h1>Usuarios en juego</h1>
+<% @actual_users.each do |us| %>
+<li><%= us.name %> </li>
+<%end%>
+
+<h1>Form</h1>
+<form method="POST" action="/planning_poker/update_config">
+  <input type="text" name="id_users_to_play[]"></input>
+  <input type="text" name="id_users_to_play[]"></input>
+  <input type="text" name="id_users_to_play[]"></input>
+  <input type="hidden" name="planning_poker_id" value="2"></input>
+  <input type="submit" value="enviar"></input>
+</form>
