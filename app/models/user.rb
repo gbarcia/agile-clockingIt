@@ -211,6 +211,10 @@ class User < ActiveRecord::Base
     (@perm_cache[project.id][perm] || false)
   end
 
+  def is_leader_for?(project)
+    return self.id == project.leader_id
+  end
+
   def can_all?(projects, perm)
     projects.each do |p|
       return false unless self.can?(p, perm)
