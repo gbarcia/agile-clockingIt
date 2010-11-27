@@ -14,13 +14,16 @@ class PlanningPokerController < ApplicationController
     @actual_users = actual_users
     project_global_users = game.task.project.users
     @project_users = project_global_users - actual_users
+    @user_story = game.task
   end
 
   def update_config
     planning_poker_game_id = params[:planning_poker_id]
     id_users_to_play = Array.new
-    params[:id_users_to_play].each do |id_user|
-      id_users_to_play << id_user.to_i
+    if !params[:id_users_to_play].nil?
+      params[:id_users_to_play].each do |id_user|
+        id_users_to_play << id_user.to_i
+      end
     end
     game = PlanningPokerGame.find planning_poker_game_id
     actual_users_id = users_ids_for_game(game.planning_poker_votes)
@@ -28,7 +31,7 @@ class PlanningPokerController < ApplicationController
     remove_users_to_game(user_id_list)
     update_users_to_game(id_users_to_play, game.id)
     ppoker_game = PlanningPokerGame.find planning_poker_game_id
-    ppoker_game.due_at = params[:due_at]
+    ppoker_game.due_at = Time.parse params[:due_at]
     ppoker_game.save!
   end
 
@@ -50,7 +53,7 @@ class PlanningPokerController < ApplicationController
       ppvote.user_id = user_id
       ppvote.planning_poker_game_id = game_id
       if !user_exist_for_game(game_id, user_id)
-         ppvote.save!
+        ppvote.save!
       end
     end
   end

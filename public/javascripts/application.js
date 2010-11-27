@@ -623,3 +623,7 @@ function reload_roadmap(sender){
 function reload_estimation_settings(sender) {
     window.location ="/estimation_settings/edit?project_id=" + sender
 }
+
+function copyDateTime(dateTime){
+    jQuery("#copiedDateTime").val(dateTime)
+}
