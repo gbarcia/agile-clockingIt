@@ -11,7 +11,16 @@
 <label for="milestone_user_id"><%=_ 'Owner' %></label><%= select 'milestone', 'user_id', User.find(:all, :order => 'name',
     :conditions => ['company_id = ?', current_user.company.id] ).collect {|c| [ c.name, c.id ] }, :include_blank => true  %><br/>
 
-<label for="milestone_description"><%=_ 'Description' %></label><%= text_area 'milestone', 'description', :rows => 10  %><br/>
+    <label for="color-select"><%=_ 'Roadmap Color' %></label>
+    <select id="color-select" name="milestone[color]">
+      <% selected_color = @milestone ? @milestone.color : "blue"
+      %>
+      <option value="blue" <%= color_is_selected?(selected_color, "blue")%>><%=_ 'Blue' %></option>
+      <option value="red" <%= color_is_selected?(selected_color, "red")%>><%=_ 'Red' %></option>
+      <option value="yellow" <%= color_is_selected?(selected_color, "yellow")%>><%=_ 'Yellow' %></option>
+      <option value="green" <%= color_is_selected?(selected_color, "green")%>><%=_ 'Green' %></option>
+    </select>
+    <label for="milestone_description"><%=_ 'Description' %></label><%= text_area 'milestone', 'description', :rows => 10  %><br/>
 
 <%= hidden_field_tag "milestone[project_id]", @milestone.project_id %>
 

@@ -5,7 +5,6 @@
 
 <label for="roadmap_milestone_title"><%=_ 'Title' %></label><%= text_field 'roadmap_milestone', 'title'  %><br/>
 <label for="roadmap_milestone_date"><%=_  'Date' %></label><%= text_field 'roadmap_milestone', 'date', :size => 12, :class=>:datefield, :value=> formatted_date_for_current_user(@roadmap_milestone.date)  %><br/>
-<label for="roadmap_milestone_color_code"><%=_ 'Color' %></label><%= text_field 'roadmap_milestone', 'color_code'  %><br/>
 <label for="roadmap_milestone_description"><%=_ 'Description' %></label><%= text_area 'roadmap_milestone', 'description', :rows => 10  %><br/>
 
 <%= hidden_field_tag "roadmap_milestone[project_id]", @roadmap_milestone.project_id %>
