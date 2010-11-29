@@ -9,6 +9,7 @@ class PlanningPokerController < ApplicationController
       game = PlanningPokerGame.find_by_task_id params[:us_id]
     end
     @game_config = game
+    @game_config.due_at = tz.utc_to_local(@game_config.due_at) unless @game_config.due_at.nil?
     actual_votes = game.planning_poker_votes
     actual_users = users_for_game(actual_votes)
     @actual_users = actual_users
@@ -31,8 +32,9 @@ class PlanningPokerController < ApplicationController
     remove_users_to_game(user_id_list)
     update_users_to_game(id_users_to_play, game.id)
     ppoker_game = PlanningPokerGame.find planning_poker_game_id
-    ppoker_game.due_at = Time.parse params[:due_at]
+    ppoker_game.due_at = tz.local_to_utc Time.parse params[:due_at] if params[:due_at]
     ppoker_game.save!
+    send_invitations_mail(id_users_to_play, game)
   end
 
   def table
@@ -42,6 +44,14 @@ class PlanningPokerController < ApplicationController
   end
 
   private
+
+  def send_invitations_mail (id_users_to_play, game)
+    task = Task.find game.task_id
+    id_users_to_play.each do |id_user|
+      user = User.find id_user
+      Notifications::deliver_planning_poker_invitation(game, task, user)
+    end
+  end
 
   def remove_users_to_game (user_ids_list)
     PlanningPokerVote.destroy_all(['user_id in(?)', user_ids_list.join(',')])

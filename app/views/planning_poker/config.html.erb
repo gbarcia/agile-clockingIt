@@ -36,7 +36,7 @@
   </tr>
   <tr>
     <td>
-      Due at: <input type="text" name="example1" id="example1" value="" class="" onchange="copyDateTime(this.value);"/>
+      Due at: <input type="text" name="example1" id="example1" value="<%=@game_config.due_at %>" class="" onchange="copyDateTime(this.value);"/>
       <script type="text/javascript">
         jQuery('#example1').datetimepicker();
       </script>
@@ -74,7 +74,7 @@
             </ul>
           </fieldset>
           <input type="hidden" name="planning_poker_id" value="<%= @game_config.id%>"></input>
-          <input id="copiedDateTime" type="hidden" name="due_at" value=""></input>
+          <input id="copiedDateTime" type="hidden" name="due_at" value="<%=@game_config.due_at%>"></input>
           <div style="text-align: right"><input type="submit" value="Save and Play"></input></div>
         </form>
       </div>

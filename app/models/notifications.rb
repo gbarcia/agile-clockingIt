@@ -95,4 +95,13 @@ class Notifications < ActionMailer::Base
     @from       = "#{$CONFIG[:prefix]} Notification <noreply@#{$CONFIG[:email_domain]}>"
   end
 
+  def planning_poker_invitation(game, task, user)
+    @body    = {:game => game, :task => task, :user => user}
+    @subject = "#{$CONFIG[:prefix]} #{_('PlanningPoker')} #{'You have a invitation for play'}"
+    @recipients = [user.email]
+    @sent_on = Time.now
+    @reply_to = user.email
+    @from = "#{$CONFIG[:prefix]} Notification <noreply@#{$CONFIG[:email_domain]}>"
+  end
+
 end
