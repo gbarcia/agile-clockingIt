@@ -92,6 +92,18 @@ class Milestone < ActiveRecord::Base
     return total_points
   end
 
+  #return total points due per iteration
+  def get_team_velocity
+    total_points = 0
+    tasks = self.tasks
+    tasks.each do |task|
+      if task.closed?
+        total_points += task.total_points
+      end
+    end
+    return total_points
+  end
+
   # get the real cost of iteration by adding user stories worked minutos per iteration
   def get_real_cost
     if self.id
@@ -252,7 +264,7 @@ class Milestone < ActiveRecord::Base
 
   private
   def validate_dates
-     errors.add(:init_date, "Must be before due date ") if self.due_at < self.init_date
+    errors.add(:init_date, "Must be before due date ") if self.due_at < self.init_date
   end
 end
 

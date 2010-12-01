@@ -375,7 +375,7 @@ class TasksController < ApplicationController
     iterations_before = project.get_iterations_before(iteration.init_date)
     total_points = Array.new
     iterations_before.each do |iteration_s|
-      total_points << iteration_s.total_points
+      total_points << iteration_s.get_team_velocity
     end
     if total_points.size > 1
     desviation_velocity_points = Statistics.standard_desviation(total_points)
