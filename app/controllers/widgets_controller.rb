@@ -344,7 +344,12 @@ class WidgetsController < ApplicationController
       count = count + 1
     end
     @max = Statistics.greather_num(values_col) > 0 ? Statistics.greather_num(values_col).to_s : 1000.to_s
+    acum = @max.to_i / 6
     @mid = (@max.to_i / 2).ceil.to_s
+    @mid_1 = acum.to_s
+    @mid_2 = (@mid_1.to_i + acum).to_s
+    @mid_4 = (@mid.to_i + acum).to_s
+    @mid_5 = (@mid_4.to_i + acum).to_s
   end
 
   def  ev_rc_pv_extracted_from_show
@@ -358,6 +363,7 @@ class WidgetsController < ApplicationController
     @iterations = ""
     count = 1
     iterations.each do |i|
+      if i.get_estimate_cost > 0
       values_col << i.get_earned_value
       values_col << i.get_real_cost
       values_col << i.get_estimate_cost
@@ -371,11 +377,16 @@ class WidgetsController < ApplicationController
       end
       @iterations += "|Iter" + count.to_s+ "|"
       count = count + 1
+      end
     end
-    @values = values_rc + '|' + values_ev + '|' + values_pc
+    @values = values_rc.chop + '|' + values_ev.chop + '|' + values_pc.chop
     @max = Statistics.greather_num(values_col) > 0 ? Statistics.greather_num(values_col).to_s : 1000.to_s
+    acum = @max.to_i / 6
     @mid = (@max.to_i / 2).ceil.to_s
-    @mid_2 = (@mid.to_i / 2).ceil.to_s
+    @mid_1 = acum.to_s
+    @mid_2 = (@mid_1.to_i + acum).to_s
+    @mid_4 = (@mid.to_i + acum).to_s
+    @mid_5 = (@mid_4.to_i + acum).to_s
   end
 
   def burnup_extracted_from_show
