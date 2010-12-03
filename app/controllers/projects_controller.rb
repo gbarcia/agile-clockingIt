@@ -252,7 +252,104 @@ class ProjectsController < ApplicationController
       :include => [ :customer, :milestones]);
     @completed_projects = current_user.completed_projects.find(:all)
   end
+
+  def full_report
+    @project = Project.find params[:id_prj].to_i
+    iterations = @project.milestones
+
+    #Earned Value report
+    values_col_ev =  Array.new
+    @currency_ev = @project.currency_iso_code
+    @values_ev = "";
+    @iterations_ev = "";
+    count = 1
+    iterations.each do |i|
+      values_col_ev << i.get_earned_value
+      @values_ev += i.get_earned_value > 0 ? (i.get_earned_value).to_s : 0.to_s
+      if count < iterations.size
+        @values_ev += ","
+      end
+      @iterations_ev += "|Iter" + count.to_s+ "|"
+      count = count + 1
+    end
+    @max_ev = Statistics.greather_num(values_col_ev) > 0 ? Statistics.greather_num(values_col_ev).to_s : 1000.to_s
+    acum = @max_ev.to_i / 6
+    @mid_ev = (@max_ev.to_i / 2).ceil.to_s
+    @mid_1_ev = acum.to_s
+    @mid_2_ev = (@mid_1_ev.to_i + acum).to_s
+    @mid_4_ev = (@mid_ev.to_i + acum).to_s
+    @mid_5_ev = (@mid_4_ev.to_i + acum).to_s
+    #end earned value report
+
+    #ev vs pv report
+    values_col_evpv =  Array.new
+    @currency_evpv = @project.currency_iso_code
+    values_ev = ""
+    values_rc = ""
+    values_pc = ""
+    @iterations_evpv = ""
+    count = 1
+    iterations.each do |i|
+      if i.get_estimate_cost > 0
+        values_col_evpv << i.get_earned_value
+        values_col_evpv << i.get_real_cost
+        values_col_evpv << i.get_estimate_cost
+        values_ev += i.get_earned_value > 0 ? (i.get_earned_value).to_s : 0.to_s
+        values_rc += i.get_real_cost > 0 ? (i.get_real_cost).to_s : 0.to_s
+        values_pc += i.get_estimate_cost > 0 ? (i.get_estimate_cost).to_s : 0.to_s
+        if count < iterations.size
+          values_ev += ","
+          values_rc += ","
+          values_pc += ","
+        end
+        @iterations_evpv += "|Iter" + count.to_s+ "|"
+        count = count + 1
+      end
+    end
+    @values_evpv = values_rc.chop + '|' + values_ev.chop + '|' + values_pc.chop
+    @max_evpv = Statistics.greather_num(values_col_evpv) > 0 ? Statistics.greather_num(values_col_evpv).to_s : 1000.to_s
+    acum = @max_evpv.to_i / 6
+    @mid_evpv = (@max_evpv.to_i / 2).ceil.to_s
+    @mid_1_evpv = acum.to_s
+    @mid_2_evpv = (@mid_1_evpv.to_i + acum).to_s
+    @mid_4_evpv = (@mid_evpv.to_i + acum).to_s
+    @mid_5_evpv = (@mid_4_evpv.to_i + acum).to_s
+    #end ev vs pv report
+
+    #team velocity report
+    values_col_v =  Array.new
+    values_velocity = ""
+    values_target = ""
+    @iterations_v = ""
+    count = 1
+    iterations.each do |i|
+      if i.get_estimate_cost > 0
+        values_col_v << i.get_team_velocity
+        values_col_v << i.total_points
+        values_velocity += i.get_team_velocity > 0 ? (i.get_team_velocity).to_s : 0.to_s
+        values_target += i.total_points > 0 ? (i.total_points).to_s : 0.to_s
+        if count < iterations.size
+          values_velocity += ","
+          values_target += ","
+        end
+        @iterations_v += "Iter" + count.to_s+ "|"
+        count = count + 1
+      end
+    end
+    @values_v = values_velocity.chop + '|' + values_target.chop
+    @max_v = Statistics.greather_num(values_col_v) > 0 ? Statistics.greather_num(values_col_v).to_s : 1000.to_s
+    acum = @max_v.to_i / 6
+    @mid_v = (@max_v.to_i / 2).ceil.to_s
+    @mid_1_v = acum.to_s
+    @mid_2_v = (@mid_1_v.to_i + acum).to_s
+    @mid_4_v = (@mid_v.to_i + acum).to_s
+    @mid_5_v = (@mid_4_v.to_i + acum).to_s
+    #end team velocity report
+
+    render :layout => false
+  end
   private
+
   def protect_admin_area
     project = current_user.all_projects.find_by_id(params[:id])
     if current_user.admin? or (project && project.owner == current_user)

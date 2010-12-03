@@ -67,6 +67,12 @@
     </td>
   </tr>
   <%end%>
+  <tr>
+    <td>
+    <%= link_to 'Full Report', '/projects/full_report?id_prj=' + @project.id.to_s, :popup => ['Report','height=600,width=800,resizable=yes,scrollbars=yes'] %>
+    </td>
+  </tr>
+  <p></p>
   <% if current_user.can?( @project, 'grant' ) %>
   <tr>
     <td valign="top">

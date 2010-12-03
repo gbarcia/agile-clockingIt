@@ -55,12 +55,41 @@ class Project < ActiveRecord::Base
     tasks.sum('worked_minutes - duration', :conditions => "worked_minutes > duration").to_i
   end
 
+  def percent_desviation
+    total_points = 0
+    closed_points = 0
+    self.milestones.each do |i|
+      if i.get_real_cost > 0
+        total_points += i.total_points
+        closed_points += i.total_points_execute
+      end
+    end
+    total = 100.to_f - ((closed_points.to_f/total_points.to_f) * 100)
+    return (total * 10**2).round.to_f / 10**2 #round two decimals
+  end
+
   def total_tasks_count
     if self.total_tasks.nil?
       self.total_tasks = tasks.count
       self.save
     end
     total_tasks
+  end
+
+  def end_date_estimate
+    end_date = self.created_at
+    self.milestones.each do |i|
+      end_date = i.due_date > end_date ? i.due_date : end_date
+    end
+    return end_date
+  end
+
+  def variaton_schedule
+    return (self.get_earned_value - self.get_estimate_cost)
+  end
+
+  def variation_cost
+    return (self.get_earned_value - self.get_real_cost)
   end
 
   def open_tasks_count
@@ -158,7 +187,7 @@ class Project < ActiveRecord::Base
     return (cb * 10**1).round.to_f / 10**1 #round one decimals
   end
 
-   # get the balance of estimate cost and real cost in percent in project
+  # get the balance of estimate cost and real cost in percent in project
   def get_balance
     balance = (get_benefist/get_estimate_cost) * 100 rescue 0
     if balance.nan? || balance.infinite?
@@ -181,7 +210,7 @@ class Project < ActiveRecord::Base
     return word + balance_amount.to_i.to_s
   end
 
-   #return the roi of the project
+  #return the roi of the project
   def get_roi
     estimate_cost = get_estimate_cost
     real_cost = get_real_cost
@@ -203,7 +232,7 @@ class Project < ActiveRecord::Base
     return (npv * 10**2).round.to_f / 10**2 #round two decimals
   end
 
-   # return a cost program index of project
+  # return a cost program index of project
   def get_cpi
     earned_value = get_earned_value
     real_cost = get_real_cost

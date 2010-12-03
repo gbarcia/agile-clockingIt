@@ -1,0 +1,185 @@
+<%
+  total_count = @project.total_tasks_count * 1.0
+  if total_count >= 1.0
+    done_count = total_count - @project.open_tasks_count
+    done_percent = (done_count/total_count) * 100.0
+  end
+%>
+<%= stylesheet_link_tag "print", { :media => "print" } %>
+<%= stylesheet_link_tag("application") %>
+<style type="text/css" media="print">
+  table {font-size: 12px}
+  #print {display: none}
+</style>
+<style type="text/css">
+  table {font-size: 12px}
+</style>
+<%= image_tag("logo.gif", :alt => "logo" ) %>
+<h1>Reporte para <%= @project.name%> </h1>
+<div id="print">
+<%=link_to_function("Imprimir", "javascript:print()")%>
+</div>
+<hr  width="90%" size="3" align="left"noshade />
+<h2>1. Aspectos Generales</h2>
+<h3>1.1 Calendario</h3>
+<p>Porcentaje realizado:<%= done_percent.ceil.to_s + "%" %> </p>
+<p>Iteraciones por ejecutar:<%= @project.open_milestones_count.to_s + " / " + @project.total_milestones_count.to_s  %> </p>
+<p>Historias de usuario por realizar:<%= @project.open_tasks_count.to_s + " / " + @project.total_tasks_count.to_s  %></p>
+<p>Fecha estimada de culminaci&oacute;n:<%= @project.end_date_estimate.strftime('%d/%m/%G') %> </p>
+<p>Variaci&oacute;n en agenda:<%= " " + @project.variaton_schedule.to_s + " " + @project.currency_iso_code %> </p>
+<p>Desviaci&oacute;n en agenda:<%= @project.percent_desviation.to_s + " %"%> </p>
+<h3>1.2 Costos</h3>
+<p>Presupuesto estimado:<%= @project.get_estimate_cost.to_s + " " + @project.currency_iso_code%> </p>
+<p>Presupuesto gastado: <%= @project.get_real_cost.to_s + " " + @project.currency_iso_code%></p>
+<p>Presupuesto trabajado: <%=@project.get_earned_value.to_s + " " + @project.currency_iso_code%></p>
+<p>Costo/Beneficio: <%=  @project.get_cost_benefis_ratio.to_s + ":1" %></p>
+<p>Retorno de Inversi&oacute;n: <%=  @project.get_roi.to_s + " %" %></p>
+<p>Variaci&oacute;n en costos: <%=  @project.variation_cost.to_s + " " + @project.currency_iso_code %></p>
+<h2>2. Detalles por Iteraci&oacute;n</h2>
+<div>
+  <table class="content" id="finance_table" width="100%" style="margin-left:0;margin-right:0;">
+  <tr>
+    <th><%=_ 'Iterations' %></th>
+    <th><%=_ 'Estimate Cost' %></th>
+    <th><%=_ "Real Cost" %></th>
+    <th><%=_ 'Balance' %></th>
+    <th><%=_ "Benefist" %></th>
+    <th><%=_ 'B/CR' %></th>
+    <th><%=_ 'NPV' %></th>
+    <th><%=_ 'EV' %></th>
+    <th><%=_ 'CPI' %></th>
+    <th><%=_ 'SPI' %></th>
+    <th><%=_ 'ROI' %></th>
+  </tr>
+
+  <% count = 1  %>
+  <% @project.milestones.each do |iteration| %>
+    <% if count % 2 == 0 %>
+      <tr id="add_user" class="row_stripe" style="text-align: right">
+      <% else %>
+      <tr id="add_user" style="text-align: right">
+      <% end %>
+      <td style="text-align: center">
+        <%= 'Iteration ' + count.to_s %>
+      </td>
+      <td>
+        <%= iteration.get_estimate_cost %>
+      </td>
+      <td>
+        <%= iteration.get_real_cost %>
+      </td>
+      <td>
+        <%= iteration.get_balance_presentation + " %" %>
+      </td>
+      <td>
+        <%= iteration.get_benefist %>
+      </td>
+      <td>
+        <%= iteration.get_ratio_cost_benefist.to_s + ":1" %>
+      </td>
+      <td>
+        <%= iteration.get_npv%>
+      </td>
+      <td>
+        <%= iteration.get_earned_value %>
+      </td>
+      <td>
+        <%= iteration.get_cpi %>
+      </td>
+      <td>
+        <%= iteration.get_spi %>
+      </td>
+      <td>
+        <%= iteration.get_roi.to_s + " %" %>
+      </td>
+    </tr>
+    <%count = count + 1%>
+  <% end %>
+  <tr style="text-align: right" class="row_total">
+    <td style="text-align: center">
+      <%= 'Total' %>
+    </td>
+    <td>
+      <%= @project.get_estimate_cost %>
+    </td>
+    <td>
+      <%= @project.get_real_cost %>
+    </td>
+    <td>
+      <%= @project.get_balance_presentation + ' %' %>
+    </td>
+    <td>
+      <%= @project.get_benefist %>
+    </td>
+    <td>
+      <%= @project.get_cost_benefis_ratio.to_s + ':1' %>
+    </td>
+    <td>
+      <%= @project.get_npv %>
+    </td>
+    <td>
+      <%= @project.get_earned_value %>
+    </td>
+    <td>
+      <%= @project.get_cpi %>
+    </td>
+    <td>
+      <%= @project.get_spi %>
+    </td>
+    <td>
+      <%= @project.get_roi.to_s + ' %' %>
+    </td>
+  </tr>
+</table>
+</div>
+<h2>3. Gr&aacute;ficos</h2>
+<h3>3.1 Valor Ganado</h3>
+<div>
+  <div style="padding-top: 10px"></div>
+<img src="<%=  ("http://chart.apis.google.com/chart?
+chxl=0:" +
+@iterations_ev +
+"1:|0|"+ @mid_1_ev +"|" + @mid_2_ev + "|" +@mid_ev + "|"+ @mid_4_ev + "|" + @mid_5_ev + "|" + @max_ev +
+"&chxr=0,0,1|0,0,1&chxt=x,y&chs=400x200
+&cht=lc&chco=3399CC&chds=0," + @max_ev +
+"&chd=t:" +
+@values_ev +
+"&chdl=" +
+@currency_ev +
+"&chg=25,50
+&chls=2,4,0") %>" width="400" height="200" alt="" />
+</div>
+<h3>3.2 Valor ganado vs Valor planeado</h3>
+<div>
+  <div style="padding-top: 10px"></div>
+<img src="<%=  ("http://chart.apis.google.com/chart?
+chxl=0:|0|" + @mid_1_evpv +"|" + @mid_2_evpv + "|" +@mid_evpv + "|"+ @mid_4_evpv + "|" + @mid_5_evpv + "|" + @max_evpv + "|1:" +
+@iterations_evpv +
+"&chxr=0,5,100
+&chxs=0,676767,11.5,0,lt,676767|1,676767,11.5,0,lt,676767
+&chxt=y,x
+&chs=420x200
+&cht=ls
+&chco=DA3B15,008000,4582E7
+&chds=0," + @max_evpv + ",0,"+ @max_evpv + ",0," + @max_evpv +
+"&chd=t:" + @values_evpv +
+"&chdl=RC(" + @currency_evpv + ")|EV("+ @currency_evpv + ")|PV(" + @currency_evpv + ")&chg=16,16,5,0
+&chls=2|2|2")%>" width="420" height="200" alt="" />
+</div>
+<h3>3.3 Velocidad del equipo</h3>
+<div>
+    <div style="padding-top: 10px"></div>
+<img src="<%=  ("http://chart.apis.google.com/chart?
+chxl=0:|" + @iterations_v + "1:|0|" + @mid_1_v +"|" + @mid_2_v + "|" +@mid_v + "|"+ @mid_4_v + "|" + @mid_5_v + "|" + @max_v +
+"&chxr=0,-15,70|1,-10,95
+&chxs=0,676767,8.5,-1,lt,676767|1,676767,11.5,0,lt,676767&chxt=x,y
+&chbh=a,5,19
+&chs=420x240
+&cht=bvg
+&chco=4D89F9,AA0033
+&chds=0," + @max_v + ",0," + @max_v +
+"&chd=t1:" + @values_v +
+"&chdl=Velocity|Target&chg=-1,-1,0,0
+&chma=|10
+&chm=B,C6D9FD,0,0,0,-1|D,041541,0,-0.1,3|D,CD2020,1,-0.1,3,1")%>" width="420" height="200" alt="" />
+</div>
