@@ -1,3 +1,4 @@
+require 'juggernaut'
 class PlanningPokerController < ApplicationController
   
   def config
@@ -41,6 +42,10 @@ class PlanningPokerController < ApplicationController
   end
 
   def historial
+  end
+
+  def send_message
+    Juggernaut.publish(params[:channel], current_user.name + ": " + params[:message])
   end
 
   private

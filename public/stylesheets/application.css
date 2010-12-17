@@ -2912,3 +2912,31 @@ select#chngroup {
 .row_total{
     background-color: #e5eaef;
 }
+
+/*Planning Poker Layout*/
+#planning-poker-table #wrapper{
+    display: inline-block;
+    margin-right: 200px;
+    position: relative;
+    vertical-align: bottom;
+    width: 800px;
+}
+#planning-poker-table #main{
+    border-right: 1px solid #ccc;
+    float: left;
+}
+#planning-poker-table #sidebar{
+    border-left: 1px solid #ccc;
+    float: left;
+    margin-right: -200px;
+    margin-left: -1px;
+    position: relative;
+    width: 200px;
+}
+#planning-poker-table .panel{
+    
+}
+#planning-poker-table #chat-messages{
+    height: 200px;
+    overflow: scroll;
+}

@@ -45,6 +45,10 @@
     <%= stylesheet_link_tag "beast" if ['forums', 'posts', 'topics'].include? controller.controller_name %>
     <%= stylesheet_link_tag "print", { :media => "print" } %>
     <%= auto_discovery_link_tag(:rss, {:controller => 'feeds', :action => 'rss', :id => current_user.uuid }) %>
+    <script src="<%=("http://"+CONFIG[:server][:production]+":8080/application.js")%>" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" charset="utf-8">
+      var jug = new Juggernaut("<%=(CONFIG[:server][:production])%>");
+    </script>
 
     <title><%= $CONFIG[:productName] %></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>

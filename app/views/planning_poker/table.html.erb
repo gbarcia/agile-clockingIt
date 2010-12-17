@@ -1,2 +1,58 @@
-<h1>PlanningPoker#table</h1>
-<p>Find me in app/views/planning_poker/table.html.erb</p>
+<div id="planning-poker-table">
+
+  <div id="info" class="panel">HU NAME</div>
+  <div id="wrapper">
+    <div id="main">
+      <div id="votes" class="panel">
+        Votes
+      </div>
+      <div id="vote-picker" class="panel">
+        Vote-picker
+      </div>
+      <div id="vote-result" class="panel">
+        Vote-results
+      </div>
+      <div id="chat" class="panel">
+        <div id="chat-messages"></div>
+        <script type="text/javascript" charset="utf-8">
+          var chatElement = document.getElementById("chat-messages");
+          chatElement.innerHTML = "";
+          var chat = function(data){
+            var messages = chatElement.innerHTML;
+            chatElement.innerHTML = messages + ("<div class='message'>" + data + "</div>\n");
+          }
+          jug.on("connect", function(){chat("<%=current_user.name%> Connected")});
+          jug.on("disconnect", function(){chat("<%=current_user.name%> Disconnected")});
+          jug.on("reconnect", function(){chat("Reconnecting")});
+
+          chat("Subscribing to channel1");
+
+          jug.subscribe("channel1", function(data){
+            chat(data);
+          });
+
+          window.jug = jug;
+        </script>
+        <% form_remote_tag(:url => {:action => 'send_message'}, :success => "document.getElementById('message').value = ''") do %>
+          <%= text_field_tag "message", '', :size => '50' %>
+          <input type="hidden" value="channel1" name="channel"></input>
+          <input type="submit" value="Send Message" name="commit"></input>
+        <%end%>
+      </div>
+    </div>
+    <div id="sidebar">
+      <div id="sidebar-inner" class="panel">
+        fdhbvebvitborei grnbifgjnbviognib
+        fekvwbwfhivnwrih brwbiwrbirnbwornb
+        efwbufugrwugbnwgb nrnbrotnbotrwnin
+        fdhbvebvitborei grnbifgjnbviognib
+        fekvwbwfhivnwrih brwbiwrbirnbwornb
+        efwbufugrwugbnwgb nrnbrotnbotrwnin
+        fdhbvebvitborei grnbifgjnbviognib
+        fekvwbwfhivnwrih brwbiwrbirnbwornb
+        efwbufugrwu
+      </div>
+    </div>
+  </div>
+
+</div>
