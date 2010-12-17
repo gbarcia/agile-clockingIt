@@ -50,6 +50,8 @@ class WidgetsController < ApplicationController
       ev_rc_pv_extracted_from_show
     when 14 then
       velocity_from_show
+    when 15 then
+      user_stories_type_from_show
     end
 
     render :update do |page|
@@ -58,7 +60,7 @@ class WidgetsController < ApplicationController
         page.replace_html "content_#{@widget.dom_id}", :partial => 'tasks/task_list', :locals => { :tasks => @items }
       when 1 then
         page.replace_html "content_#{@widget.dom_id}", :partial => 'activities/project_overview'
-      when 12..14 then
+      when 12..15 then
         page.replace_html "content_#{@widget.dom_id}", :partial => "widgets/widget_#{@widget.widget_type}"
       when 3..7 then
         page.replace_html "content_#{@widget.dom_id}", :partial => "widgets/widget_#{@widget.widget_type}"
@@ -421,6 +423,23 @@ class WidgetsController < ApplicationController
     @mid_2 = (@mid_1.to_i + acum).to_s
     @mid_4 = (@mid.to_i + acum).to_s
     @mid_5 = (@mid_4.to_i + acum).to_s
+  end
+
+  def user_stories_type_from_show
+    project = Project.find @widget.filter_by.gsub('p', '').to_i
+    values_col = Array.new
+    @task_type = project.tasks.find_all_by_type("Task").count
+    values_col << @task_type
+    @epic_type =  project.tasks.find_all_by_type("Epic").count
+    values_col << @epic_type
+    @improvement_type =  project.tasks.find_all_by_type("Improvement").count
+    values_col << @improvement_type
+    @nf_type =  project.tasks.find_all_by_type("New Feature").count
+    values_col << @nf_type
+    @defect_type =  project.tasks.find_all_by_type("New Feature").count
+    values_col << @defect_type
+    @max = Statistics.greather_num(values_col) > 0 ? Statistics.greather_num(values_col).to_s : 100.to_s
+    @mid = (@max.to_i / 2).ceil.to_s
   end
 
   def burnup_extracted_from_show

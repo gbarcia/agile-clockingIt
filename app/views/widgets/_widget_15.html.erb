@@ -1,0 +1,13 @@
+<center>
+  <div style="padding-top: 10px"></div>
+  <img src="<%=  ("http://chart.apis.google.com/chart?
+chxl=0:|Iniciales|Epicas|Mejoras|Nuevas|Defectos|1:|0|" + @mid + "|" + @max +"&chxt=x,y
+&chbh=36,4,24
+&chs=420x200
+&cht=bvg
+&chco=76A4FB
+&chds=0," + @max +
+"&chd=t:" + @task_type.to_s + "," + @epic_type.to_s + "," + @improvement_type.to_s + "," + @nf_type.to_s + "," +@defect_type.to_s +
+"&chdl=HU
+&chg=20,50")%>" width="420" height="200" alt="" />
+</center>
