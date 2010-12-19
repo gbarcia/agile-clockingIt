@@ -38,17 +38,40 @@ class PlanningPokerController < ApplicationController
     send_invitations_mail(id_users_to_play, game)
   end
 
+  @@connected_lists = Hash.new;
+
   def table
+    planning_poker_id = params[:id]
+    @game = PlanningPokerGame.find planning_poker_id
+    player_id_list = users_ids_for_game(@game.planning_poker_votes)
+    @player_list = get_player_list player_id_list
+    @user_id = current_user.id
+    @@connected_lists = {planning_poker_id => {}}
+    @connected_list = @@connected_lists[planning_poker_id.to_i]
   end
 
   def historial
   end
 
   def send_message
-    Juggernaut.publish(params[:channel], current_user.name + ": " + params[:message])
+    Juggernaut.publish(params[:channel], current_user.name + ": " + params[:current_message])
+    render :nothing => true
+  end
+
+  def send_status
+    Juggernaut.publish(params[:channel], params[:current_message])
+    render :nothing => true
   end
 
   private
+
+  def get_player_list (player_id_list)
+    player_list = Array.new
+    player_id_list.each do |player_id|
+      player_list << User.find(player_id)
+    end
+    return player_list
+  end
 
   def send_invitations_mail (id_users_to_play, game)
     task = Task.find game.task_id

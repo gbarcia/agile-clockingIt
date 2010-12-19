@@ -1,58 +1,90 @@
-<div id="planning-poker-table">
-
-  <div id="info" class="panel">HU NAME</div>
-  <div id="wrapper">
-    <div id="main">
-      <div id="votes" class="panel">
-        Votes
-      </div>
-      <div id="vote-picker" class="panel">
-        Vote-picker
-      </div>
-      <div id="vote-result" class="panel">
-        Vote-results
-      </div>
-      <div id="chat" class="panel">
-        <div id="chat-messages"></div>
-        <script type="text/javascript" charset="utf-8">
-          var chatElement = document.getElementById("chat-messages");
-          chatElement.innerHTML = "";
-          var chat = function(data){
-            var messages = chatElement.innerHTML;
-            chatElement.innerHTML = messages + ("<div class='message'>" + data + "</div>\n");
-          }
-          jug.on("connect", function(){chat("<%=current_user.name%> Connected")});
-          jug.on("disconnect", function(){chat("<%=current_user.name%> Disconnected")});
-          jug.on("reconnect", function(){chat("Reconnecting")});
-
-          chat("Subscribing to channel1");
-
-          jug.subscribe("channel1", function(data){
-            chat(data);
-          });
-
-          window.jug = jug;
-        </script>
-        <% form_remote_tag(:url => {:action => 'send_message'}, :success => "document.getElementById('message').value = ''") do %>
-          <%= text_field_tag "message", '', :size => '50' %>
-          <input type="hidden" value="channel1" name="channel"></input>
-          <input type="submit" value="Send Message" name="commit"></input>
+<table class="content">
+  <tr><td class="page_header" colspan="2">Planning Poker for: HU NAME</td></tr>
+  <tr>
+    <td>Votes</td>
+    <td>Usuarios</td>
+  </tr>
+  <tr>
+    <td>Votes-picker</td>
+    <td rowspan="4">
+      <ul id="selected-users" style="list-style-type: none; margin: 0; padding: 0">
+        <% @player_list.each do |us| %>
+          <li class="ui-state-default" style="padding: 5px; margin: 5px">
+            <%= avatar_for us, 25 %>
+            <%= us.name %>
+            <span id="<%= us.id %>" class="status"><img src='/images/offline.png' alt='offline' /></span>
+          </li>
         <%end%>
-      </div>
-    </div>
-    <div id="sidebar">
-      <div id="sidebar-inner" class="panel">
-        fdhbvebvitborei grnbifgjnbviognib
-        fekvwbwfhivnwrih brwbiwrbirnbwornb
-        efwbufugrwugbnwgb nrnbrotnbotrwnin
-        fdhbvebvitborei grnbifgjnbviognib
-        fekvwbwfhivnwrih brwbiwrbirnbwornb
-        efwbufugrwugbnwgb nrnbrotnbotrwnin
-        fdhbvebvitborei grnbifgjnbviognib
-        fekvwbwfhivnwrih brwbiwrbirnbwornb
-        efwbufugrwu
-      </div>
-    </div>
-  </div>
+      </ul>
+    </td>
+  </tr>
+  <tr><td>Votes-result</td></tr>
+  <tr>
+    <td>
+      <div id="chat-messages"></div>
+      <div id="status-messages"></div>
+      <script type="text/javascript" charset="utf-8">
+        alert("<%=@connected_list.each do |nombre| nombre end%>");
+        var chatElement = document.getElementById("chat-messages");
+        chatElement.innerHTML = "";
+        var chat = function(data){
+          var messages = chatElement.innerHTML;
+          chatElement.innerHTML = messages + ("<div class='message'>" + data + "</div>\n");
+        }
 
-</div>
+        var status = function(data){
+          var dataArray = data.split('-');
+          statusElement = document.getElementById(dataArray[0]);
+          if (dataArray[1] == 0){
+            statusElement.innerHTML = "<img src='/images/offline.png' alt='offline' />";
+          }
+          else if (dataArray[1] == 1){
+            statusElement.innerHTML = "<img src='/images/online.png' alt='online' />";
+          }
+        }
+
+        jug.subscribe("chat-<%= @game.id %>", function(data){
+          chat(data);
+        });
+        jug.subscribe("list-<%= @game.id %>", function(data){
+          status(data);
+        });
+
+        jug.on("connect", function(){
+          var url = "/planning_poker/send_message";
+          var params = {channel: "chat-<%= @game.id %>", current_message: "'se ha conectado.'"}
+          jQuery.get(url, params, function(data){
+            chat(data);
+          })
+            
+          var url = "/planning_poker/send_status";
+          var params = {channel: "list-<%= @game.id %>", current_message: "<%=@user_id%>-1"}
+          jQuery.get(url, params, function(data){
+            status(data);
+          })
+        });
+        jug.on("disconnect", function(){
+          chat("<%=current_user.name%> se ha desconectado.")
+        });
+        jug.on("reconnect", function(){
+          chat("Reconectando")
+        });
+
+        chat("Suscrito a chat-<%= @game.id %>");
+
+
+
+        window.jug = jug;
+      </script>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <% form_remote_tag(:url => {:action => 'send_message'}, :success => "document.getElementById('current_message').value = ''") do %>
+        <%= text_field_tag "current_message", '', :size => '50' %>
+        <input type="hidden" value="chat-<%= @game.id %>" name="channel"></input>
+        <input type="submit" value="Send Message" name="commit"></input>
+      <%end%>
+    </td>
+  </tr>
+</table>
