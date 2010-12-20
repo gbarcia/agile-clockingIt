@@ -64,23 +64,21 @@
       jQuery.jgrid.no_legacy_api = true;
       jQuery.jgrid.useJSON = true;
     </script>
-    <% if controller.controller_name == "planning_poker" %>
+    <% if controller.controller_name == "planning_poker" && controller.action_name == "table" %>
       <script type="text/javascript">
         function desconectar_jug(){
           var url = "/planning_poker/ajax_exit_game";
           var params = {game: <%= @game.id.to_s%>, user: <%= current_user.id %> };
           jQuery.get(url, params, function(data){
-            alert ('adios');
-          })
+            alert(data);
+          });
         }
       </script>
     <% end %>
   </head>
   <body
-  <% if controller.controller_name == "planning_poker" %>
-      onunload="desconectar_jug();"
-    <% end %>
-    >
+  <% if controller.controller_name == "planning_poker" && controller.action_name == "table"%>
+      onunload="desconectar_jug();"<% end %>>
     <div id="page_header">
       <div id="loading">
         <%= image_tag('spinner.gif', :border => 0) %>

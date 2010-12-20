@@ -43,7 +43,7 @@ class PlanningPokerController < ApplicationController
     planning_poker_id = params[:id]
     @game = PlanningPokerGame.find planning_poker_id
     actual_vote = @game.planning_poker_votes.find_by_user_id current_user.id
-    actual_vote.status = 1
+    actual_vote.status = true
     actual_vote.save!
     player_id_list = users_ids_for_game(@game.planning_poker_votes)
     @player_list = get_player_list player_id_list
