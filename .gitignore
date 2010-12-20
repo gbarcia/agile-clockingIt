@@ -7,6 +7,7 @@
 /store
 /nbproject
 config/database.yml
+config/config.yml
 config/environment.local.rb
 config/custom.gems.rb
 semantic.cache

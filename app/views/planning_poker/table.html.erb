@@ -1,5 +1,5 @@
 <table class="content">
-  <tr><td class="page_header" colspan="2">Planning Poker for: HU NAME</td></tr>
+  <tr><td class="page_header" colspan="2">Planning Poker for: HU NAME <a href="/planning_poker/exit_game?id=<%= @game.id %> ">salir</a></td></tr>
   <tr>
     <td>Votes</td>
     <td>Usuarios</td>
@@ -24,7 +24,6 @@
       <div id="chat-messages"></div>
       <div id="status-messages"></div>
       <script type="text/javascript" charset="utf-8">
-        alert("<%=@connected_list.each do |nombre| nombre end%>");
         var chatElement = document.getElementById("chat-messages");
         chatElement.innerHTML = "";
         var chat = function(data){
@@ -58,14 +57,23 @@
           })
             
           var url = "/planning_poker/send_status";
-          var params = {channel: "list-<%= @game.id %>", current_message: "<%=@user_id%>-1"}
+        <%  @actual_users.each do |user| %>
+          var params = {channel: "list-<%= @game.id %>", current_message: "<%=user.id.to_s%>-1"}
           jQuery.get(url, params, function(data){
             status(data);
           })
+        <% end %>
         });
+        
         jug.on("disconnect", function(){
-          chat("<%=current_user.name%> se ha desconectado.")
+          alert('aca');
+          var url = "planning_poker/ajax_exit_game"
+          var params = {game: <%= @game.id%>, user: <%= current_user.id.to_s %> }
+          jQuery.get(url, params, function(data){
+            status(data);
+          });
         });
+        
         jug.on("reconnect", function(){
           chat("Reconectando")
         });

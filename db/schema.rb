@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101123174342) do
+ActiveRecord::Schema.define(:version => 20101220144427) do
 
   create_table "access_levels", :force => true do |t|
     t.string   "name"
@@ -317,6 +317,7 @@ ActiveRecord::Schema.define(:version => 20101123174342) do
     t.datetime "vote_date"
     t.integer  "user_id"
     t.integer  "planning_poker_game_id"
+    t.boolean  "status",                 :default => false
   end
 
   create_table "posts", :force => true do |t|

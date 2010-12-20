@@ -36,18 +36,19 @@ class PlanningPokerController < ApplicationController
     ppoker_game.due_at = tz.local_to_utc Time.parse params[:due_at] if params[:due_at]
     ppoker_game.save!
     send_invitations_mail(id_users_to_play, game)
+    redirect_to :controller => 'planning_poker', :action => 'table', :id => planning_poker_game_id.to_i
   end
-
-  @@connected_lists = Hash.new;
 
   def table
     planning_poker_id = params[:id]
     @game = PlanningPokerGame.find planning_poker_id
+    actual_vote = @game.planning_poker_votes.find_by_user_id current_user.id
+    actual_vote.status = 1
+    actual_vote.save!
     player_id_list = users_ids_for_game(@game.planning_poker_votes)
     @player_list = get_player_list player_id_list
     @user_id = current_user.id
-    @@connected_lists = {planning_poker_id => {}}
-    @connected_list = @@connected_lists[planning_poker_id.to_i]
+    @actual_users = actual_users_conected planning_poker_id.to_i
   end
 
   def historial
@@ -63,7 +64,39 @@ class PlanningPokerController < ApplicationController
     render :nothing => true
   end
 
+  def ajax_exit_game
+    game_id = params[:game].to_i
+    user_exit_id = params[:user]
+    game = PlanningPokerGame.find game_id
+    actual_vote =  game.planning_poker_votes.find_by_user_id user_exit_id.to_i
+    actual_vote.status = false
+    actual_vote.save!
+    Juggernaut.publish('list-' + game_id.to_s, user_exit_id + '-0')
+    render :nothing => true
+  end
+
+  def exit_game
+    game_id = params[:id].to_i
+    game = PlanningPokerGame.find game_id
+    actual_vote =  game.planning_poker_votes.find_by_user_id current_user.id
+    actual_vote.status = false
+    actual_vote.save!
+    Juggernaut.publish('list-' + game_id.to_s, current_user.id.to_s + '-0')
+    redirect_to :controller => 'tasks', :action => 'list'
+  end
+
   private
+
+  def actual_users_conected (game_id)
+    actual_users = Array.new
+    game = PlanningPokerGame.find game_id
+    game.planning_poker_votes.each do |vote|
+      if vote.status == true
+      actual_users << User.find(vote.user_id)
+      end
+    end
+    return actual_users
+  end
 
   def get_player_list (player_id_list)
     player_list = Array.new
