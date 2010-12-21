@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101220144427) do
+ActiveRecord::Schema.define(:version => 20101221185849) do
 
   create_table "access_levels", :force => true do |t|
     t.string   "name"
@@ -308,6 +308,7 @@ ActiveRecord::Schema.define(:version => 20101220144427) do
     t.integer  "task_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "closed",     :default => false
   end
 
   create_table "planning_poker_votes", :force => true do |t|
