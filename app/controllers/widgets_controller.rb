@@ -52,6 +52,8 @@ class WidgetsController < ApplicationController
       velocity_from_show
     when 15 then
       user_stories_type_from_show
+    when 20 then
+      planning_poker_games_from_show
     end
 
     render :update do |page|
@@ -74,13 +76,12 @@ class WidgetsController < ApplicationController
         page << "$('gadget-#{@widget.dom_id}').src=#{@widget.gadget_url.gsub(/&amp;/,'&').gsub(/<script src=/,'').gsub(/><\/script>/,'')};"
       when 9..10 then
         page.replace_html "content_#{@widget.dom_id}", :partial => "widgets/widget_#{@widget.widget_type}"
+      when 20 then
+        page.replace_html "content_#{@widget.dom_id}", :partial => "widgets/widget_#{@widget.widget_type}"
       end
-
       page.call("updateTooltips")
       page.call("portal.refreshHeights")
-
     end
-
   end
 
   def add
@@ -440,6 +441,18 @@ class WidgetsController < ApplicationController
     values_col << @defect_type
     @max = Statistics.greather_num(values_col) > 0 ? Statistics.greather_num(values_col).to_s : 100.to_s
     @mid = (@max.to_i / 2).ceil.to_s
+  end
+
+  def planning_poker_games_from_show
+    @games_historial = Array.new
+    votes = PlanningPokerVote.find(:all, :conditions => ['user_id = ?', current_user.id])
+    votes.each do |vote|
+      game = PlanningPokerGame.find vote.planning_poker_game_id
+      actual_time = Time.now
+        if  (tz.utc_to_local(game.due_at) > actual_time.strftime("%Y-%m-%d %H:%M:%S").to_time && !game.closed?)
+        @games_historial << game
+      end
+    end
   end
 
   def burnup_extracted_from_show

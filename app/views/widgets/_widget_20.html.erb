@@ -1,0 +1,41 @@
+<div style="text-align:center; max-height: 200px; overflow: auto">
+  <center>
+    <% if @games_historial.count > 0 %>
+      <table class="content" id="historial_table" width="600" style="margin-left:0;margin-right:0;text-align:center">
+        <tr>
+          <th><%=_ '#' %></th>
+          <th><%=_ 'Historia de Usuario' %></th>
+          <th><%=_ 'Finaliza' %></th>
+          <th><%=_ 'Mi voto' %></th>
+          <th><%=_ 'En linea' %></th>
+          <th><%=_ 'Acciones' %></th>
+        </tr>
+        <% @games_historial.each do |g| %>
+          <td>
+            <%= g.id %>
+          </td>
+          <td>
+            <%= Task.find(g.task_id).name %>
+          </td>
+          <td>
+            <%= g.due_at.strftime('%Y-%m-%d a las %H:%M:%S') %>
+          </td>
+          <td>
+            <%= vote_for_user_in_game(g)%>
+          </td>
+          <td>
+            <%= players_numbers_for_game(g)%>
+          </td>
+          <td>
+            <a href="/planning_poker/table?id=<%=g.id%>"><img src="/images/time_go.png" alt="" title="Ir al juego"/></a>
+            <% if user_is_leader_from_this_game?(g) %>
+              <a href="/planning_poker/table?id=<%=g.id%>"><img src="/images/edit.png" alt="" title="Editar"/></a>
+            <% end %>
+          </td>
+        <% end %>
+      </table>
+    <% else %>
+      <p> No hay partidas en curso</p>
+    <% end %>
+  </center>
+</div>

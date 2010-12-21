@@ -14,4 +14,8 @@ module PlanningPokerHelper
     total_players = game.planning_poker_votes.count(:conditions => ['planning_poker_game_id = ?',game.id])
     return result.to_s + '/' + total_players.to_s
   end
+
+  def user_is_leader_from_this_game?(game)
+    game.task.project.leader_id == current_user.id
+  end
 end

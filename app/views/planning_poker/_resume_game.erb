@@ -1,0 +1,7 @@
+<div>
+  <p><%= 'Resultado: ' + @mean_result.to_s + ' puntos con desviacion de: ' + @standard_desviation.to_s %> puntos </p>
+  <% form_tag :action => 'update_user_story_whit_points' do %>
+    <input type="hidden" name="game_id" value="<%= @game.id%> "/>
+    <input type="text" name="points" value="<%= @mean_result.to_s%>"/>
+  <% end %>
+</div>

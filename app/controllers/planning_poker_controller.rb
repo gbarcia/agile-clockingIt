@@ -62,7 +62,7 @@ class PlanningPokerController < ApplicationController
     votes.each do |vote|
       game = PlanningPokerGame.find vote.planning_poker_game_id
       actual_time = Time.now
-      if  tz.utc_to_local(game.due_at) > actual_time.strftime("%Y-%m-%d %H:%M:%S").to_time
+      if  (tz.utc_to_local(game.due_at) > actual_time.strftime("%Y-%m-%d %H:%M:%S").to_time && !game.closed?)
         @games_historial << game
       end
     end
@@ -96,7 +96,8 @@ class PlanningPokerController < ApplicationController
     actual_vote.status = false
     actual_vote.save!
     Juggernaut.publish('list-' + game_id.to_s, current_user.id.to_s + '-0')
-    redirect_to :controller => 'tasks', :action => 'list'
+    user_stroy = game.task
+    redirect_to :controller => 'tasks', :action => 'edit', :id => user_stroy.id
   end
 
   #eventos para el juego
@@ -134,6 +135,19 @@ class PlanningPokerController < ApplicationController
     end
     @mean_result = Statistics.mean(list_votes)
     @standard_desviation = Statistics.standard_desviation(list_votes)
+     render :update do |page|
+        page.insert_html :before, "#", :partial => "resume_game"
+     end
+  end
+
+  def update_user_story_whit_points
+    points = params[:points]
+    game_id = params[:game_id]
+    game = PlanningPokerGame.find game_id.to_i
+    user_stroy = game.task
+    user_stroy.points_planning_poker = points.to_f
+    user_stroy.save!
+    redirect_to :controller => 'tasks', :action => 'edit', :id => user_stroy.id
   end
 
   private
