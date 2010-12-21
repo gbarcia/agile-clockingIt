@@ -36,6 +36,7 @@ class PlanningPokerController < ApplicationController
     ppoker_game.due_at = tz.local_to_utc Time.parse params[:due_at] if params[:due_at]
     ppoker_game.save!
     send_invitations_mail(id_users_to_play, game)
+    send_invitations_notify(id_users_to_play, game)
     redirect_to :controller => 'planning_poker', :action => 'table', :id => planning_poker_game_id.to_i
   end
 
@@ -186,6 +187,12 @@ class PlanningPokerController < ApplicationController
     id_users_to_play.each do |id_user|
       user = User.find id_user
       Notifications::deliver_planning_poker_invitation(game, task, user)
+    end
+  end
+  def send_invitations_notify (id_users_to_play, game)
+    task = Task.find game.task_id
+    id_users_to_play.each do |id_user|
+      Juggernaut.publish('user-channel-' + id_user.to_s, task.id.to_s + '-' + game.id.to_s)
     end
   end
 
