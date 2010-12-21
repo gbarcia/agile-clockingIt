@@ -48,6 +48,9 @@
     <script src="<%=("http://"+CONFIG[:server][:production]+":8080/application.js")%>" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript" charset="utf-8">
       var jug = new Juggernaut("<%=(CONFIG[:server][:production])%>");
+      jug.subscribe("user-channel-<%= current_user.id %>", function(data){
+          alert(data);
+        });
     </script>
 
     <title><%= $CONFIG[:productName] %></title>
