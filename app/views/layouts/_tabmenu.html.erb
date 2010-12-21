@@ -2,17 +2,17 @@
   <% active = controller.controller_name + "/" + controller.action_name %>
   <ul id="primary">
     <% if current_user.seen_welcome.to_i == 0 %>
-    <li<% if active == "activities/welcome" %> class="active"<% end %>><%= link_to "#{_('Tutorial')}", :controller => 'activities', :action => 'welcome' %>
-    </li>
+      <li<% if active == "activities/welcome" %> class="active"<% end %>><%= link_to "#{_('Tutorial')}", :controller => 'activities', :action => 'welcome' %>
+      </li>
     <% end %>
     <li<%= " class='active'" if active == "activities/list" %>>
       <%= link_to "#{_('Overview') }", :controller => 'activities', :action => 'list' %>
       <% if active == "activities/list" %>
-      <ul>
-        <li>
-          <%= link_to_remote _('Add New Widget'), :url => { :controller => 'widgets', :action => 'add'} %>
-        </li>
-      </ul>
+        <ul>
+          <li>
+            <%= link_to_remote _('Add New Widget'), :url => { :controller => 'widgets', :action => 'add'} %>
+          </li>
+        </ul>
       <% end %>
     </li>
     <li<%= " class='active'" if active.starts_with?('tasks/') %>>
@@ -21,31 +21,34 @@
         <li>
           <%= link_to _("New US"), :controller => 'tasks', :action => 'new' %>
         </li>
-        <% current_templates.each do |t| %>
-        <li class="task_template">
-          <%= link_to t, '#', :'data-tasknum' => t.task_num %>
+        <li<%= " class='active'" if active.starts_with?('clients/') %>>
+          <%= link_to "#{_('Planning Poker')}", :controller => "planning_poker", :action => 'historial' %>
         </li>
+        <% current_templates.each do |t| %>
+          <li class="task_template">
+            <%= link_to t, '#', :'data-tasknum' => t.task_num %>
+          </li>
         <% end %>
       </ul>
     </li>
     <% if current_user.option_tracktime.to_i == 1 %>
-    <li<% if active == "timeline/list" %> class="active"<% end %>><%= link_to "#{_('Timeline')}", :controller => 'timeline', :action => 'list' %>
-    </li>
+      <li<% if active == "timeline/list" %> class="active"<% end %>><%= link_to "#{_('Timeline')}", :controller => 'timeline', :action => 'list' %>
+      </li>
     <% end %>
     <% if current_user.option_tracktime.to_i == 1 && current_user.can_any?(current_user.projects, 'report') %>
-    <li<%= " class='active'" if active == "reports/list" %>>
-      <%= link_to "#{_('Reports')}", :controller => 'reports', :action => 'list' %>
-    </li>
+      <li<%= " class='active'" if active == "reports/list" %>>
+        <%= link_to "#{_('Reports')}", :controller => 'reports', :action => 'list' %>
+      </li>
     <% end %>
     <% if current_user.company.show_wiki? %>
-    <li<%= " class='active'" if active == "wiki/list" %>>
-      <%= link_to "#{_('Wiki')}", :controller => 'wiki', :action => 'show', :id => nil %>
-    </li>
+      <li<%= " class='active'" if active == "wiki/list" %>>
+        <%= link_to "#{_('Wiki')}", :controller => 'wiki', :action => 'show', :id => nil %>
+      </li>
     <% end %>
     <% if current_user.company.show_forum? %>
-    <li<%= " class='active'" if (active.starts_with?('forums/') || active.starts_with?('posts/') || active.starts_with?('topics/') ) %>>
-      <%= link_to "#{_('Forums')}", :controller => 'forums', :action => 'index' %>
-    </li>
+      <li<%= " class='active'" if (active.starts_with?('forums/') || active.starts_with?('posts/') || active.starts_with?('topics/') ) %>>
+        <%= link_to "#{_('Forums')}", :controller => 'forums', :action => 'index' %>
+      </li>
     <% end %>
     <li<%= " class='active'" if active.starts_with?('project_files/') %>>
       <%= link_to "#{_('Files')}", :controller => 'project_files', :action => 'list' %>
@@ -53,42 +56,42 @@
     <li<%= " class='active'" if active.starts_with?('projects/') %>>
       <%= link_to "#{_('Projects')}", :controller => 'projects', :action => 'list' %>
       <% if current_user.create_projects? %>
-      <ul>
-        <li>
-          <%= link_to _("New Project"), :controller => 'projects', :action => 'new' %>
-        </li>
-      </ul>
+        <ul>
+          <li>
+            <%= link_to _("New Project"), :controller => 'projects', :action => 'new' %>
+          </li>
+        </ul>
       <% end %>
     </li>
     <% if current_user.can_view_clients? %>
-    <li<%= " class='active'" if active.starts_with?('clients/') %>>
-      <%= link_to "#{_('Clients')}", :controller => "clients", :action => 'list' %>
-    </li>
+      <li<%= " class='active'" if active.starts_with?('clients/') %>>
+        <%= link_to "#{_('Clients')}", :controller => "clients", :action => 'list' %>
+      </li>
     <% end %>
     <% if current_user.use_resources? %>
-    <li class="<%= resource_class %>">
-      <%= link_to(_("Resources"), resources_path) %>
-    </li>
+      <li class="<%= resource_class %>">
+        <%= link_to(_("Resources"), resources_path) %>
+      </li>
     <% end %>
     <li class="right<%= " active" if active == "users/edit_preferences"  %>"><%= link_to "#{_('Preferences')}",  :controller => 'users', :action => 'edit_preferences' %>
       <% if current_user.admin > 0 %>
-      <ul>
-        <li>
-          <%= link_to _('Company Settings'), :controller => 'companies', :action => 'edit', :id => current_user.company_id %>
-        </li>
-        <li>
-          <%= link_to _('Estimation Settings'), :controller => 'estimation_settings', :action => 'edit' %>
-        </li>
-        <li>
-          <%= link_to _('Custom Properties'), :controller => "custom_attributes", :action => "index" %>
-        </li>
-        <li>
-          <%= link_to(_("Resource Types"), resource_types_path) %>
-        </li>
-        <li>
-          <%= link_to _("Templates"), :controller => 'task_templates', :action=>'list' %>
-        </li>
-      </ul>
+        <ul>
+          <li>
+            <%= link_to _('Company Settings'), :controller => 'companies', :action => 'edit', :id => current_user.company_id %>
+          </li>
+          <li>
+            <%= link_to _('Estimation Settings'), :controller => 'estimation_settings', :action => 'edit' %>
+          </li>
+          <li>
+            <%= link_to _('Custom Properties'), :controller => "custom_attributes", :action => "index" %>
+          </li>
+          <li>
+            <%= link_to(_("Resource Types"), resource_types_path) %>
+          </li>
+          <li>
+            <%= link_to _("Templates"), :controller => 'task_templates', :action=>'list' %>
+          </li>
+        </ul>
       <% end %>
     </li>
   </ul>

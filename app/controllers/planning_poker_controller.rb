@@ -52,6 +52,15 @@ class PlanningPokerController < ApplicationController
   end
 
   def historial
+    @games_historial = Array.new
+    votes = PlanningPokerVote.find(:all, :conditions => ['user_id = ?', current_user.id])
+    votes.each do |vote|
+      game = PlanningPokerGame.find vote.planning_poker_game_id
+      actual_time = Time.now
+      if  tz.utc_to_local(game.due_at) > actual_time.strftime("%Y-%m-%d %H:%M:%S").to_time
+        @games_historial << game
+      end
+    end
   end
 
   def send_message
@@ -83,6 +92,24 @@ class PlanningPokerController < ApplicationController
     actual_vote.save!
     Juggernaut.publish('list-' + game_id.to_s, current_user.id.to_s + '-0')
     redirect_to :controller => 'tasks', :action => 'list'
+  end
+
+  #eventos para el juego
+
+  def vote
+
+  end
+
+  def repeat_game
+    
+  end
+
+  def acept_game
+    
+  end
+
+  def finish_game
+    
   end
 
   private
