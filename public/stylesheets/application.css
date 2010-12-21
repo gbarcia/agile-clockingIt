@@ -2914,28 +2914,35 @@ select#chngroup {
 }
 
 /*Planning Poker Layout*/
-#planning-poker-table #wrapper{
-    display: inline-block;
-    margin-right: 200px;
-    position: relative;
-    vertical-align: bottom;
-}
-#planning-poker-table #main{
-    border-right: 1px solid #ccc;
+.planning-poker-card {
+    -moz-border-radius: 5px;
+    border: 1px solid #ccc;
+    margin: 5px;
+    height: 100px;
+    width: 70px;
     float: left;
+    display: inline;
 }
-#planning-poker-table #sidebar{
-    border-left: 1px solid #ccc;
-    float: left;
-    margin-right: -200px;
-    margin-left: -1px;
-    position: relative;
-    width: 200px;
+
+.planning-poker-card .inner {
+    -moz-border-radius: 5px;
+    margin: 3px;
+    border: 2px solid #F07818;
+    height: 90px;
+    width: 60px;
 }
-#planning-poker-table .panel{
-    
+
+.planning-poker-card .back {
+    background-color: #eee;
 }
-#planning-poker-table #chat-messages{
-    height: 200px;
-    overflow: scroll;
+
+.planning-poker-card .front {
+    line-height: 90px;
+    text-align: center;
+    font-size: 30px;
+}
+
+.planning-poker-card .inner .logo {
+    margin-left: 15px;
+    margin-top: 26px;
 }

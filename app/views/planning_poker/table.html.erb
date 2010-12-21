@@ -1,39 +1,65 @@
-<table class="content">
+<table class="content" width="100%">
   <tr><td class="page_header" colspan="2">Planning Poker for: HU NAME <a href="/planning_poker/exit_game?id=<%= @game.id %> ">salir</a></td></tr>
   <tr>
-    <td>Votes</td>
-    <td>Usuarios</td>
+    <td>
+      <div class="planning-poker-card">
+        <div class="inner back">
+          <img class="logo" src="/images/card.png" alt=""/>
+        </div>
+      </div>
+      <div class="planning-poker-card">
+        <div class="inner back">
+          <img class="logo" src="/images/card.png" alt=""/>
+        </div>
+      </div>
+    </td>
+    <td rowspan="5" style="width: 200px" valign="top">
+      <div style="max-height: 450px; overflow: auto">
+        <ul id="selected-users" style="list-style-type: none; margin: 0; padding: 0">
+          <% @player_list.each do |us| %>
+            <li class="ui-state-default" style="padding: 5px; margin: 5px">
+              <%= avatar_for us, 25 %>
+              <%= us.name %>
+              <span id="user-<%= us.id %>" class="status"><img src='/images/offline.png' alt='offline' /></span>
+            </li>
+          <%end%>
+        </ul>
+      </div>
+    </td>
   </tr>
   <tr>
-    <td>Votes-picker</td>
-    <td rowspan="4">
-      <ul id="selected-users" style="list-style-type: none; margin: 0; padding: 0">
-        <% @player_list.each do |us| %>
-          <li class="ui-state-default" style="padding: 5px; margin: 5px">
-            <%= avatar_for us, 25 %>
-            <%= us.name %>
-            <span id="<%= us.id %>" class="status"><img src='/images/offline.png' alt='offline' /></span>
-          </li>
-        <%end%>
-      </ul>
+    <td>
+      <div class="planning-poker-card"><div class="inner front">0</div></div>
+      <div class="planning-poker-card"><div class="inner front">0.5</div></div>
+      <div class="planning-poker-card"><div class="inner front">1</div></div>
+      <div class="planning-poker-card"><div class="inner front">2</div></div>
+      <div class="planning-poker-card"><div class="inner front">3</div></div>
+      <div class="planning-poker-card"><div class="inner front">5</div></div>
+      <div class="planning-poker-card"><div class="inner front">8</div></div>
+      <div class="planning-poker-card"><div class="inner front">13</div></div>
+      <div class="planning-poker-card"><div class="inner front">20</div></div>
+      <div class="planning-poker-card"><div class="inner front">40</div></div>
+      <div class="planning-poker-card"><div class="inner front">100</div></div>
+      <div class="planning-poker-card"><div class="inner front">?</div></div>
     </td>
   </tr>
   <tr><td>Votes-result</td></tr>
   <tr>
     <td>
-      <div id="chat-messages"></div>
-      <div id="status-messages"></div>
+      <div id="chat-messages" style="height: 150px; border: 1px solid #ccc; overflow: auto">
+      </div>
       <script type="text/javascript" charset="utf-8">
         var chatElement = document.getElementById("chat-messages");
         chatElement.innerHTML = "";
         var chat = function(data){
           var messages = chatElement.innerHTML;
           chatElement.innerHTML = messages + ("<div class='message'>" + data + "</div>\n");
+          chatElement.scrollTop = chatElement.scrollHeight;
         }
 
         var status = function(data){
           var dataArray = data.split('-');
-          statusElement = document.getElementById(dataArray[0]);
+          statusElement = document.getElementById("user-" + dataArray[0]);
           if (dataArray[1] == 0){
             statusElement.innerHTML = "<img src='/images/offline.png' alt='offline' />";
           }
@@ -57,40 +83,46 @@
           })
             
           var url = "/planning_poker/send_status";
-        <%  @actual_users.each do |user| %>
-          var params = {channel: "list-<%= @game.id %>", current_message: "<%=user.id.to_s%>-1"}
-          jQuery.get(url, params, function(data){
-            status(data);
-          })
-        <% end %>
-        });
+<%  @actual_users.each do |user| %>
+      var params = {channel: "list-<%= @game.id %>", current_message: "<%=user.id.to_s%>-1"}
+      jQuery.get(url, params, function(data){
+        status(data);
+      })
+<% end %>
+  });
         
-        jug.on("disconnect", function(){
-          var url = "planning_poker/ajax_exit_game"
-          var params = {game: <%= @game.id%>, user: <%= current_user.id.to_s %> }
-          jQuery.get(url, params, function(data){
-            status(data);
-          });
-        });
+  jug.on("disconnect", function(){
+    var url = "planning_poker/ajax_exit_game"
+    var params = {game: <%= @game.id%>, user: <%= current_user.id.to_s %> }
+    jQuery.get(url, params, function(data){
+      status(data);
+    });
+  });
         
-        jug.on("reconnect", function(){
-          chat("Reconectando")
-        });
+  jug.on("reconnect", function(){
+    chat("Reconectando")
+  });
 
-        chat("Suscrito a chat-<%= @game.id %>");
+  chat("Suscrito a chat-<%= @game.id %>");
 
-
-
-        window.jug = jug;
+  window.jug = jug;
       </script>
     </td>
   </tr>
   <tr>
     <td>
       <% form_remote_tag(:url => {:action => 'send_message'}, :success => "document.getElementById('current_message').value = ''") do %>
-        <%= text_field_tag "current_message", '', :size => '50' %>
-        <input type="hidden" value="chat-<%= @game.id %>" name="channel"></input>
-        <input type="submit" value="Send Message" name="commit"></input>
+        <table style="width: 100%">
+          <tr>
+            <td>
+              <%= text_field_tag "current_message", '', :style => 'width: 100%' %>
+            </td>
+            <td style="width: 100px;">
+              <input type="hidden" value="chat-<%= @game.id %>" name="channel"></input>
+              <input type="submit" value="Enviar" name="commit" style="width: 100%"></input>
+            </td>
+          </tr>
+        </table>
       <%end%>
     </td>
   </tr>
