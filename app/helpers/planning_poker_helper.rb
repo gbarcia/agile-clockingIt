@@ -18,4 +18,9 @@ module PlanningPokerHelper
   def user_is_leader_from_this_game?(game)
     game.task.project.leader_id == current_user.id
   end
+
+  def get_user_name(id)
+    user = User.find id
+    user.name
+  end
 end

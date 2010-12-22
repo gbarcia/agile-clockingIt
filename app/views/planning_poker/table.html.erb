@@ -2,16 +2,19 @@
   <tr><td class="page_header" colspan="2">Planning Poker for: HU NAME <a href="/planning_poker/exit_game?id=<%= @game.id %> ">salir</a></td></tr>
   <tr>
     <td>
-      <div class="planning-poker-card">
-        <div class="inner back">
-          <img class="logo" src="/images/card.png" alt=""/>
+      <% @votes.each do |planning_poker_vote| %>
+        <div class="planning-poker-card-wrapper">
+          <div class="planning-poker-card">
+            <div class="inner back">
+              <img class="logo" src="/images/card.png" alt=""/>
+            </div>
+            <div class="inner front" style="visibility: hidden">
+              <%= planning_poker_vote.vote %>
+            </div>
+          </div>
+          <center><%=get_user_name(planning_poker_vote.user_id)%></center>
         </div>
-      </div>
-      <div class="planning-poker-card">
-        <div class="inner back">
-          <img class="logo" src="/images/card.png" alt=""/>
-        </div>
-      </div>
+      <%end%>
     </td>
     <td rowspan="5" style="width: 200px" valign="top">
       <div style="max-height: 450px; overflow: auto">
@@ -29,18 +32,20 @@
   </tr>
   <tr>
     <td>
-      <div class="planning-poker-card"><div class="inner front">0</div></div>
-      <div class="planning-poker-card"><div class="inner front">0.5</div></div>
-      <div class="planning-poker-card"><div class="inner front">1</div></div>
-      <div class="planning-poker-card"><div class="inner front">2</div></div>
-      <div class="planning-poker-card"><div class="inner front">3</div></div>
-      <div class="planning-poker-card"><div class="inner front">5</div></div>
-      <div class="planning-poker-card"><div class="inner front">8</div></div>
-      <div class="planning-poker-card"><div class="inner front">13</div></div>
-      <div class="planning-poker-card"><div class="inner front">20</div></div>
-      <div class="planning-poker-card"><div class="inner front">40</div></div>
-      <div class="planning-poker-card"><div class="inner front">100</div></div>
-      <div class="planning-poker-card"><div class="inner front">?</div></div>
+      <div id="select-vote">
+        <a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(0);">0</div></div></a>
+        <a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(0.5);">0.5</div></div></a>
+        <a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(1);">1</div></div></a>
+        <a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(2);">2</div></div></a>
+        <a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(3);"">3</div></div></a>
+        <a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(5);">5</div></div></a>
+        <a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(8);">8</div></div></a>
+        <a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(13);">13</div></div></a>
+        <a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(20);">20</div></div></a>
+        <a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(40);">40</div></div></a>
+        <a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(100);">100</div></div></a>
+        <a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(-1);">?</div></div></a>
+      </div>
     </td>
   </tr>
   <tr><td>Votes-result</td></tr>
@@ -89,6 +94,7 @@
         status(data);
       })
 <% end %>
+
   });
         
   jug.on("disconnect", function(){
@@ -106,6 +112,15 @@
   chat("Suscrito a chat-<%= @game.id %>");
 
   window.jug = jug;
+
+  var sendVote = function(valorVoto){
+    var url = "/planning_poker/vote";
+    var data = {game_id: <%= @game.id%>, value_vote: valorVoto };
+    jQuery.get(url, data, function(){
+      jQuery("#select-vote").html("");
+    });
+    jQuery("#select-vote").html("<center><img src='/images/tuneup/spinner.gif' alt=''></center>");
+  }
       </script>
     </td>
   </tr>

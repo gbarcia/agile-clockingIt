@@ -51,6 +51,7 @@ class PlanningPokerController < ApplicationController
     @player_list = get_player_list player_id_list
     @user_id = current_user.id
     @actual_users = actual_users_conected planning_poker_id.to_i
+    @votes = PlanningPokerVote.find(:all, :conditions => ['vote IS NOT NULL and planning_poker_game_id = ?', @game.id])
     else
       flash['notice'] = _("El juego ya ha finalizado. No se pude volver a jugar")
       redirect_to :controller => 'planning_poker', :action => 'historial'

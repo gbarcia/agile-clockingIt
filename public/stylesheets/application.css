@@ -2914,6 +2914,12 @@ select#chngroup {
 }
 
 /*Planning Poker Layout*/
+.planning-poker-card-wrapper{
+    float: left;
+    margin: 5px;
+    width: 70px
+}
+
 .planning-poker-card {
     -moz-border-radius: 5px;
     border: 1px solid #ccc;
@@ -2945,4 +2951,8 @@ select#chngroup {
 .planning-poker-card .inner .logo {
     margin-left: 15px;
     margin-top: 26px;
+}
+
+#select-vote a {
+    color: #000;
 }
