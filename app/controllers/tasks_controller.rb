@@ -77,8 +77,8 @@ class TasksController < ApplicationController
       conds = [ conds ] + cond_params
 
       @resources = current_user.company.resources.find(:all,
-                                                       :conditions => conds)
-     render :json=> @resources.collect{|resource| {:label => "[##{resource.id}] #{resource.name}", :value => resource.name, :id=> resource.id} }.to_json
+        :conditions => conds)
+      render :json=> @resources.collect{|resource| {:label => "[##{resource.id}] #{resource.name}", :value => resource.name, :id=> resource.id} }.to_json
     else
       render :nothing=> true
     end
@@ -92,7 +92,7 @@ class TasksController < ApplicationController
   def dependency
     dependency = Task.accessed_by(current_user).find_by_task_num(params[:dependency_id])
     render(:partial => "dependency",
-           :locals => { :dependency => dependency, :perms => {} })
+      :locals => { :dependency => dependency, :perms => {} })
   end
 
   def create
@@ -141,7 +141,7 @@ class TasksController < ApplicationController
   end
 
   def view
-      redirect_to :action => 'edit', :id => params[:id]
+    redirect_to :action => 'edit', :id => params[:id]
   end
 
   def edit
@@ -299,8 +299,8 @@ class TasksController < ApplicationController
     logger.info("Sending[#{filename}]")
 
     send_data(csv_string,
-              :type => 'text/csv; charset=utf-8; header=present',
-              :filename => filename)
+      :type => 'text/csv; charset=utf-8; header=present',
+      :filename => filename)
   end
 
   ###
@@ -344,7 +344,7 @@ class TasksController < ApplicationController
   end
 
   def add_users_for_client
-   @task = current_company_task_new
+    @task = current_company_task_new
     if params[:id].present?
       @task = controlled_model.accessed_by(current_user).find(params[:id])
     end
@@ -368,47 +368,57 @@ class TasksController < ApplicationController
 
   #standard desviation for average velocity points
   def velocity_deviation_for_client
-     if params[:milesonte_id].to_i > 0
-    desviation_velocity_points = 0
-    iteration = Milestone.find params[:milesonte_id].to_i
-    project = Project.find iteration.project_id
-    iterations_before = project.get_iterations_before(iteration.init_date)
-    total_points = Array.new
-    iterations_before.each do |iteration_s|
-      total_points << iteration_s.get_team_velocity
-    end
-    if total_points.size > 1
-    desviation_velocity_points = Statistics.standard_desviation(total_points)
-    res = desviation_velocity_points.to_s
+    if params[:milesonte_id].to_i > 0
+      desviation_velocity_points = 0
+      iteration = Milestone.find params[:milesonte_id].to_i
+      project = Project.find iteration.project_id
+      iterations_before = project.get_iterations_before(iteration.init_date)
+      total_points = Array.new
+      iterations_before.each do |iteration_s|
+        total_points << iteration_s.get_team_velocity
+      end
+      if total_points.size > 1
+        desviation_velocity_points = Statistics.standard_desviation(total_points)
+        res = desviation_velocity_points.to_s
+      else
+        res = "0"
+      end
     else
       res = "0"
-    end
-    else
-    res = "0"
     end
     render :text => res
   end
 
   def add_velocity_for_client
     if params[:milesonte_id].to_i > 0
-    average_velocity_points = 0
-    iteration = Milestone.find params[:milesonte_id].to_i
-    project = Project.find iteration.project_id
-    iterations_before = project.get_iterations_before(iteration.init_date)
-    total_points = Array.new
-    iterations_before.each do |iteration_s|
-      total_points << iteration_s.total_points
-    end
-    if total_points.size > 0
-    average_velocity_points = Statistics.mean(total_points)
-    res = average_velocity_points.to_s
+      average_velocity_points = 0
+      iteration = Milestone.find params[:milesonte_id].to_i
+      project = Project.find iteration.project_id
+      iterations_before = project.get_iterations_before(iteration.init_date)
+      total_points = Array.new
+      iterations_before.each do |iteration_s|
+        total_points << iteration_s.total_points
+      end
+      if total_points.size > 0
+        average_velocity_points = Statistics.mean(total_points)
+        res = average_velocity_points.to_s
+      else
+        res = "0"
+      end
     else
       res = "0"
     end
-    else
-    res = "0"
-    end
     render :text => res
+  end
+
+  def add_points_per_hour_client
+    if params[:milesonte_id].to_i > 0
+      iteration = Milestone.find params[:milesonte_id].to_i
+      initial_convertion = iteration.project.estimation_setting.points_per_hour
+      project = Project.find iteration.project_id
+      iterations_before = project.get_iterations_before(iteration.init_date)
+      
+    end
   end
 
   def add_client_for_project
@@ -417,7 +427,7 @@ class TasksController < ApplicationController
 
     if project
       res = render_to_string(:partial => "tasks/task_customer",
-                             :object => project.customer)
+        :object => project.customer)
     end
 
     render :text => res
@@ -437,7 +447,7 @@ class TasksController < ApplicationController
     expire_fragment( %r{tasks\/#{task.id}-.*\/#{current_user.id}} )
     render :nothing => true
   end
-protected
+  protected
   def task_due_and_repeat_calculation(params, task, tz)
     if !params[:task].nil? && !params[:task][:due_at].nil? && params[:task][:due_at].length > 0
       repeat = task.parse_repeat(params[:task][:due_at])
@@ -447,9 +457,9 @@ protected
       else
         task.repeat = nil
         due_date = DateTime.strptime( params[:task][:due_at], current_user.date_format ) rescue begin
-                                                                                                    flash['notice'] = _('Invalid due date ignored.')
-                                                                                                    due_date = nil
-                                                                                                  end
+          flash['notice'] = _('Invalid due date ignored.')
+          due_date = nil
+        end
         task.due_at = tz.local_to_utc(due_date.to_time) unless due_date.nil?
       end
     else
@@ -478,7 +488,7 @@ protected
     @projects = current_user.projects.find(:all, :order => 'name', :conditions => ["completed_at IS NULL"]).collect {  |c|
       [ "#{c.name} / #{c.customer.name}", c.id ] if current_user.can?(c, 'create')
     }.compact unless current_user.projects.nil?
-      @tags = Tag.top_counts(current_user.company)
+    @tags = Tag.top_counts(current_user.company)
   end
   ###
   # Sets up the global variables needed to display the _form partial.
@@ -495,7 +505,7 @@ protected
     @ajax_task_links = true
   end
 
-################################################
+  ################################################
   def task_due_changed(old_task, task)
     if old_task.due_at != task.due_at
       old_name = "None"
@@ -515,9 +525,9 @@ protected
     (old_task.description != task.description) ? "- Description changed\n".html_safe : ""
   end
   def task_duration_changed(old_task, task)
-     (old_task.duration != task.duration) ? "- Estimate: #{worked_nice(old_task.duration).strip} -> #{worked_nice(task.duration)}\n".html_safe : ""
+    (old_task.duration != task.duration) ? "- Estimate: #{worked_nice(old_task.duration).strip} -> #{worked_nice(task.duration)}\n".html_safe : ""
   end
-############### This methods extracted to make Template Method design pattern #############################################3
+  ############### This methods extracted to make Template Method design pattern #############################################3
   def current_company_task_new
     task=Task.new
     task.company=current_user.company
@@ -578,7 +588,7 @@ protected
 
     new_deps = @task.dependencies.collect { |t| "[#{t.issue_num}] #{t.name}"}.sort.join(", ")
     if @old_deps != new_deps
-       body << "- Dependencies: #{(new_deps.length > 0) ? new_deps : _("None")}"
+      body << "- Dependencies: #{(new_deps.length > 0) ? new_deps : _("None")}"
     end
 
     worklog = WorkLog.new

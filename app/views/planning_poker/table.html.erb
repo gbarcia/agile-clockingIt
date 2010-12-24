@@ -73,11 +73,18 @@
           }
         }
 
+        var showVote = function (data) {
+          
+        }
+
         jug.subscribe("chat-<%= @game.id %>", function(data){
           chat(data);
         });
         jug.subscribe("list-<%= @game.id %>", function(data){
           status(data);
+        });
+        jug.subscribe("vote-<%= @game.id %>", function(data){
+          showVote(data);
         });
 
         jug.on("connect", function(){

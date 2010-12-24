@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101221185849) do
+ActiveRecord::Schema.define(:version => 20101224183104) do
 
   create_table "access_levels", :force => true do |t|
     t.string   "name"
@@ -142,6 +142,7 @@ ActiveRecord::Schema.define(:version => 20101221185849) do
     t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.float    "points_per_hour", :default => 0.5
   end
 
   create_table "event_logs", :force => true do |t|

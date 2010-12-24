@@ -226,6 +226,7 @@ class Milestone < ActiveRecord::Base
     return (spi * 10**2).round.to_f / 10**2 #round two decimals
   end
 
+
   def due_date
     unless @due_date
       if due_at.nil?

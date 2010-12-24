@@ -3,6 +3,7 @@
 <label for="estimation_setting_expertjudgment"><%=_ 'Expert Judgment Points' %></label><%= text_field 'estimation_setting', 'expert_judgment'  %><br/>
 <label for="estimation_setting_velocity"><%=_ 'Team Velocity Points' %></label><%= text_field 'estimation_setting', 'velocity'  %><br/>
 <label for="estimation_setting_planning_poker"><%=_ 'Planning Pojer Points' %></label><%= text_field 'estimation_setting', 'planning_poker' %><br/>
+<label for="estimation_setting_points_per_hour"><%=_ 'Initial Points/Hour' %></label><%= text_field 'estimation_setting', 'points_per_hour' %><br/>
 
 <%= hidden_field_tag "estimation_setting[project_id]", @estimation_setting.project_id %>
 
