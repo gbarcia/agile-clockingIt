@@ -2923,11 +2923,8 @@ select#chngroup {
 .planning-poker-card {
     -moz-border-radius: 5px;
     border: 1px solid #ccc;
-    margin: 5px;
     height: 100px;
     width: 70px;
-    float: left;
-    display: inline;
 }
 
 .planning-poker-card .inner {
@@ -2939,18 +2936,17 @@ select#chngroup {
 }
 
 .planning-poker-card .back {
-    background-color: #eee;
+    background-image: url(/images/card-back.png);
+}
+
+.planning-poker-card .back img {
+    margin: 26px 2px 32px 15px;
 }
 
 .planning-poker-card .front {
     line-height: 90px;
     text-align: center;
     font-size: 30px;
-}
-
-.planning-poker-card .inner .logo {
-    margin-left: 15px;
-    margin-top: 26px;
 }
 
 #select-vote a {

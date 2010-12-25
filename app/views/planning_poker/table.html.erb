@@ -6,13 +6,15 @@
         <div class="planning-poker-card-wrapper">
           <div class="planning-poker-card">
             <div class="inner back">
-              <img class="logo" src="/images/card.png" alt=""/>
+              <img src="/images/card.png" alt=""/>
             </div>
             <div class="inner front" style="visibility: hidden">
               <%= planning_poker_vote.vote %>
             </div>
           </div>
-          <center><%=get_user_name(planning_poker_vote.user_id)%></center>
+          <center><b>
+              <%=get_user_name(planning_poker_vote.user_id)%>
+            </b></center>
         </div>
       <%end%>
     </td>
@@ -33,18 +35,18 @@
   <tr>
     <td>
       <div id="select-vote">
-        <a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(0);">0</div></div></a>
-        <a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(0.5);">0.5</div></div></a>
-        <a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(1);">1</div></div></a>
-        <a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(2);">2</div></div></a>
-        <a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(3);"">3</div></div></a>
-        <a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(5);">5</div></div></a>
-        <a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(8);">8</div></div></a>
-        <a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(13);">13</div></div></a>
-        <a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(20);">20</div></div></a>
-        <a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(40);">40</div></div></a>
-        <a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(100);">100</div></div></a>
-        <a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(-1);">?</div></div></a>
+        <div class="planning-poker-card-wrapper"><a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(0);">0</div></div></a></div>
+        <div class="planning-poker-card-wrapper"><a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(0.5);">&frac12;</div></div></a></div>
+        <div class="planning-poker-card-wrapper"><a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(1);">1</div></div></a></div>
+        <div class="planning-poker-card-wrapper"><a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(2);">2</div></div></a></div>
+        <div class="planning-poker-card-wrapper"><a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(3);"">3</div></div></a></div>
+        <div class="planning-poker-card-wrapper"><a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(5);">5</div></div></a></div>
+        <div class="planning-poker-card-wrapper"><a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(8);">8</div></div></a></div>
+        <div class="planning-poker-card-wrapper"><a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(13);">13</div></div></a></div>
+        <div class="planning-poker-card-wrapper"><a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(20);">20</div></div></a></div>
+        <div class="planning-poker-card-wrapper"><a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(40);">40</div></div></a></div>
+        <div class="planning-poker-card-wrapper"><a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(100);">100</div></div></a></div>
+        <div class="planning-poker-card-wrapper"><a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(-1);">?</div></div></a></div>
       </div>
     </td>
   </tr>
