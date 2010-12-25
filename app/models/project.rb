@@ -259,6 +259,13 @@ class Project < ActiveRecord::Base
     iterations = Milestone.find(:all, :conditions => ["due_at < ?",date_before])
     return iterations
   end
+i = Milestone.find 3
+
+   # return first iteration before a paramater date
+  def get_iteration_before (date_before)
+    iterations = Milestone.find(:all, :conditions => ["due_at < ?",date_before], :order => "init_date DESC")
+    return iterations[0]
+  end
 
   #boolean return if currency for project if change
   def currency_change? (new_currency_iso_code)

@@ -411,16 +411,6 @@ class TasksController < ApplicationController
     render :text => res
   end
 
-  def add_points_per_hour_client
-    if params[:milesonte_id].to_i > 0
-      iteration = Milestone.find params[:milesonte_id].to_i
-      initial_convertion = iteration.project.estimation_setting.points_per_hour
-      project = Project.find iteration.project_id
-      iterations_before = project.get_iterations_before(iteration.init_date)
-      
-    end
-  end
-
   def add_client_for_project
     project = current_user.projects.find(params[:project_id])
     res = ""

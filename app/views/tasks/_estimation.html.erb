@@ -1,5 +1,5 @@
 <fieldset id="task_project_selection">
-   <legend><%=_ "Estimation:"%></legend>
+  <legend><%=_ "Estimation Points:"%></legend>
   <% if current_user.option_tracktime.to_i == 1 %>
     <label for="task_points_expert_judgment"><%=_ 'Points' %></label>
     <%= text_field 'task', 'points_expert_judgment', {:size => 12, :value => @task.points_expert_judgment, :class => 'tooltip', :title => _('Expert Judgment Points')} %>
@@ -9,16 +9,11 @@
     <label for="task_points_planning_poker"><%=_ 'Planning Poker Points' %></label>
     <%= text_field 'task', 'points_planning_poker', {:size => 12, :value => @task.points_planning_poker, :class => 'tooltip', :readonly => true, :title => _('Planning Poker Points')} %>
     <% if controller.action_name != 'new' %>
-  <% if current_user.is_leader_for?( Project.find(selected_project)) %>
-    <span id="play_planning_poker"><a href="/planning_poker/config?us_id=<%= @task.id.to_s %> "><img alt=""title="Go to play"src="/images/add.png" style="margin-top: 2px;padding:4px 0 0 0;cursor:pointer"/></a></span>
-    <% end %>
-    <%end%>
-    <label for="task_duration"><%=_ 'Time Estimate' %></label>
-    <%= text_field 'task', 'duration', {:size => 12, :value => (@task.duration.to_i > 0 ? worked_nice(@task.duration) : ""), :class => 'tooltip', :title => _('2w 3d 1h')} %><br/>
-  <% else %>
-    <%= hidden_field_tag "task[duration]", "#{(@task.duration.to_i > 0 ? worked_nice(@task.duration) : "")}" %>
-  <% end %>
-
-  <label for="due_at"><%=_ 'Due Date' %></label>
-  <%= due_date_field(@task, perms) %>
+      <% if current_user.is_leader_for?( Project.find(selected_project)) %>
+        <span id="play_planning_poker"><a href="/planning_poker/config?us_id=<%= @task.id.to_s %> "><img alt=""title="Go to play"src="/images/add.png" style="margin-top: 2px;padding:4px 0 0 0;cursor:pointer"/></a></span>
+          <% end %>
+        <%end%>
+         <label for="task_total_points"><%=_ 'Total Points' %></label>
+        <%= text_field 'task', 'total_points', {:size => 12, :value => @task.total_points, :class => 'tooltip', :title => _('Total calculate estimation points')} %>
+      <%end%>
 </fieldset>

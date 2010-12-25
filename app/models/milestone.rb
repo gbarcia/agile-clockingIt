@@ -1,4 +1,5 @@
 require 'simile_timeline'
+require 'business_time'
 # Logical grouping of tasks from one project.
 #
 # Can have a due date, and be completed
@@ -98,7 +99,7 @@ class Milestone < ActiveRecord::Base
     tasks = self.tasks
     tasks.each do |task|
       if task.closed?
-      total_points += task.total_points
+        total_points += task.total_points
       end
     end
     return total_points
@@ -226,6 +227,34 @@ class Milestone < ActiveRecord::Base
     return (spi * 10**2).round.to_f / 10**2 #round two decimals
   end
 
+  def points_per_hour
+    last_iteration = self.project.get_iteration_before(self.init_date)
+    if !last_iteration.nil?
+      worked_minutes = last_iteration.worked_minutes
+      total_points = last_iteration.get_total_points
+      if worked_minutes <= 0
+        worked_minutes = get_iterations_days
+      end
+      return ((total_points/worked_minutes).to_f / 60.to_f ).to_f
+    else
+      return self.project.estimation_setting.points_per_hour
+    end
+  end
+
+  def get_total_points
+    total_points = 0.0
+    self.tasks.each do |task|
+      total_points += task.total_points
+    end
+    return total_points
+  end
+
+  def get_iterations_days
+    init_date_business_format = Date.parse(self.init_date.to_s)
+    due_date_business_format = Date.parse(self.due_date.to_s)
+    return init_date_business_format.business_days_until(due_date_business_format)
+  end
+  
 
   def due_date
     unless @due_date
