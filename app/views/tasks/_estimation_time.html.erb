@@ -4,7 +4,7 @@
     <label for="task_points_per_hour"><%=_ 'Points per hour' %></label>
     <%= text_field 'extra', 'points_per_hour', {:size => 12, :value => (@task.milestone.points_per_hour  unless @task.milestone.nil?), :readonly => true, :class => 'tooltip', :title => _('Points per hour team')} %>
     <label for="task_duration"><%=_ 'Time Estimate' %></label>
-    <%= text_field 'task', 'duration', {:size => 12, :value => (@task.duration.to_i > 0 ? worked_nice(@task.duration) : ""), :class => 'tooltip', :title => _('2w 3d 1h')} %><br/>
+    <%= text_field 'task', 'duration', {:size => 12, :value => (@task.duration.to_i > 0 && !@task.milestone.nil? ? calculate_duration_base_points(@task.total_points,@task.milestone_id) : ""), :class => 'tooltip', :title => _('2w 3d 1h')} %><br/>
   <% else %>
     <%= hidden_field_tag "task[duration]", "#{(@task.duration.to_i > 0 ? worked_nice(@task.duration) : "")}" %>
   <% end %>

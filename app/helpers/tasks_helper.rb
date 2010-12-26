@@ -1,4 +1,5 @@
 module TasksHelper
+  include Misc
 
   def render_task_dependants(t, depth, root_present)
     res = ""
@@ -296,4 +297,17 @@ module TasksHelper
     cols << ["Not Grouped", "clear"]
     return options_for_select(cols, current_user.preference('task_grouping'))
   end
+
+  def worked_nice(minutes)
+    format_duration(minutes, current_user.duration_format, current_user.workday_duration, current_user.days_per_week)
+  end
+
+  def calculate_duration_base_points(points, iteration_id)
+    iteration = Milestone.find iteration_id
+    points_per_hour = iteration.points_per_hour
+    points_per_minutes = points_per_hour * 60
+    result = points / points_per_minutes
+    return worked_nice(result)
+  end
+
 end

@@ -235,7 +235,7 @@ class Milestone < ActiveRecord::Base
       if worked_minutes <= 0
         worked_minutes = get_iterations_days
       end
-      return ((total_points/worked_minutes).to_f / 60.to_f ).to_f
+      return ((((total_points/worked_minutes).to_f / 60.to_f ).to_f) * 10**2).round.to_f / 10**2 #round two decimals
     else
       return self.project.estimation_setting.points_per_hour
     end
