@@ -29,7 +29,7 @@
       <%= javascript_include_tag 'jquery-ui.timepicker' -%>
     <% end %>
     <% if ['activities'].include? controller.controller_name %>
-      <!--[if IE]><%= javascript_include_tag "excanvas" %><![endif]-->
+          <!--[if IE]><%= javascript_include_tag "excanvas" %><![endif]-->
       <%= javascript_include_tag "builder", "portal", "flotr" %>
     <% end %>
 
@@ -45,13 +45,15 @@
     <%= stylesheet_link_tag "beast" if ['forums', 'posts', 'topics'].include? controller.controller_name %>
     <%= stylesheet_link_tag "print", { :media => "print" } %>
     <%= auto_discovery_link_tag(:rss, {:controller => 'feeds', :action => 'rss', :id => current_user.uuid }) %>
-    <script src="<%=("http://"+CONFIG[:server][:production]+":8080/application.js")%>" type="text/javascript" charset="utf-8"></script>
-    <script type="text/javascript" charset="utf-8">
-      var jug = new Juggernaut("<%=(CONFIG[:server][:production])%>");
-      jug.subscribe("user-channel-<%= current_user.id %>", function(data){
+    <% if (CONFIG[:server][:production].to_s != "0") %>
+      <script src="<%=("http://"+CONFIG[:server][:production]+":8080/application.js")%>" type="text/javascript" charset="utf-8"></script>
+      <script type="text/javascript" charset="utf-8">
+        var jug = new Juggernaut("<%=(CONFIG[:server][:production])%>");
+        jug.subscribe("user-channel-<%= current_user.id %>", function(data){
           alert(data);
         });
-    </script>
+      </script>
+    <%end%>
     <title><%= $CONFIG[:productName] %></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <%
@@ -104,11 +106,11 @@
 
     <%= periodically_call_remote(:url => { :controller => 'tasks', :action => 'update_sheet_info', :format => "js" }, :frequency => 90 ) -%>
     <script type="text/javascript" language="javascript" charset="utf-8">
-        // <![CDATA[
-        var userId=<%= current_user.id %>;
-        var useTooltips=<%= current_user.option_tooltips.to_i %>;
-        var userDateFormat="<%= current_user.dateFormat %>";
-        // ]]>
+      // <![CDATA[
+      var userId=<%= current_user.id %>;
+      var useTooltips=<%= current_user.option_tooltips.to_i %>;
+      var userDateFormat="<%= current_user.dateFormat %>";
+      // ]]>
     </script>
   </body>
 </html>
