@@ -3,7 +3,7 @@
 
 module Statistics
   def self.mean(array)
-    result = array.inject(0) {|sum, x| sum +=x } /array.size
+    result = array.inject(0) {|sum, x| sum +=x } /array.size.to_f
     return result.ceil
   end
 

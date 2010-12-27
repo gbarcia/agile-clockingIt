@@ -396,12 +396,16 @@ class TasksController < ApplicationController
       project = Project.find iteration.project_id
       iterations_before = project.get_iterations_before(iteration.init_date)
       total_points = Array.new
+      total_stories = Array.new
       iterations_before.each do |iteration_s|
-        total_points << iteration_s.total_points
+        total_points << iteration_s.total_points_execute
+        total_stories << iteration_s.total_task_execute
       end
-      if total_points.size > 0
+      if total_points.size > 0 && total_stories.size > 0
         average_velocity_points = Statistics.mean(total_points)
-        res = average_velocity_points.to_s
+        average_total_stories = Statistics.mean(total_stories)
+        result = (average_velocity_points.to_f / average_total_stories.to_f).ceil
+        res = result.to_s
       else
         res = "0"
       end
@@ -409,6 +413,42 @@ class TasksController < ApplicationController
       res = "0"
     end
     render :text => res
+  end
+
+  def calculate_duration_base_points_for_client
+    points_per_hour = params[:points_h].to_f
+    points_per_minutes = 0
+    if params[:milesonte_id].to_i > 0
+      if points_per_hour <= 0.0
+        iteration = Milestone.find params[:milesonte_id].to_i
+        points_per_hour = iteration.points_per_hour
+        points_per_minutes = points_per_hour / 60
+      else
+        points_per_minutes = points_per_hour / 60
+      end
+      result = params[:points].to_i / points_per_minutes
+      res =  worked_nice(result.ceil)
+    end
+    render :text => res
+  end
+
+  def calculate_total_estimate_points_for_client
+    if params[:project_id].to_i > 0
+      velocity_points = params[:vel_points].to_f
+      expert_points = params[:expert_points].to_f
+      pp_points = params[:pp_points].to_f
+      project_id = params[:project_id].to_i
+      res = calculate_total_estimation_points(expert_points, pp_points, velocity_points, project_id)
+    end
+    render :text => res
+  end
+
+  def calculate_total_estimation_points(expert_points,pp_points,velocity_points,project_id)
+    project = Project.find project_id
+    result = (expert_points * (project.estimation_setting.expert_judgment/100.to_f)) +
+      (velocity_points * (project.estimation_setting.velocity)/100.to_f) +
+      (pp_points * (project.estimation_setting.planning_poker)/100.to_f)
+    return result.to_i
   end
 
   def add_client_for_project
@@ -523,6 +563,7 @@ class TasksController < ApplicationController
     task.company=current_user.company
     return task
   end
+
   #this function abstract calls to model from  controller
   def controlled_model
     Task

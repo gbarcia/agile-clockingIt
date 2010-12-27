@@ -105,6 +105,16 @@ class Milestone < ActiveRecord::Base
     return total_points
   end
 
+  def total_task_execute
+    total_task = 0
+    self.tasks.each do |task|
+      if task.closed?
+        total_task += 1
+      end
+    end
+    return total_task
+  end
+
   #return total points due per iteration
   def get_team_velocity
     total_points = 0

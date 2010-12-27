@@ -107,17 +107,6 @@ class Task < AbstractTask
     self.worked_minutes = WorkLog.sum(:duration, :conditions => ["task_id = ?", self.id]).to_i / 60
   end
 
-  def calculate_total_estimation_points
-    project = self.project
-    expert_points = self.points_expert_judgment
-    velocity_points = self.points_team_velocity
-    pp_points = self.points_planning_poker
-    result = (expert_points * project.estimation_setting.expert_judgment) +
-      (velocity_points * project.estimation_setting.velocity) +
-      (pp_points * project.estimation_setting.planning_poker)
-      return result.to_i
-  end
-
   def minutes_left
     minutes_left_by self.duration
   end

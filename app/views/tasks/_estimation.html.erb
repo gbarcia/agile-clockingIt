@@ -15,5 +15,6 @@
         <%end%>
          <label for="task_total_points"><%=_ 'Total Points' %></label>
         <%= text_field 'task', 'total_points', {:size => 12, :value => @task.total_points, :class => 'tooltip', :title => _('Total calculate estimation points')} %>
+          <span id="calculate_total_points"><img id="i_calculate_total_points"alt=""title="Calcular total puntos" onclick="addTotalEstimatePointsCalc()" src="/images/calculate.png" style="margin-top: 2px;padding:4px 0 0 0;cursor:pointer"/></span>
       <%end%>
 </fieldset>

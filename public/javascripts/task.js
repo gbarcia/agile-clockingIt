@@ -109,6 +109,34 @@ function addVelocityToTask(milestoneId) {
     addVelocityDesviation("velocity_deviation_for_client", params)
 }
 
+function addTotalEstimatePointsCalc() {
+    var velocity = jQuery("#task_points_team_velocity").val();
+    var expert = jQuery("#task_points_expert_judgment").val();
+    var pp = jQuery("#task_points_planning_poker").val();
+    var project = jQuery("#task_project_id option:selected").val();
+    var url = tasks_path("calculate_total_estimate_points_for_client");
+    var params = {vel_points: velocity, expert_points: expert ,pp_points: pp ,project_id: project};
+    jQuery.get(url, params, function(data) {
+        jQuery("#task_total_points").val(data);
+    });
+}
+
+function addDurationToTask() {
+    var points = jQuery("#task_total_points").val();
+    var milestoneId = jQuery('#task_milestone_id option:selected').val();
+    var points_h = jQuery("#extra_points_per_hour").val();
+    var url = tasks_path("calculate_duration_base_points_for_client");
+    var params = {points: points, milesonte_id : milestoneId, points_h: points_h};
+    addDuration(url,params)
+}
+
+
+function addDuration(url,params) {
+    jQuery.get(url, params, function(data) {
+        jQuery("#task_duration").val(data);
+    });
+}
+
 function addVelocity(url, params){
     jQuery.get(url, params, function(data) {
         jQuery("#task_points_team_velocity").val(data);
