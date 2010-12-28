@@ -285,6 +285,43 @@ class Milestone < ActiveRecord::Base
     return total
   end
 
+  def real_business_value
+    total = 0
+    self.tasks.each do |task|
+      if task.closed?
+        total += task.business_value
+      end
+    end
+    return total
+  end
+
+  def benefist_cost_points
+    total_points = total_points_execute
+    total_business_value = real_business_value
+    if total_points > 0
+      result = total_business_value.to_f / total_points.to_f
+      return (result * 10**2).round.to_f / 10**2 #round two decimals
+    else
+      return 0
+    end
+  end
+
+  def benefist_cost_points_presentation
+    result = benefist_cost_points
+    return result.to_s + ":1"
+  end
+
+  def points_balance
+    total_points_planed = total_points
+    total_points_exe = total_points_execute
+    if total_points_exe > 0
+      result = total_points_exe.to_f / total_points_planed.to_f
+      return (result * 10**2).round.to_f / 10**2 #round two decimals
+    else
+      return 0
+    end
+  end
+
   def get_worked_minutes
     result = 0
     self.tasks.each do |task|

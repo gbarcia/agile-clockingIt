@@ -1,11 +1,14 @@
 <table class="content" id="points_table" width="100%" style="margin-left:0;margin-right:0;">
   <tr>
-    <th><%=_ 'Iterations' %></th>
+    <th title="Iteraciones"><%=_ 'Iterations' %></th>
     <th><%=_ 'Estimate' %></th>
     <th><%=_ 'Real' %></th>
     <th><%=_ 'Points/h' %></th>
-    <th><%=_ 'Earned Value' %></th>
-    <th><%=_ 'Business Value' %></th>
+    <th><%=_ 'Velocity' %></th>
+    <th><%=_ 'Planed Business Value' %></th>
+    <th><%=_ 'Real Business Value' %></th>
+    <th><%=_ 'Costo/Beneficio' %></th>
+    <th><%=_ 'Efectivity' %></th>
 
   </tr>
 
@@ -34,6 +37,15 @@
       <td>
         <%= iteration.total_business_value %>
       </td>
+      <td>
+        <%= iteration.real_business_value %>
+      </td>
+      <td>
+        <%= iteration.benefist_cost_points_presentation %>
+      </td>
+      <td>
+        <%= iteration.points_balance %>
+      </td>
     </tr>
     <%count = count + 1%>
   <% end %>
@@ -47,14 +59,23 @@
     <td>
       <%= @project.get_real_points %>
     </td>
-    <td>
-      <%= @project.total_points_execute %>
+    <td title="Promedio de puntos por hora en el proyecto con desviaci&oacute;n de <%= @project.desviation_points_per_hour%> ">
+      <%= @project.average_points_per_hour %>
     </td>
     <td>
       <%= @project.total_points_execute %>
     </td>
     <td>
       <%= @project.total_business_value %>
+    </td>
+    <td>
+      <%= @project.real_business_value %>
+    </td>
+    <td>
+      <%= @project.benefist_cost_points %>
+    </td>
+    <td>
+      <%= @project.points_balance %>
     </td>
   </tr>
 </table>

@@ -139,6 +139,54 @@ class Project < ActiveRecord::Base
     end
     return total
   end
+  
+  def real_business_value
+    total = 0
+    self.milestones.each do |iteration|
+      total += iteration.real_business_value
+    end
+    return total
+  end
+
+  def points_balance
+    total_points_planed = total_points
+    total_points_exe = total_points_execute
+    if total_points_exe > 0
+      result = total_points_exe.to_f / total_points_planed.to_f
+      return (result * 10**2).round.to_f / 10**2 #round two decimals
+    else
+      return 0
+    end
+  end
+
+  def average_points_per_hour
+    points_per_hour_list = Array.new
+    self.milestones.each do |iteration|
+      points_per_hour_list << iteration.points_per_hour_iteration
+    end
+    average_result = Statistics.mean(points_per_hour_list)
+    return average_result
+  end
+  
+  def desviation_points_per_hour
+    points_per_hour_list = Array.new
+    self.milestones.each do |iteration|
+      points_per_hour_list << iteration.points_per_hour_iteration
+    end
+    result = Statistics.standard_desviation(points_per_hour_list)
+    return result
+  end
+
+  def benefist_cost_points
+    total_points = total_points_execute
+    total_business_value = real_business_value
+    if total_points > 0
+      result = total_business_value.to_f / total_points.to_f
+       return ((result * 10**2).round.to_f / 10**2).to_s + ":1" #round two decimals
+    else
+      return "0:1"
+    end
+  end
 
   ###
   # Updates the critical, normal and low counts for this project.
