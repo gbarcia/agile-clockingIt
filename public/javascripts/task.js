@@ -109,6 +109,14 @@ function addVelocityToTask(milestoneId) {
     addVelocityDesviation("velocity_deviation_for_client", params)
 }
 
+function addPointsPerHourToTask(milestoneId) {
+    var url = tasks_path("present_points_per_hour_to_client");
+    var params = {milesonte_id : milestoneId};
+     jQuery.get(url, params, function(data) {
+        jQuery("#extra_points_per_hour").val(data);
+    });
+}
+
 function addTotalEstimatePointsCalc() {
     var velocity = jQuery("#task_points_team_velocity").val();
     var expert = jQuery("#task_points_expert_judgment").val();

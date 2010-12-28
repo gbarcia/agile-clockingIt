@@ -432,6 +432,14 @@ class TasksController < ApplicationController
     render :text => res
   end
 
+  def present_points_per_hour_to_client
+    if params[:milesonte_id].to_i > 0
+      iteration = Milestone.find params[:milesonte_id].to_i
+      res = iteration.points_per_hour
+    end
+    render :text => res
+  end
+
   def calculate_total_estimate_points_for_client
     if params[:project_id].to_i > 0
       velocity_points = params[:vel_points].to_f

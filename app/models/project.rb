@@ -116,6 +116,30 @@ class Project < ActiveRecord::Base
     open_milestones
   end
 
+  def total_points
+    total_points = 0
+    self.milestones.each do |iteration|
+      total_points += iteration.total_points
+    end
+    return total_points
+  end
+
+  def total_points_execute
+    total_points = 0
+    self.milestones.each do |iteration|
+      total_points += iteration.total_points_execute
+    end
+    return total_points
+  end
+
+  def total_business_value
+    total = 0
+    self.milestones.each do |iteration|
+      total += iteration.total_business_value
+    end
+    return total
+  end
+
   ###
   # Updates the critical, normal and low counts for this project.
   # Also updates open and total tasks.
@@ -175,6 +199,18 @@ class Project < ActiveRecord::Base
       total_ev = 0.0
     end
     return (total_ev * 10**2).round.to_f / 10**2 #round two decimals
+  end
+
+  def get_real_points
+    total_ev = 0.0
+    iterations = self.milestones
+    iterations.each do |iteration|
+      total_ev += iteration.get_real_points
+    end
+    if total_ev.nan? || total_ev.infinite?
+      total_ev = 0.0
+    end
+    return total_ev
   end
 
   #return the cost/benefist ratio
@@ -259,7 +295,6 @@ class Project < ActiveRecord::Base
     iterations = Milestone.find(:all, :conditions => ["due_at < ?",date_before])
     return iterations
   end
-i = Milestone.find 3
 
    # return first iteration before a paramater date
   def get_iteration_before (date_before)
@@ -271,8 +306,6 @@ i = Milestone.find 3
   def currency_change? (new_currency_iso_code)
     return (new_currency_iso_code != self.currency_iso_code)
   end
-
-
 end
 
 

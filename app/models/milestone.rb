@@ -159,6 +159,19 @@ class Milestone < ActiveRecord::Base
     end
   end
   
+  def get_real_points
+    if self.id
+      total_ev = 0.0
+      user_stories = self.tasks
+      user_stories.each do |user_story|
+        if user_story.closed?
+          total_ev += ((user_story.duration / 60.0) * self.points_per_hour) rescue 0
+        end
+      end
+      return total_ev
+    end
+  end
+  
   # get the balance of estimate cost and real cost in percent
   def get_balance
     estimate_cost = get_estimate_cost
@@ -240,15 +253,44 @@ class Milestone < ActiveRecord::Base
   def points_per_hour
     last_iteration = self.project.get_iteration_before(self.init_date)
     if !last_iteration.nil?
-      worked_minutes = last_iteration.worked_minutes
+      worked_minutes = last_iteration.get_worked_minutes
       total_points = last_iteration.get_total_points
       if worked_minutes <= 0
-        worked_minutes = get_iterations_days
+        worked_minutes = last_iteration.get_iterations_days * 480 #horas y dias habiles de conversion
       end
-      return ((((total_points/worked_minutes).to_f / 60.to_f ).to_f) * 10**2).round.to_f / 10**2 #round two decimals
+      return (((total_points/(worked_minutes/60.to_f)).to_f ) * 10**2).round.to_f / 10**2 #round two decimals
     else
       return self.project.estimation_setting.points_per_hour
     end
+  end
+  
+  def points_per_hour_iteration
+    if !self.nil?
+      worked_minutes = self.get_worked_minutes
+      total_points = self.get_total_points
+      if worked_minutes <= 0
+        worked_minutes = get_iterations_days * 480 # horas y dias habiles de conversion
+      end
+      return (((total_points/(worked_minutes/60.to_f)).to_f ) * 10**2).round.to_f / 10**2 #round two decimals
+    else
+      return self.project.estimation_setting.points_per_hour
+    end
+  end
+
+  def total_business_value
+    total = 0
+    self.tasks.each do |task|
+      total += task.business_value
+    end
+    return total
+  end
+
+  def get_worked_minutes
+    result = 0
+    self.tasks.each do |task|
+      result += task.worked_minutes
+    end
+    return result
   end
 
   def get_total_points

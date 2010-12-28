@@ -455,6 +455,7 @@ function attach_behaviour_to_milestone_select() {
         milestoneSelect.change(function(){
             milestoneId=jQuery('#task_milestone_id option:selected').val();
             addVelocityToTask(milestoneId);
+            addPointsPerHourToTask(milestoneId);
         });
     }
 }
