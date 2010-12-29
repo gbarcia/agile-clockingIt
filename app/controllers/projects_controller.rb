@@ -253,10 +253,26 @@ class ProjectsController < ApplicationController
     @completed_projects = current_user.completed_projects.find(:all)
   end
 
+  def config_full_report
+    @project_id = params[:id_prj].to_i
+    render :layout => false
+  end
+
   def full_report
     @project = Project.find params[:id_prj].to_i
     iterations = @project.milestones
 
+    #form configuration
+    @general_aspects = params[:general_aspects]
+    @financial_aspects = params[:financial_aspects]
+    @points_aspects = params[:points_aspects]
+    @earned_value = params[:earned_value]
+    @ev_vs_vp = params[:ev_vs_vp]
+    @velocity = params[:velocity]
+    @type = params[:type]
+    @business = params[:business]
+    @roi = params[:roi]
+    
     #Earned Value report
     values_col_ev =  Array.new
     @currency_ev = @project.currency_iso_code
@@ -345,6 +361,85 @@ class ProjectsController < ApplicationController
     @mid_4_v = (@mid_v.to_i + acum).to_s
     @mid_5_v = (@mid_4_v.to_i + acum).to_s
     #end team velocity report
+
+    #types history
+    project = @project
+    values_col_t = Array.new
+    @task_type = project.tasks.find_all_by_type("Task").count
+    values_col_t << @task_type
+    @epic_type =  project.tasks.find_all_by_type("Epic").count
+    values_col_t << @epic_type
+    @improvement_type =  project.tasks.find_all_by_type("Improvement").count
+    values_col_t << @improvement_type
+    @nf_type =  project.tasks.find_all_by_type("New Feature").count
+    values_col_t << @nf_type
+    @defect_type =  project.tasks.find_all_by_type("New Feature").count
+    values_col_t << @defect_type
+    @max_t = Statistics.greather_num(values_col_t) > 0 ? Statistics.greather_num(values_col_t).to_s : 100.to_s
+    @mid_t = (@max_t.to_i / 2).ceil.to_s
+    #end types_history
+
+    #business value
+    project = @project
+    iterations_bus = project.milestones
+    values_col_bus =  Array.new
+    values_bvp = ""
+    values_ep = ""
+    values_er = ""
+    @iterations = ""
+    count = 1
+    iterations.each do |i|
+      if i.total_points > 0
+        values_col_bus << i.total_points
+        values_col_bus << i.total_points_execute
+        values_col_bus << i.real_business_value
+        values_bvp += i.real_business_value > 0 ? (i.real_business_value).to_s : 0.to_s
+        values_ep += i.total_points > 0 ? (i.total_points).to_s : 0.to_s
+        values_er += i.total_points_execute > 0 ? (i.total_points_execute).to_s : 0.to_s
+        if count < iterations.size
+          values_bvp += ","
+          values_ep += ","
+          values_er += ","
+        end
+        @iterations += "|Iter" + count.to_s+ "|"
+        count = count + 1
+      end
+    end
+    @values_bus = values_bvp.chop + '|' + values_ep.chop + '|' + values_er.chop
+    @max_bus = Statistics.greather_num(values_col_bus) > 0 ? Statistics.greather_num(values_col_bus).to_s : 1000.to_s
+    acum = @max_bus.to_i / 6
+    @mid_bus = (@max_bus.to_i / 2).ceil.to_s
+    @mid_1_bus = acum.to_s
+    @mid_2_bus = (@mid_1_bus.to_i + acum).to_s
+    @mid_4_bus = (@mid_bus.to_i + acum).to_s
+    @mid_5_bus = (@mid_4_bus.to_i + acum).to_s
+    #end business_value
+
+    #roi
+    project = @project
+    iterations = project.milestones
+    values_col =  Array.new
+    @currency = project.currency_iso_code
+    @values_roi = "";
+    @iterations = "";
+    count = 1
+    iterations.each do |i|
+      values_col << i.get_roi
+      @values_roi += i.get_roi > 0 ? (i.get_roi).to_s : 0.to_s
+      if count < iterations.size
+        @values_roi += ","
+      end
+      @iterations += "|Iter" + count.to_s+ "|"
+      count = count + 1
+    end
+    @max = Statistics.greather_num(values_col) > 0 ? Statistics.greather_num(values_col).to_s : 1000.to_s
+    acum = @max.to_i / 6
+    @mid = (@max.to_i / 2).ceil.to_s
+    @mid_1 = acum.to_s
+    @mid_2 = (@mid_1.to_i + acum).to_s
+    @mid_4 = (@mid.to_i + acum).to_s
+    @mid_5 = (@mid_4.to_i + acum).to_s
+    #end roi
 
     render :layout => false
   end

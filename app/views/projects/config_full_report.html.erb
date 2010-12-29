@@ -1,0 +1,30 @@
+<%= stylesheet_link_tag "print", { :media => "print" } %>
+<%= stylesheet_link_tag("application") %>
+<%= image_tag("logo.gif", :alt => "logo" ) %>
+<h1>Configuracion del reporte</h1>
+<p>Seleccione los aspectos, tablas y gr&aacute;ficos a mostrar:</p>
+<form action="/projects/full_report">
+  <fieldset>
+    <legend>Aspectos</legend>
+  <input type="hidden" name="id_prj" value="<%= @project_id %> "/>
+  <p><label>Aspectos Generales</label>
+    <input type="checkbox" name="general_aspects"  checked="1"/></p><br/>
+  <p><label>Tabla de resumen financiero</label>
+    <input type="checkbox" name="financial_aspects" checked="1"/></p><br/>
+  <p><label>Tabla de resumen en puntos</label>
+  <input type="checkbox" name="points_aspects"/></p><br/>
+  <p><label>Gr&aacute;fico de valor ganado</label>
+  <input type="checkbox" name="earned_value"/></p><br/>
+  <p><label>Gr&aacute;fico de valor ganado Vs valor planeado</label>
+  <input type="checkbox" name="ev_vs_vp"/></p><br/>
+  <p><label>Gr&aacute;fico de velocidad del equipo</label>
+  <input type="checkbox" name="velocity"/></p><br/>
+  <p><label>Gr&aacute;fico de tipos de historias de usuario</label>
+    <input type="checkbox" name="type" checked="1"/></p><br/>
+  <p><label>Gr&aacute;fico de valor de negocio Vs Esfuerzo en puntos</label>
+    <input type="checkbox" name="business"checked="1"/></p><br/>
+  <p><label>Gr&aacute;fico de tasa interna de retorno</label>
+  <input type="checkbox" name="roi"/></p><br/>
+  <p><%= submit_tag _("Continuar"), :class => 'nolabel' %></p>
+  </fieldset>
+</form>

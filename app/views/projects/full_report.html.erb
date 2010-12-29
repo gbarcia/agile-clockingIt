@@ -20,22 +20,25 @@
 <%=link_to_function("Imprimir", "javascript:print()")%>
 </div>
 <hr  width="90%" size="3" align="left"noshade />
-<h2>1. Aspectos Generales</h2>
-<h3>1.1 Calendario</h3>
+<% if @general_aspects == 'on' %>
+<h2>Aspectos Generales</h2>
+<h3>Calendario</h3>
 <p>Porcentaje realizado:<%= done_percent.ceil.to_s + "%" %> </p>
 <p>Iteraciones por ejecutar:<%= @project.open_milestones_count.to_s + " / " + @project.total_milestones_count.to_s  %> </p>
 <p>Historias de usuario por realizar:<%= @project.open_tasks_count.to_s + " / " + @project.total_tasks_count.to_s  %></p>
 <p>Fecha estimada de culminaci&oacute;n:<%= @project.end_date_estimate.strftime('%d/%m/%G') %> </p>
 <p>Variaci&oacute;n en agenda:<%= " " + @project.variaton_schedule.to_s + " " + @project.currency_iso_code %> </p>
 <p>Desviaci&oacute;n en agenda:<%= @project.percent_desviation.to_s + " %"%> </p>
-<h3>1.2 Costos</h3>
+<h3>Costos</h3>
 <p>Presupuesto estimado:<%= @project.get_estimate_cost.to_s + " " + @project.currency_iso_code%> </p>
 <p>Presupuesto gastado: <%= @project.get_real_cost.to_s + " " + @project.currency_iso_code%></p>
 <p>Presupuesto trabajado: <%=@project.get_earned_value.to_s + " " + @project.currency_iso_code%></p>
 <p>Costo/Beneficio: <%=  @project.get_cost_benefis_ratio.to_s + ":1" %></p>
 <p>Retorno de Inversi&oacute;n: <%=  @project.get_roi.to_s + " %" %></p>
 <p>Variaci&oacute;n en costos: <%=  @project.variation_cost.to_s + " " + @project.currency_iso_code %></p>
-<h2>2. Detalles por Iteraci&oacute;n</h2>
+<% end %>
+<%  if @financial_aspects == 'on' %>
+<h2>Detalles Financieros por Iteraci&oacute;n</h2>
 <div>
   <table class="content" id="finance_table" width="100%" style="margin-left:0;margin-right:0;">
   <tr>
@@ -132,8 +135,96 @@
   </tr>
 </table>
 </div>
-<h2>3. Gr&aacute;ficos</h2>
-<h3>3.1 Valor Ganado</h3>
+<%end%>
+<% if @points_aspects == 'on' %>
+<h2>Detalles en puntos por iteracion</h2>
+<div>
+  <table class="content" id="points_table" width="100%" style="margin-left:0;margin-right:0;">
+  <tr>
+    <th title="Iteraciones"><%=_ 'Iterations' %></th>
+    <th><%=_ 'Estimate' %></th>
+    <th><%=_ 'Real' %></th>
+    <th><%=_ 'Points/h' %></th>
+    <th><%=_ 'Velocity' %></th>
+    <th><%=_ 'Planed Business Value' %></th>
+    <th><%=_ 'Real Business Value' %></th>
+    <th><%=_ 'Costo/Beneficio' %></th>
+    <th><%=_ 'Efectivity' %></th>
+
+  </tr>
+
+  <% count = 1  %>
+  <% @project.milestones.each do |iteration| %>
+    <% if count % 2 == 0 %>
+      <tr id="add_user" class="row_stripe" style="text-align: right">
+      <% else %>
+      <tr id="add_user" style="text-align: right">
+      <% end %>
+      <td style="text-align: center">
+        <%= 'Iteration ' + count.to_s %>
+      </td>
+      <td>
+        <%= iteration.total_points %>
+      </td>
+      <td>
+        <%= iteration.get_real_points %>
+      </td>
+      <td>
+        <%= iteration.points_per_hour_iteration %>
+      </td>
+      <td>
+        <%= iteration.total_points_execute %>
+      </td>
+      <td>
+        <%= iteration.total_business_value %>
+      </td>
+      <td>
+        <%= iteration.real_business_value %>
+      </td>
+      <td>
+        <%= iteration.benefist_cost_points_presentation %>
+      </td>
+      <td>
+        <%= iteration.points_balance %>
+      </td>
+    </tr>
+    <%count = count + 1%>
+  <% end %>
+  <tr style="text-align: right" class="row_total">
+    <td style="text-align: center">
+      <%= 'Total' %>
+    </td>
+    <td>
+      <%= @project.total_points %>
+    </td>
+    <td>
+      <%= @project.get_real_points %>
+    </td>
+    <td title="Promedio de puntos por hora en el proyecto con desviaci&oacute;n de <%= @project.desviation_points_per_hour%> ">
+      <%= @project.average_points_per_hour %>
+    </td>
+    <td>
+      <%= @project.total_points_execute %>
+    </td>
+    <td>
+      <%= @project.total_business_value %>
+    </td>
+    <td>
+      <%= @project.real_business_value %>
+    </td>
+    <td>
+      <%= @project.benefist_cost_points %>
+    </td>
+    <td>
+      <%= @project.points_balance %>
+    </td>
+  </tr>
+</table>
+</div>
+<%end%>
+<h2>Gr&aacute;ficos</h2>
+<% if @earned_value == 'on' %>
+<h3>Valor Ganado</h3>
 <div>
   <div style="padding-top: 10px"></div>
 <img src="<%=  ("http://chart.apis.google.com/chart?
@@ -149,7 +240,9 @@ chxl=0:" +
 "&chg=25,50
 &chls=2,4,0") %>" width="400" height="200" alt="" />
 </div>
-<h3>3.2 Valor ganado vs Valor planeado</h3>
+<% end %>
+<%if @ev_vs_vp == 'on'%>
+<h3>Valor ganado vs Valor planeado</h3>
 <div>
   <div style="padding-top: 10px"></div>
 <img src="<%=  ("http://chart.apis.google.com/chart?
@@ -166,7 +259,9 @@ chxl=0:|0|" + @mid_1_evpv +"|" + @mid_2_evpv + "|" +@mid_evpv + "|"+ @mid_4_evpv
 "&chdl=RC(" + @currency_evpv + ")|EV("+ @currency_evpv + ")|PV(" + @currency_evpv + ")&chg=16,16,5,0
 &chls=2|2|2")%>" width="420" height="200" alt="" />
 </div>
-<h3>3.3 Velocidad del equipo</h3>
+<% end %>
+<% if @velocity == 'on' %>
+<h3>Velocidad del equipo</h3>
 <div>
     <div style="padding-top: 10px"></div>
 <img src="<%=  ("http://chart.apis.google.com/chart?
@@ -183,3 +278,57 @@ chxl=0:|" + @iterations_v + "1:|0|" + @mid_1_v +"|" + @mid_2_v + "|" +@mid_v + "
 &chma=|10
 &chm=B,C6D9FD,0,0,0,-1|D,041541,0,-0.1,3|D,CD2020,1,-0.1,3,1")%>" width="420" height="200" alt="" />
 </div>
+<% end %>
+<% if @type == 'on' %>
+<h3>Tipos de historias de usuario</h3>
+<div>
+  <div style="padding-top: 10px"></div>
+  <img src="<%=  ("http://chart.apis.google.com/chart?
+chxl=0:|Iniciales|Epicas|Mejoras|Nuevas|Defectos|1:|0|" + @mid_t + "|" + @max_t +"&chxt=x,y
+&chbh=36,4,24
+&chs=420x200
+&cht=bvg
+&chco=76A4FB
+&chds=0," + @max_t +
+"&chd=t:" + @task_type.to_s + "," + @epic_type.to_s + "," + @improvement_type.to_s + "," + @nf_type.to_s + "," +@defect_type.to_s +
+"&chdl=HU
+&chg=20,50")%>" width="420" height="200" alt="" />
+</div>
+<% end %>
+<%  if @business == 'on'%>
+<h3>Valor de negocio Vs Esfuerzo en puntos</h3>
+<div>
+    <div style="padding-top: 10px"></div>
+<img src="<%=  ("http://chart.apis.google.com/chart?
+chxl=0:|0|" + @mid_1_bus +"|" + @mid_2_bus + "|" +@mid_bus + "|"+ @mid_4_bus + "|" + @mid_5_bus + "|" + @max_bus + "|1:" +
+@iterations +
+"&chxr=0,5,100
+&chxs=0,676767,11.5,0,lt,676767|1,676767,11.5,0,lt,676767
+&chxt=y,x
+&chs=420x200
+&cht=ls
+&chco=FF9900,224499,4582E7
+&chds=0," + @max_bus + ",0,"+ @max_bus + ",0," + @max_bus +
+"&chd=t:" + @values_bus +
+"&chdl= VN(puntos)|EP(puntos)|ER(puntos)&chg=16,16,5,0
+&chls=2|2|2")%>" width="420" height="200" alt="" />
+</div>
+<% end %>
+<% if @roi == 'on' %>
+<h3>Tasa interna de retorno</h3>
+<div>
+    <div style="padding-top: 10px"></div>
+<img src="<%=  ("http://chart.apis.google.com/chart?
+chxl=0:" +
+@iterations +
+"1:|0|"+ @mid_1 +"|" + @mid_2 + "|" +@mid + "|"+ @mid_4 + "|" + @mid_5 + "|" + @max +
+"&chxr=0,0,1|0,0,1&chxt=x,y&chs=400x200
+&cht=lc&chco=008000&chds=0," + @max +
+"&chd=t:" +
+@values_roi +
+"&chdl=" +
+@currency + "(%)" +
+"&chg=25,50
+&chls=2,4,0") %>" width="400" height="200" alt="" />
+</div>
+<% end %>
