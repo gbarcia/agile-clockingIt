@@ -1,0 +1,7 @@
+<%= "The game has not reach a consensus and should be repeated " %>
+<%= "User Story = " + @task.name %>
+<%= "Limit Date = " + @game.due_at.to_s %>
+<%= "Go to play => " + @user.company.site_URL + "/plannigpoker/table/" + @game.id.to_s %>
+
+-------------------->
+<%= $CONFIG[:productName] %>

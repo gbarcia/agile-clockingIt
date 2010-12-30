@@ -12,7 +12,7 @@
   jug.subscribe("user-channel-<%= current_user.id %>", function(data){
           jQuery.pnotify({
             pnotify_title: 'Invitacion Planning Poker',
-            pnotify_text: data
+            pnotify_text: 'Partida a jugar: ' + data
           });
         });
 </script>

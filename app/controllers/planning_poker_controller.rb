@@ -128,6 +128,8 @@ class PlanningPokerController < ApplicationController
       pvote.save!
     end
     Juggernaut.publish('repeat-' + game_id, 1)
+    actual_users_id = users_ids_for_game(game.planning_poker_votes)
+    send_repeat_notification(actual_users_id, game)
     render :nothing => true
   end
 
@@ -199,10 +201,19 @@ class PlanningPokerController < ApplicationController
       Notifications::deliver_planning_poker_invitation(game, task, user)
     end
   end
+  
+  def send_repeat_notification (id_users_to_play, game)
+    task = Task.find game.task_id
+    id_users_to_play.each do |id_user|
+      user = User.find id_user
+      Notifications::deliver_planning_poker_repeat(game, task, user)
+    end
+  end
+  
   def send_invitations_notify (id_users_to_play, game)
     task = Task.find game.task_id
     id_users_to_play.each do |id_user|
-      Juggernaut.publish('user-channel-' + id_user.to_s, task.id.to_s + '-' + game.id.to_s)
+      Juggernaut.publish('user-channel-' + id_user.to_s, task.name)
     end
   end
 
