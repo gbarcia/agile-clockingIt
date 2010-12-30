@@ -14,6 +14,7 @@
       <th><%=_ 'Acciones' %></th>
     </tr>
     <% @games_historial.each do |g| %>
+    <tr>
       <td>
         <%= g.id %>
       </td>
@@ -32,9 +33,10 @@
       <td>
         <a href="/planning_poker/table?id=<%=g.id%>"><img src="/images/time_go.png" alt="" title="Ir al juego"/></a>
         <% if user_is_leader_from_this_game?(g) %>
-         <a href="/planning_poker/config?us_id=<%=g.task.id%>"><img src="/images/edit.png" alt="" title="Editar"/></a>
+         <a href="/planning_poker/config?us_id=<%=g.task_id%>"><img src="/images/edit.png" alt="" title="Editar"/></a>
         <% end %>
       </td>
+      </tr>
     <% end %>
   </table>
 <% else %>

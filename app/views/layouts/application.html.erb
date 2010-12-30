@@ -24,12 +24,13 @@
       <%= javascript_include_tag 'http://simile.mit.edu/timeline/api/timeline-api.js' -%>
       <%= javascript_include_tag 'prototype' -%>
     <% end %>
+     <%= javascript_include_tag 'jquery.pnotify' %>
     <% if controller.controller_name == "planning_poker" %>
       <%= javascript_include_tag 'jquery-ui.slider' -%>
-      <%= javascript_include_tag 'jquery-ui.timepicker' -%>
+      <%= javascript_include_tag 'jquery-ui.timepicker' %>
     <% end %>
     <% if ['activities'].include? controller.controller_name %>
-          <!--[if IE]><%= javascript_include_tag "excanvas" %><![endif]-->
+            <!--[if IE]><%= javascript_include_tag "excanvas" %><![endif]-->
       <%= javascript_include_tag "builder", "portal", "flotr" %>
     <% end %>
 
@@ -44,14 +45,12 @@
     ) %>
     <%= stylesheet_link_tag "beast" if ['forums', 'posts', 'topics'].include? controller.controller_name %>
     <%= stylesheet_link_tag "print", { :media => "print" } %>
+    <%= stylesheet_link_tag "jquery.pnotify.default" %>
     <%= auto_discovery_link_tag(:rss, {:controller => 'feeds', :action => 'rss', :id => current_user.uuid }) %>
     <% if (CONFIG[:server][:production].to_s != "0") %>
       <script src="<%=("http://"+CONFIG[:server][:production]+":8080/application.js")%>" type="text/javascript" charset="utf-8"></script>
       <script type="text/javascript" charset="utf-8">
         var jug = new Juggernaut("<%=(CONFIG[:server][:production])%>");
-        jug.subscribe("user-channel-<%= current_user.id %>", function(data){
-          alert(data);
-        });
       </script>
     <%end%>
     <title><%= $CONFIG[:productName] %></title>
@@ -69,8 +68,8 @@
       jQuery.jgrid.useJSON = true;
     </script>
     <% if controller.controller_name == "planning_poker" && controller.action_name == "table" %>
-    <%= javascript_include_tag 'jquery.flip.min.js' -%>
-    <script type="text/javascript">
+      <%= javascript_include_tag 'jquery.flip.min.js' -%>
+      <script type="text/javascript">
         function desconectar_jug(){
           var url = "/planning_poker/ajax_exit_game";
           var params = {game: <%= @game.id.to_s%>, user: <%= current_user.id %> };
