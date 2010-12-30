@@ -10,7 +10,11 @@ module Statistics
   def self.standard_desviation(array)
     m = mean(array)
     variance = array.inject(0) {|variance,x| variance += (x-m) ** 2}
-    result = Math.sqrt(variance/(array.size - 1))
+    if (array.size - 1) == 0
+      result = 0;
+    else
+      result = Math.sqrt(variance/(array.size - 1))
+    end
     return (result * 10**2).round.to_f / 10**2 #round two decimals
   end
 

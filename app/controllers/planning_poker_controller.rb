@@ -44,14 +44,15 @@ class PlanningPokerController < ApplicationController
     planning_poker_id = params[:id]
     @game = PlanningPokerGame.find planning_poker_id
     if (!@game.closed? && user_permision_for_game(@game.id, current_user.id) && !@game.undate?(tz))
-    actual_vote = @game.planning_poker_votes.find_by_user_id current_user.id
-    actual_vote.status = true
-    actual_vote.save!
-    player_id_list = users_ids_for_game(@game.planning_poker_votes)
-    @player_list = get_player_list player_id_list
-    @user_id = current_user.id
-    @actual_users = actual_users_conected planning_poker_id.to_i
-    @votes = PlanningPokerVote.find(:all, :conditions => ['vote IS NOT NULL and planning_poker_game_id = ?', @game.id])
+      actual_vote = @game.planning_poker_votes.find_by_user_id current_user.id
+      actual_vote.status = true
+      actual_vote.save!
+      player_id_list = users_ids_for_game(@game.planning_poker_votes)
+      @player_list = get_player_list player_id_list
+      @user_id = current_user.id
+      @actual_users = actual_users_conected planning_poker_id.to_i
+      @votes = PlanningPokerVote.find(:all, :conditions => ['vote IS NOT NULL and planning_poker_game_id = ?', @game.id])
+      @vote = PlanningPokerVote.find_by_user_id current_user.id
     else
       flash['notice'] = _("El juego ya ha finalizado. No se pude volver a jugar")
       redirect_to :controller => 'planning_poker', :action => 'historial'
@@ -71,7 +72,7 @@ class PlanningPokerController < ApplicationController
   end
 
   def send_message
-    Juggernaut.publish(params[:channel], "<b>" + current_user.name + ":</b>" + params[:current_message])
+    Juggernaut.publish(params[:channel], "<b>" + current_user.name + ": </b>" + params[:current_message])
     render :nothing => true
   end
 
@@ -114,6 +115,7 @@ class PlanningPokerController < ApplicationController
     actual_time = Time.now
     user_vote.vote_date = tz.local_to_utc(actual_time.strftime("%Y-%m-%d %H:%M:%S").to_time)
     user_vote.save!
+    Juggernaut.publish('vote-' + game.id.to_s, current_user.id.to_s + '-' + value_vote.to_s + '-' + current_user.name)
     render :nothing => true
   end
   
@@ -125,6 +127,7 @@ class PlanningPokerController < ApplicationController
       pvote.vote_date = nil
       pvote.save!
     end
+    Juggernaut.publish('repeat-' + game_id, 1)
     render :nothing => true
   end
 
@@ -133,13 +136,19 @@ class PlanningPokerController < ApplicationController
     game = PlanningPokerGame.find game_id.to_i
     list_votes = Array.new
     game.planning_poker_votes.each do |pvote|
-      list_votes << pvote.vote
+      if !pvote.vote.nil?
+        if pvote.vote <= 100
+          list_votes << pvote.vote
+        end
+      end
     end
     @mean_result = Statistics.mean(list_votes)
+    @game = game
     @standard_desviation = Statistics.standard_desviation(list_votes)
-     render :update do |page|
-        page.insert_html :before, "#", :partial => "resume_game"
-     end
+    Juggernaut.publish('turn-' + game.id.to_s, 1);
+    render :update do |page|
+      page.insert_html :before, "#planning-poker-results", :partial => "resume_game"
+    end
   end
 
   def update_user_story_whit_points

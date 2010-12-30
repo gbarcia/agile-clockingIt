@@ -69,7 +69,8 @@
       jQuery.jgrid.useJSON = true;
     </script>
     <% if controller.controller_name == "planning_poker" && controller.action_name == "table" %>
-      <script type="text/javascript">
+    <%= javascript_include_tag 'jquery.flip.min.js' -%>
+    <script type="text/javascript">
         function desconectar_jug(){
           var url = "/planning_poker/ajax_exit_game";
           var params = {game: <%= @game.id.to_s%>, user: <%= current_user.id %> };

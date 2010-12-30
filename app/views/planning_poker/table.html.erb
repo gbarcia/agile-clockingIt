@@ -2,23 +2,35 @@
   <tr><td class="page_header" colspan="2">Planning Poker for: HU NAME <a href="/planning_poker/exit_game?id=<%= @game.id %> ">salir</a></td></tr>
   <tr>
     <td>
+      <div id="planning-poker-votes">
       <% @votes.each do |planning_poker_vote| %>
         <div class="planning-poker-card-wrapper">
           <div class="planning-poker-card">
-            <div class="inner back">
-              <img src="/images/card.png" alt=""/>
-            </div>
-            <div class="inner front" style="visibility: hidden">
-              <%= planning_poker_vote.vote %>
-            </div>
+            <% if planning_poker_vote.user_id == current_user.id %>
+              <div class="inner front">
+                <% if planning_poker_vote.vote.to_i == 1000 %>
+                  <%= '?' %>
+                <% else %>
+                  <%= planning_poker_vote.vote.to_i %>
+                <% end %>
+              </div>
+            <% else %>
+              <div class="inner back">
+                <img src="/images/card.png" alt=""/>
+              </div>
+              <div class="inner front" style="visibility: hidden">
+                <%= planning_poker_vote.vote.to_i %>
+              </div>
+            <% end %>
           </div>
           <center><b>
               <%=get_user_name(planning_poker_vote.user_id)%>
             </b></center>
         </div>
       <%end%>
+      </div>
     </td>
-    <td rowspan="5" style="width: 200px" valign="top">
+    <td rowspan="4" style="width: 200px" valign="top">
       <div style="max-height: 450px; overflow: auto">
         <ul id="selected-users" style="list-style-type: none; margin: 0; padding: 0">
           <% @player_list.each do |us| %>
@@ -34,6 +46,7 @@
   </tr>
   <tr>
     <td>
+      <% if @vote.vote.nil? %>
       <div id="select-vote">
         <div class="planning-poker-card-wrapper"><a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(0);">0</div></div></a></div>
         <div class="planning-poker-card-wrapper"><a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(0.5);">&frac12;</div></div></a></div>
@@ -46,11 +59,12 @@
         <div class="planning-poker-card-wrapper"><a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(20);">20</div></div></a></div>
         <div class="planning-poker-card-wrapper"><a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(40);">40</div></div></a></div>
         <div class="planning-poker-card-wrapper"><a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(100);">100</div></div></a></div>
-        <div class="planning-poker-card-wrapper"><a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(-1);">?</div></div></a></div>
+        <div class="planning-poker-card-wrapper"><a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(1000);">?</div></div></a></div>
       </div>
+      <% end %>
     </td>
   </tr>
-  <tr><td>Votes-result</td></tr>
+  <tr><td><div id="planning-poker-results"></div></td></tr>
   <tr>
     <td>
       <div id="chat-messages" style="height: 150px; border: 1px solid #ccc; overflow: auto">
@@ -76,7 +90,34 @@
         }
 
         var showVote = function (data) {
-          
+          var dataArray = data.split('-');
+          var showVoteElement = document.getElementById("planning-poker-votes");
+          var innerHtml = showVoteElement.innerHTML;
+          var newVote = "<div class='planning-poker-card-wrapper'><div class='planning-poker-card'>";
+          if (dataArray[0] == "<%=current_user.id%>"){
+            newVote += "<div class='inner front'>"
+            if (dataArray[1] == 1000){
+              newVote += '?';
+            } else {
+              newVote += dataArray[1];
+            }
+            newVote += "</div>";
+          } else {
+            newVote += "<div class='inner back'><img src='/images/card.png' alt=''/></div>";
+            newVote += "<div class='inner front' style='visibility: hidden'>";
+            if (dataArray[1] == 1000){
+              newVote += '?';
+            } else {
+              newVote += dataArray[1];
+            }
+            newVote += "</div>";
+          }
+          newVote += "</div>";
+          newVote += "<center><b>";
+          newVote += dataArray[2];
+          newVote += "</b></center>";
+          newVote += "</div>";
+          showVoteElement.innerHTML = newVote + innerHtml;
         }
 
         jug.subscribe("chat-<%= @game.id %>", function(data){
@@ -88,6 +129,12 @@
         jug.subscribe("vote-<%= @game.id %>", function(data){
           showVote(data);
         });
+        jug.subscribe("repeat-<%= @game.id %>", function(data){
+           refreshTable(data);
+        })
+        jug.subscribe("turn-<%= @game.id %>", function(data){
+           turnCards(data);
+        })
 
         jug.on("connect", function(){
           var url = "/planning_poker/send_message";
@@ -130,6 +177,37 @@
     });
     jQuery("#select-vote").html("<center><img src='/images/tuneup/spinner.gif' alt=''></center>");
   }
+
+  function finishGame(){
+    var url = "/planning_poker/resume_game";
+    var data = {game_id:<%= @game.id%>};
+    jQuery.get(url, data, 
+      function(){
+        jQuery("#finish-button").attr("disabled", "true");
+      });
+  }
+
+  function refreshTable(data){
+    if (data == 1)window.location = '/planning_poker/table?id=<%= @game.id%>'
+  }
+
+  function repeatGame(){
+    var url = '/planning_poker/repeat_game';
+    var data = {game_id:<%= @game.id%>};
+    jQuery.get(url, data, function(){
+      window.location = '/planning_poker/table?id=<%= @game.id%>';
+    })
+  }
+
+  function turnCards(data){
+    if (data == 1) {
+      
+
+      <%#*jQuery('.back').parent('.planning-poker-card').flip({%>
+	<%#*direction: 'rl',%>
+        <%#*content: '<div class="inner front">' +%>
+    <%#*}%>
+  }
       </script>
     </td>
   </tr>
@@ -147,6 +225,11 @@
             </td>
           </tr>
         </table>
+      <%end%>
+    </td>
+    <td>
+      <%if user_is_leader_from_this_game?(@game)%>
+          <input id="finish-button" class="nolabel" type="button" value="Finalizar" onclick="finishGame();"/>
       <%end%>
     </td>
   </tr>
