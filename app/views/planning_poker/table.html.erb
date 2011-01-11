@@ -18,9 +18,7 @@
               <div class="inner back">
                 <img src="/images/card.png" alt=""/>
               </div>
-              <div class="inner front" style="visibility: hidden">
-                <%= planning_poker_vote.vote.to_i %>
-              </div>
+              <input class="voted-value" type="hidden" value="<%= planning_poker_vote.vote.to_i %>"/>
             <% end %>
           </div>
           <center><b>
@@ -104,13 +102,13 @@
             newVote += "</div>";
           } else {
             newVote += "<div class='inner back'><img src='/images/card.png' alt=''/></div>";
-            newVote += "<div class='inner front' style='visibility: hidden'>";
+            newVote += '<input class="voted-value" type="hidden" value="';
             if (dataArray[1] == 1000){
               newVote += '?';
             } else {
               newVote += dataArray[1];
             }
-            newVote += "</div>";
+            newVote += '"/>';
           }
           newVote += "</div>";
           newVote += "<center><b>";
@@ -201,13 +199,17 @@
 
   function turnCards(data){
     if (data == 1) {
-      
-
-      <%#*jQuery('.back').parent('.planning-poker-card').flip({%>
-	<%#*direction: 'rl',%>
-        <%#*content: '<div class="inner front">' +%>
-    <%#*}%>
-  }}
+      jQuery.each(jQuery('.back').parent('.planning-poker-card'), function(){
+        jQuery(this).flip({
+          direction: 'rl',
+          content: '<div class="inner front">' + jQuery(this).children('.voted-value').val() + '</div>',
+          onEnd: function(){
+            jQuery('.front').parent('.planning-poker-card').attr('style', 'background-color: #fff');
+          }
+        });
+      })
+    }
+  }
       </script>
     </td>
   </tr>
