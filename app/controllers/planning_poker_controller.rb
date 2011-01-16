@@ -1,4 +1,5 @@
 require 'juggernaut'
+require 'business_time'
 class PlanningPokerController < ApplicationController
   
   def config
@@ -72,7 +73,9 @@ class PlanningPokerController < ApplicationController
   end
 
   def send_message
-    Juggernaut.publish(params[:channel], "<b>" + current_user.name + ": </b>" + params[:current_message])
+    actual_time = tz.local_to_utc(Time.now)
+    actual_time_chat_format = actual_time.strftime("%H:%M:%S").to_s
+    Juggernaut.publish(params[:channel],"<b>" + current_user.name + "(" + actual_time_chat_format + "): </b>" + params[:current_message])
     render :nothing => true
   end
 
@@ -122,6 +125,12 @@ class PlanningPokerController < ApplicationController
   def repeat_game
     game_id = params[:game_id]
     game = PlanningPokerGame.find game_id.to_i
+    game.closed = false
+    game_due_at_date = Date.parse(game.due_at.to_s)
+    game_created_at_date = Date.parse(game.created_at.to_s)
+    date_original_days_distance = game_created_at_date.business_days_until(game_due_at_date)
+    game.due_at =  tz.local_to_utc Time.parse(date_original_days_distance.business_days.after(game_due_at_date).to_s)
+    game.save!
     game.planning_poker_votes.each do |pvote|
       pvote.vote = nil
       pvote.vote_date = nil
@@ -136,6 +145,8 @@ class PlanningPokerController < ApplicationController
   def resume_game
     game_id = params[:game_id]
     game = PlanningPokerGame.find game_id.to_i
+    game.closed = true #game closed
+    game.save!
     list_votes = Array.new
     game.planning_poker_votes.each do |pvote|
       if !pvote.vote.nil?
@@ -148,6 +159,7 @@ class PlanningPokerController < ApplicationController
     @game = game
     @standard_desviation = Statistics.standard_desviation(list_votes)
     Juggernaut.publish('turn-' + game.id.to_s, 1);
+    Juggernaut.publish('chat-' + game.id.to_s, '<b>La partida ha finalizado, promedio: ' + @mean_result.to_s + ', desviacion: ' + @standard_desviation.to_s + '<b>');
     render :update do |page|
       page.insert_html :before, "#planning-poker-results", :partial => "resume_game"
     end

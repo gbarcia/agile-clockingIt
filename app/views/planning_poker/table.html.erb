@@ -128,9 +128,11 @@
           showVote(data);
         });
         jug.subscribe("repeat-<%= @game.id %>", function(data){
+          alert('La partida se repetira!. Repartiendo cartas');
            refreshTable(data);
         })
         jug.subscribe("turn-<%= @game.id %>", function(data){
+          alert ('La partida ha finalizado');
            turnCards(data);
         })
 
