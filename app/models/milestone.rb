@@ -90,7 +90,7 @@ class Milestone < ActiveRecord::Base
     tasks.each do |task|
       total_points += task.total_points
     end
-    return total_points
+    return (total_points * 10**2).round.to_f / 10**2 #round two decimals
   end
 
   #return total points closed
@@ -102,7 +102,7 @@ class Milestone < ActiveRecord::Base
         total_points += task.total_points
       end
     end
-    return total_points
+    return (total_points * 10**2).round.to_f / 10**2
   end
 
   def total_task_execute
@@ -168,7 +168,7 @@ class Milestone < ActiveRecord::Base
           total_ev += ((user_story.duration / 60.0) * self.points_per_hour) rescue 0
         end
       end
-      return total_ev
+      return (total_ev * 10**2).round.to_f / 10**2
     end
   end
   

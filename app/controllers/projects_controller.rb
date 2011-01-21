@@ -313,7 +313,7 @@ class ProjectsController < ApplicationController
         values_ev += i.get_earned_value > 0 ? (i.get_earned_value).to_s : 0.to_s
         values_rc += i.get_real_cost > 0 ? (i.get_real_cost).to_s : 0.to_s
         values_pc += i.get_estimate_cost > 0 ? (i.get_estimate_cost).to_s : 0.to_s
-        if count < iterations.size
+        if count <= iterations.size
           values_ev += ","
           values_rc += ","
           values_pc += ","
@@ -344,7 +344,7 @@ class ProjectsController < ApplicationController
         values_col_v << i.total_points
         values_velocity += i.get_team_velocity > 0 ? (i.get_team_velocity).to_s : 0.to_s
         values_target += i.total_points > 0 ? (i.total_points).to_s : 0.to_s
-        if count < iterations.size
+        if count <= iterations.size
           values_velocity += ","
           values_target += ","
         end
@@ -396,7 +396,7 @@ class ProjectsController < ApplicationController
         values_bvp += i.real_business_value > 0 ? (i.real_business_value).to_s : 0.to_s
         values_ep += i.total_points > 0 ? (i.total_points).to_s : 0.to_s
         values_er += i.total_points_execute > 0 ? (i.total_points_execute).to_s : 0.to_s
-        if count < iterations.size
+        if count <= iterations.size
           values_bvp += ","
           values_ep += ","
           values_er += ","

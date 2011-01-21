@@ -65,7 +65,11 @@ class Project < ActiveRecord::Base
       end
     end
     total = 100.to_f - ((closed_points.to_f/total_points.to_f) * 100)
-    return (total * 10**2).round.to_f / 10**2 #round two decimals
+    if !total.nan?
+      return (total * 10**2).round.to_f / 10**2 #round two decimals
+    else
+      return 0
+    end
   end
 
   def total_tasks_count
@@ -121,7 +125,7 @@ class Project < ActiveRecord::Base
     self.milestones.each do |iteration|
       total_points += iteration.total_points
     end
-    return total_points
+    return (total_points * 10**2).round.to_f / 10**2 #round two decimals
   end
 
   def total_points_execute
@@ -129,7 +133,7 @@ class Project < ActiveRecord::Base
     self.milestones.each do |iteration|
       total_points += iteration.total_points_execute
     end
-    return total_points
+    return (total_points * 10**2).round.to_f / 10**2
   end
 
   def total_business_value
@@ -258,7 +262,7 @@ class Project < ActiveRecord::Base
     if total_ev.nan? || total_ev.infinite?
       total_ev = 0.0
     end
-    return total_ev
+    return (total_ev * 10**2).round.to_f / 10**2
   end
 
   #return the cost/benefist ratio

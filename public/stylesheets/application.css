@@ -2925,6 +2925,8 @@ select#chngroup {
     border: 1px solid #ccc;
     height: 100px;
     width: 70px;
+    -moz-box-shadow: 2px 2px 2px #555;
+
 }
 
 .planning-poker-card .inner {

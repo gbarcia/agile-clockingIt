@@ -22,21 +22,63 @@
 <hr  width="90%" size="3" align="left"noshade />
 <% if @general_aspects == 'on' %>
 <h2>Aspectos Generales</h2>
-<h3>Calendario</h3>
-<p>Porcentaje realizado:<%= done_percent.ceil.to_s + "%" %> </p>
-<p>Iteraciones por ejecutar:<%= @project.open_milestones_count.to_s + " / " + @project.total_milestones_count.to_s  %> </p>
-<p>Historias de usuario por realizar:<%= @project.open_tasks_count.to_s + " / " + @project.total_tasks_count.to_s  %></p>
-<p>Fecha estimada de culminaci&oacute;n:<%= @project.end_date_estimate.strftime('%d/%m/%G') %> </p>
-<p>Variaci&oacute;n en agenda:<%= " " + @project.variaton_schedule.to_s + " " + @project.currency_iso_code %> </p>
-<p>Desviaci&oacute;n en agenda:<%= @project.percent_desviation.to_s + " %"%> </p>
-<h3>Costos</h3>
-<p>Presupuesto estimado:<%= @project.get_estimate_cost.to_s + " " + @project.currency_iso_code%> </p>
-<p>Presupuesto gastado: <%= @project.get_real_cost.to_s + " " + @project.currency_iso_code%></p>
-<p>Presupuesto trabajado: <%=@project.get_earned_value.to_s + " " + @project.currency_iso_code%></p>
-<p>Costo/Beneficio: <%=  @project.get_cost_benefis_ratio.to_s + ":1" %></p>
-<p>Retorno de Inversi&oacute;n: <%=  @project.get_roi.to_s + " %" %></p>
-<p>Variaci&oacute;n en costos: <%=  @project.variation_cost.to_s + " " + @project.currency_iso_code %></p>
+<div style="float: left">
+<table class="content">
+  <tr><th colspan="2">Calendario</th></tr>
+  <tr class="row_stripe">
+    <th>Porcentaje realizado</th><td align="right"><%= done_percent.ceil.to_s + "%" %></td>
+  </tr>
+  <tr class="row_stripe">
+    <th>Iteraciones por ejecutar</th><td align="right"><%= @project.open_milestones_count.to_s + " / " + @project.total_milestones_count.to_s  %></td>
+  </tr>
+  <tr class="row_stripe">
+    <th>Historias de usuario por realizar</th><td align="right"><%= @project.open_tasks_count.to_s + " / " + @project.total_tasks_count.to_s  %></td>
+  </tr>
+  <tr class="row_stripe">
+    <th>Fecha estimada de culminaci&oacute;n</th><td align="right"><%= @project.end_date_estimate.strftime('%d/%m/%G') %></td>
+  </tr>
+  <tr class="row_stripe">
+    <th>Variaci&oacute;n en agenda</th><td align="right"><%= " " + @project.variaton_schedule.to_s + " " + @project.currency_iso_code %></td>
+  </tr>
+  <tr class="row_stripe">
+    <th>Desviaci&oacute;n en agenda</th><td align="right"><%= @project.percent_desviation.to_s + " %"%></td>
+  </tr>
+</table>
+</div>
+<div style="float: left">
+<table class="content">
+  <tr><th colspan="2">Costos</th></tr>
+  <tr class="row_stripe">
+    <th>Presupuesto estimado</th><td align="right"><%= @project.get_estimate_cost.to_s + " " + @project.currency_iso_code%></td>
+  </tr>
+  <tr class="row_stripe">
+    <th>Presupuesto gastado</th><td align="right"><%= @project.get_real_cost.to_s + " " + @project.currency_iso_code%></td>
+  </tr>
+  <tr class="row_stripe">
+    <th>Presupuesto trabajado</th><td align="right"><%=@project.get_earned_value.to_s + " " + @project.currency_iso_code%></td>
+  </tr>
+  <tr class="row_stripe">
+    <th>Costo/Beneficio</th><td align="right"><%=  @project.get_cost_benefis_ratio.to_s + ":1" %></td>
+  </tr>
+  <tr class="row_stripe">
+    <th>Retorno de Inversi&oacute;n</th><td align="right"><%=  @project.get_roi.to_s + " %" %></td>
+  </tr>
+  <tr class="row_stripe">
+    <th>Variaci&oacute;n en costos</th><td align="right"><%=  @project.variation_cost.to_s + " " + @project.currency_iso_code %></td>
+  </tr>
+</table>
+</div>
+<div style="float: right">
+  <% if (@project.get_spi >= 0.95) %>
+    <img src="/images/light-green.png" alt="Green Light" />
+  <% elsif (@project.get_spi < 0.95) && (@project.get_spi > 0.85) %>
+    <img src="/images/light-yellow.png" alt="Yellow Light" />
+  <% elsif (@project.get_spi <= 0.85) %>
+    <img src="/images/light-red.png" alt="Red Light" />
+  <% end %>
+</div>
 <% end %>
+<div style="clear: both;"></div>
 <%  if @financial_aspects == 'on' %>
 <h2>Detalles Financieros por Iteraci&oacute;n</h2>
 <div>

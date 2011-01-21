@@ -1,6 +1,6 @@
 <fieldset id="task_project_selection">
   <legend><%=_ "Estimation Points:"%></legend>
-  <% if current_user.option_tracktime.to_i == 1 %>
+  <% if current_user.is_leader_for?( Project.find(selected_project)) %>
     <label for="task_points_expert_judgment"><%=_ 'Points' %></label>
     <%= text_field 'task', 'points_expert_judgment', {:size => 12, :value => @task.points_expert_judgment, :class => 'tooltip', :title => _('Expert Judgment Points')} %>
     <label for="task_points_team_velocity"><%=_ 'Velocity Points' %></label>
