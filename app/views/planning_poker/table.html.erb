@@ -1,9 +1,21 @@
 <table class="content" width="100%">
-  <tr><td class="page_header" colspan="2">Planning Poker for: HU NAME <a href="/planning_poker/exit_game?id=<%= @game.id %> ">salir</a></td></tr>
+  <tr><td class="page_header" colspan="2">Planning Poker<span style="float: right"><a href="/planning_poker/exit_game?id=<%= @game.id %> ">Salir</a></span></td></tr>
+  <tr>
+    <td colspan="2">
+      <b>Historia de Usuario:</b> <%= @game.task.name %> <br/>
+      <b>Descripci&oacute;n:</b> <%= @game.task.description %>
+    </td>
+  </tr>
+  <tr>
+    <td class="page_header">Votos</td>
+  <td class="page_header">
+    Jugadores
+  </td>
+  </tr>
   <tr>
     <td>
       <div id="planning-poker-votes">
-      <% @votes.each do |planning_poker_vote| %>
+        <% @votes.each do |planning_poker_vote| %>
         <div class="planning-poker-card-wrapper">
           <div class="planning-poker-card">
             <% if planning_poker_vote.user_id == current_user.id %>
@@ -28,7 +40,7 @@
       <%end%>
       </div>
     </td>
-    <td rowspan="4" style="width: 200px" valign="top">
+    <td rowspan="5" style="width: 200px;" valign="top">
       <div style="max-height: 450px; overflow: auto">
         <ul id="selected-users" style="list-style-type: none; margin: 0; padding: 0">
           <% @player_list.each do |us| %>
@@ -43,7 +55,7 @@
     </td>
   </tr>
   <tr>
-    <td>
+    <td style="background-color: #ddd">
       <% if @vote.vote.nil? %>
       <div id="select-vote">
         <div class="planning-poker-card-wrapper"><a href="#"><div class="planning-poker-card"><div class="inner front" onclick="sendVote(0);">0</div></div></a></div>
@@ -63,6 +75,9 @@
     </td>
   </tr>
   <tr><td><div id="planning-poker-results"></div></td></tr>
+  <tr>
+    <td class="page_header">Sala de discusi&oacute;n</td>
+  </tr>
   <tr>
     <td>
       <div id="chat-messages" style="height: 150px; border: 1px solid #ccc; overflow: auto">
@@ -128,11 +143,15 @@
           showVote(data);
         });
         jug.subscribe("repeat-<%= @game.id %>", function(data){
-          alert('La partida se repetira!. Repartiendo cartas');
-           refreshTable(data);
+          jQuery.pnotify({
+            pnotify_title: 'La partida se repetira! Repartiendo cartas.'
+          });
+          refreshTable(data);
         })
         jug.subscribe("turn-<%= @game.id %>", function(data){
-          alert ('La partida ha finalizado');
+          jQuery.pnotify({
+            pnotify_title: 'La partida ha finalizado.'
+          });
            turnCards(data);
         })
 
@@ -188,7 +207,8 @@
   }
 
   function refreshTable(data){
-    if (data == 1)window.location = '/planning_poker/table?id=<%= @game.id%>'
+    if (data == 1)
+      window.location = '/planning_poker/table?id=<%= @game.id%>'
   }
 
   function repeatGame(){
@@ -233,8 +253,14 @@
     </td>
     <td>
       <%if user_is_leader_from_this_game?(@game)%>
-          <input id="finish-button" class="nolabel" type="button" value="Finalizar" onclick="finishGame();"/>
+          <input id="finish-button" class="nolabel" type="button" value="Finalizar " onclick="finishGame();"/>
       <%end%>
     </td>
   </tr>
 </table>
+
+<% if @game.closed? %>
+  <script type="javascript">
+    turnCards(1);
+  </script>
+<% end %>
