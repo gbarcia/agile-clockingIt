@@ -25,10 +25,6 @@
       <%= javascript_include_tag 'prototype' -%>
     <% end %>
      <%= javascript_include_tag 'jquery.pnotify' %>
-    <% if controller.controller_name == "planning_poker" %>
-      <%= javascript_include_tag 'jquery-ui.slider' -%>
-      <%= javascript_include_tag 'jquery-ui.timepicker' %>
-    <% end %>
     <% if ['activities'].include? controller.controller_name %>
             <!--[if IE]><%= javascript_include_tag "excanvas" %><![endif]-->
       <%= javascript_include_tag "builder", "portal", "flotr" %>

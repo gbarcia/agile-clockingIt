@@ -626,5 +626,5 @@ function reload_estimation_settings(sender) {
 }
 
 function copyDateTime(dateTime){
-    jQuery("#copiedDateTime").val(dateTime)
+    jQuery("#copiedDateTime").val(dateTime + " 23:59:00");
 }

@@ -2,11 +2,6 @@
   #all-users, #selected-users { list-style-type: none; margin: 0; padding: 0; float: left; background: #eee; padding: 5px; width: 200px; min-height: 40px;}
   #all-users li, #selected-users li { margin: 5px; padding: 5px; font-size: 1.2em; width: 178px; }
   #all-users li img, #selected-users li img {float:none; border: 0; padding: 0}
-  .ui-timepicker-div .ui-widget-header{ margin-bottom: 8px; color:red; }
-  .ui-timepicker-div dl{ text-align: left; background-color:red;}
-  .ui-timepicker-div dl dt{ height: 25px; background-color:red;}
-  .ui-timepicker-div dl dd{ margin: -25px 0 10px 65px; background-color:red;}
-  .ui-timepicker-div td { font-size: 90%; background-color:red;}
 </style>
 <script type="text/javascript">
   jQuery(function() {
@@ -22,7 +17,6 @@
     jQuery( "#all-users, #selected-users").disableSelection();
   });
 </script>
-
 <table>
   <tr>
     <td class="page_header">
@@ -36,48 +30,48 @@
   </tr>
   <tr>
     <td>
-      Due at: <input type="text" name="example1" id="example1" value="<%=@game_config.due_at %>" class="" onchange="copyDateTime(this.value);"/>
-      <script type="text/javascript">
-        jQuery('#example1').datetimepicker();
-      </script>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <div style="float: left;">
+  Due at: <input type="text" name="example1" id="example1" value="<%=@game_config.due_at %>" class="" onchange="copyDateTime(this.value);"/>
+  <script type="text/javascript">
+    jQuery('#example1').datepicker({ minDate: new Date()});
+  </script>
+</td>
+</tr>
+<tr>
+  <td>
+    <div style="float: left;">
+      <fieldset class="users">
+        <legend>Project Users</legend>
+        <ul id="all-users" class="droptrue">
+          <% @project_users.each do |u| %>
+            <li class="ui-state-default">
+              <%= avatar_for u, 25 %>
+              <%= u.name %>
+              <input type="hidden" name="id_users_to_play[]" value="<%= u.id %>"></input>
+            </li>
+          <%end%>
+        </ul>
+      </fieldset>
+    </div>
+
+    <div style="float: left;">
+      <form method="POST" action="/planning_poker/update_config">
         <fieldset class="users">
-          <legend>Project Users</legend>
-          <ul id="all-users" class="droptrue">
-            <% @project_users.each do |u| %>
+          <legend>Players</legend>
+          <ul id="selected-users" class="droptrue">
+            <% @actual_users.each do |us| %>
               <li class="ui-state-default">
-                <%= avatar_for u, 25 %>
-                <%= u.name %>
-                <input type="hidden" name="id_users_to_play[]" value="<%= u.id %>"></input>
+                <%= avatar_for us, 25 %>
+                <%= us.name %>
+                <input type="hidden" name="id_users_to_play[]" value="<%= us.id %>"></input>
               </li>
             <%end%>
           </ul>
         </fieldset>
-      </div>
-
-      <div style="float: left;">
-        <form method="POST" action="/planning_poker/update_config">
-          <fieldset class="users">
-            <legend>Players</legend>
-            <ul id="selected-users" class="droptrue">
-              <% @actual_users.each do |us| %>
-                <li class="ui-state-default">
-                  <%= avatar_for us, 25 %>
-                  <%= us.name %>
-                  <input type="hidden" name="id_users_to_play[]" value="<%= us.id %>"></input>
-                </li>
-              <%end%>
-            </ul>
-          </fieldset>
-          <input type="hidden" name="planning_poker_id" value="<%= @game_config.id%>"></input>
-          <input id="copiedDateTime" type="hidden" name="due_at" value="<%=@game_config.due_at%>"></input>
-          <div style="text-align: right"><input type="submit" value="Save and Play"></input></div>
-        </form>
-      </div>
-    </td>
-  </tr>
+        <input type="hidden" name="planning_poker_id" value="<%= @game_config.id%>"></input>
+        <input id="copiedDateTime" type="hidden" name="due_at" value="<%=@game_config.due_at%>"></input>
+        <div style="text-align: right"><input type="submit" value="Save and Play"></input></div>
+      </form>
+    </div>
+  </td>
+</tr>
 </table>
