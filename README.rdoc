@@ -18,7 +18,7 @@ AgileClockingIT es un rediseño de la herramienta ClockingIT(Actualmente Jobswor
 == Instalación (LINUX)
 === Paso 1: Obtener los fuentes
 
-La manera mas facil de obtener el codigo mas reciente es con Git. Necesitaras instalarlo en tu maquina y luego ejecutar:
+La manera más fácil de obtener el código más reciente es con Git. Necesitarás instalarlo en tu máquina y luego ejecutar:
 
   git clone git://github.com/gbarcia/agile-clockingIt
 
@@ -35,78 +35,58 @@ Instalar los siguientes paquetes:
 
 === Paso 3: Phusion Passenger
 
-Instalar Phusion Passenger como servidor web. Tambien se puede usar de forma alternativa Mongrel, pero recomendamos Phusion Passenger.
+Instalar Phusion Passenger como servidor web. También se puede usar de forma alternativa Mongrel, pero recomendamos Phusion Passenger.
 
   gem install passenger
   passenger-install-apache2-module
 
-Seguir las instrucciones para la configuracion del Apache httpd.
+Seguir las instrucciones para la configuración del Apache httpd.
 
-Your Apache httpd virtual host DocumentRoot should point to the public directory in the installation directory.
+Luego, se debe generar un host virtual en el archivo /etc/apache2/httpd.conf de la siguiente forma:
 
   <VirtualHost *:80>
-    ServerName jobsworth.example.com.au
-    RailsEnv production
-    PassengerHighPerformance on
-
-    DocumentRoot /usr/local/www/jobsworth/public
-    CustomLog /var/log/www/myserver.example.com.au-access_log combined
-    ErrorLog /var/log/www/myserver.example.com.au-access_log
+    ServerName localhost
+    DocumentRoot /opt/agileClockingIt/public
   </VirtualHost>
-
-You'll need to allow access to the folder you specify if isn't already inside your global httpd DocumentRoot. And MultiViews is bad for a Rails application.
-
-  <Directory /usr/squish/public>
+ <Directory /opt/agilclockingit/public>
     AllowOverride All
     Options -MultiViews
     Order allow,deny
     Allow from all
   </Directory>
 
+Naturalmente, debes ajustar las rutas a tu propio directorio de alojamiento de la herramienta.
 
-Naturally adjust the paths to suit your own environment.
+=== Paso 4: Ruby gems
 
-
-=== Step 4: Setup configuration and database
-
-  cd /usr/local/www/jobsworth
-  ruby setup.rb
-  
-  
-=== Step 5: Ruby gems
-
-There are a few Ruby gems which are needed for running CIT. Change directory into the top of your CIT installation, then type:
+Se requiere de algunas gemas de Ruby para hacer funcionar AgilClockingIT. Cambia al directorio de instalación y escribe:
 
   rake gems:install
 
-That will install the gems you need.
-
-If you have trouble on OSX with the mysql gem (this seems to be an issue on 10.5), then try this
-  sudo env ARCHFLAGS="-arch i386" gem install mysql -- --with-mysql-include=/opt/local/include/mysql5 --with-mysql-lib=/opt/local/lib/mysql5 --with-mysql-config=/opt/local/lib/mysql5/bin/mysql_config
+Este comando instala las gemas que se necesitan.
 
 
+=== Paso 5: Instalación y Configuración de la base de datos
 
+  cd /opt/agileclockingit/
+  ruby setup.rb
 
-== Upgrading to a newer revision
+Seguir los pasos de la instalación en la cónsola.
+
+== Actualización de las nuevas versiones:
 
   git checkout db/schema.rb
   git pull
 
-Check that there aren't any updated gems or new gems to install. If there are, just follow the instructions you will be given on screen.
-
-  rake gems
-
-Next, make sure the database is updated:
+Luego, se debe realizar el upgrade la base de datos:
 
   rake db:migrate RAILS_ENV=production
 
-Depending on which environment you are updating, you can change the RAIL_ENV value to "test" or "development" and the appropriate database will be updated.
+Reiniciar apache para actualizar los cambios en el servidor:
 
-Restart the web server just to ensure anything cached is cleared
-
-  apachectl graceful
+  sudo /etc/init.d/apache2 restart
   
-Clear out cached asset files
+y borrar los siguientes archivos:
 
   rm public/javascripts/main.js
   rm public/javascripts/popup.js
@@ -115,45 +95,34 @@ Clear out cached asset files
   rm public/stylesheets/popup.css
 
 
-== Setting up Email Integration
+== Instalación e Integración de correos
 
-When jobsworth sends outgoing emails for task updates, they will have a reply address which looks like this:
+Para la configuracion del envio de correos, se debe abrir el archivo environment.rb de la carpeta config y sustituir:
 
-  task-1234@acme.domain.com.au
-  
-If a user hits reply to that email, you want it to go back and be appended to the task comments. It isn't hard, but you'll need a mail server you have some control over in order to get the magic to work. Firstly, let's look at that email address. To the left of the @ we have a designator showing which task this email is relevant to. On the right 'acme' represents the name of the company you set up when you ran the setup.rb script and first installed jobsworth. And the final 'domain.com.au' part is defined in the environment.local.rb file in your config folder.
+# Load any $CONFIG settings from ENV
+$CONFIG = {
+	:domain => "mail.cantv.net",  # The client specific hostname will be prepended to this domain
+	:email_domain => "agileclockingit.com",
+	:replyto => "admin",  # Note that this is not a full email address, just the part before the @
+	:from => "admin",  # Note that this is not a full email address, just the part before the @
+	:prefix => "[agileClockingIT]",
+	:productName => "agileClockingIT",
+	:SSL => false
+}
 
-You need to set up your email software to pass all incoming emails for *@acme.domain.com.au to a special script. That '*' means a wildcard: that is, any username at that hostname will be forwarded.
+ActionMailer::Base.smtp_settings = {
+  :address  => "mail.cantv.net",
+  :port  => 25,
+  :domain  => 'aclocking.com'
+}
+load_from_env("DOMAIN", :domain, $CONFIG)
+load_from_env("REPLYTO", :replyto, $CONFIG)
+load_from_env("FROM", :from, $CONFIG)
+load_from_env("PREFIX", :prefix, $CONFIG)
+load_from_env("PRODUCT_NAME", :productName, $CONFIG)
+load_from_env("USE_SSL", :SSL, $CONFIG) { |s| s == "true" }
 
+el puerto y dominio por el de su configuración predeterminada
 
-=== Sendmail
+=== Instalción y puesta en marcha de Juggernaut
 
-For example to configure sendmail, add an entry to /etc/mail/local-host-names for your hostname:
-
-  acme.domain.com.au
-
-Add an entry to /etc/mail/aliases to create an alias that will hand off emails to the mailman script
-
-  jobsworth: "|/path/to/cit/script/runner -e production 'Mailman.receive(STDIN.read)'"
-
-Add an entry to /etc/mail/virtusertable to redirect all emails to your domain to the above alias
-
-  @domain.com        jobsworth
-
-run "make; make restart" in /etc/mail
-
-=== Communigate Pro
-
-Communigate Pro puts it own headers on the top of each email which need to be stripped. A little script like this is dropped into /var/Communigate/Scripts and then added to the 'helpers' configuration with in the GUI. You'll need a rule inside Communigate to pass all email to the appropriate hostname to this script.
-
-  #!/bin/sh
-
-  RUBY=/usr/local/bin/ruby
-
-  # Make sure Ruby is on the path
-  export PATH=/usr/local/bin:/usr/local/sbin:$PATH
-
-  # Strip the first 6 lines which are specific to Communigate
-  /usr/bin/tail -n +7 $2 | ${RUBY} -W0 /usr/squish/script/runner -e production 'Mailman.receive(STDIN.read)' > /dev/null
-
-  exit 0;
