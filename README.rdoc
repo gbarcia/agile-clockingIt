@@ -1,3 +1,7 @@
+== Sobre AgileClockingIT
+AgileClockingIT es un rediseño de la herramienta ClockingIT(Actualmente Jobsworth), con incorporación del area de costos y estimaciones bajo entornos agiles, es decir, con soporte iterativo e incremental.
+
+
 == Installing jobsworth on your server
 === Step 1: Getting the source.
 
