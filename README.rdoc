@@ -95,7 +95,7 @@ y borrar los siguientes archivos:
   rm public/stylesheets/popup.css
 
 
-== Instalación e Integración de correos
+=== Instalación e Integración de correos
 
 Para la configuracion del envio de correos, se debe abrir el archivo environment.rb de la carpeta config y sustituir el puerto y dominio por el de su configuración predeterminada.
 
