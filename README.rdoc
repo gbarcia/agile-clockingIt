@@ -97,32 +97,35 @@ y borrar los siguientes archivos:
 
 == Instalación e Integración de correos
 
-Para la configuracion del envio de correos, se debe abrir el archivo environment.rb de la carpeta config y sustituir:
+Para la configuracion del envio de correos, se debe abrir el archivo environment.rb de la carpeta config y sustituir el puerto y dominio por el de su configuración predeterminada.
 
-# Load any $CONFIG settings from ENV
-$CONFIG = {
-	:domain => "mail.cantv.net",  # The client specific hostname will be prepended to this domain
-	:email_domain => "agileclockingit.com",
-	:replyto => "admin",  # Note that this is not a full email address, just the part before the @
-	:from => "admin",  # Note that this is not a full email address, just the part before the @
-	:prefix => "[agileClockingIT]",
-	:productName => "agileClockingIT",
-	:SSL => false
-}
+=== Instalación y puesta en marcha de Juggernaut
 
-ActionMailer::Base.smtp_settings = {
-  :address  => "mail.cantv.net",
-  :port  => 25,
-  :domain  => 'aclocking.com'
-}
-load_from_env("DOMAIN", :domain, $CONFIG)
-load_from_env("REPLYTO", :replyto, $CONFIG)
-load_from_env("FROM", :from, $CONFIG)
-load_from_env("PREFIX", :prefix, $CONFIG)
-load_from_env("PRODUCT_NAME", :productName, $CONFIG)
-load_from_env("USE_SSL", :SSL, $CONFIG) { |s| s == "true" }
+Para poder jugar Planning Poker en tiempo real, es necesario tener corriendo el servidor de Juggernaut, para ello se deben realizar los siguientes pasos:
 
-el puerto y dominio por el de su configuración predeterminada
+- Instalar node.js, se puede encontrar información sobre su instalación  y los archivos fuentes en http://nodejs.org/
+- Instalar redis, se pueden encontrar información sobre su instalación y los archivos fuentes en http://code.google.com/p/redis/
+- Instalación y descarga de la gema de Juggernaut y su aplicativo, mediante:
 
-=== Instalción y puesta en marcha de Juggernaut
+git clone git://github.com/maccman/juggernaut.git --recursive
+
+gem install juggernaut --pre
+
+== Puesta en marcha
+Una vez cumplido los tres pasos anteriores, se debe realizar:
+
+- Abrir el archivo config.yml de la carpeta config y colocar el ip de produccion donde correra la aplicacion.
+
+- Reiniciar el servidor de apache.
+
+- Ir a la carpeta de instalacion de redis, e iniciarlo:
+
+./redis-server redis.conf
+
+- Ir a la carpeta del servidor Juggernaut y ponerlo en marcha:
+
+sudo node server.js
+
+NOTA: Juggernaut funciona con el puerto 8080, estar antentos para evitar bloqueos.
+
 
