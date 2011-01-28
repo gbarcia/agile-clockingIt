@@ -17,7 +17,7 @@
                   <div style="float: left; margin-left: 30px"><%= link_to( _("View RoadMap"), {:controller => 'roadmap', :action => 'index', :id => @project}) %></div>
                 <% end %>
                   <div style="float: left; margin-left: 30px">
-                    <%= link_to 'Full Report', '/projects/config_full_report?id_prj=' + @project.id.to_s, :popup => ['Report','height=600,width=800,resizable=yes,scrollbars=yes'] %>
+                    <%= link_to 'Reporte Completo', '/projects/config_full_report?id_prj=' + @project.id.to_s, :popup => ['Report','height=600,width=800,resizable=yes,scrollbars=yes'] %>
                   </div>
                 <% if current_user.can?( @project, 'grant' ) || current_user.admin > 0 %>
                   <div style="float: left; margin-left: 30px"> <%= link_to( _("Complete Project"), {:controller => 'projects', :action => 'complete', :id => @project}, :confirm => "Really complete #{@project.name}?") %> <%= "&nbsp;".html_safe if @project.user_id == current_user.id %></div>
