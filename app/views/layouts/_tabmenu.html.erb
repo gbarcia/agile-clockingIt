@@ -77,7 +77,7 @@
       <% if current_user.admin > 0 %>
         <ul>
           <li>
-            <%= link_to _('Company Settings'), :controller => 'companies', :action => 'edit', :id => current_user.company_id %>
+            <%= link_to _('Empresa'), :controller => 'companies', :action => 'edit', :id => current_user.company_id %>
           </li>
           <li>
             <%= link_to _('Estimation Settings'), :controller => 'estimation_settings', :action => 'edit' %>
