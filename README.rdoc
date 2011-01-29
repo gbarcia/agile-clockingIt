@@ -14,7 +14,7 @@ AgileClockingIT es un rediseño de la herramienta ClockingIT(Actualmente Jobswor
 - Combinación de las técnicas de juicio experto por analogia, velocidad del equipo y Planning Poker para obtener el estimado final, usando la técnica de valor esperado.
 - Transformación de puntos en tiempo de trabajo (semanas, dias, horas, minutos).
 
-Se puden apreciar ScreenShots de la herramienta en: https://github.com/gbarcia/agile-clockingIt/wiki/Capturas-de-Pantalla-(ScreenShots)
+Se puden apreciar ScreenShots de la herramienta en: https://github.com/gbarcia/agile-clockingIt/wiki/Screenshots
 
 
 == Instalación (LINUX)
