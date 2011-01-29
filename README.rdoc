@@ -1,116 +1,94 @@
-== Installing jobsworth on your server
-=== Step 1: Getting the source.
+== Sobre AgileClockingIT
+AgileClockingIT es un rediseño de la herramienta ClockingIT(Actualmente Jobsworth), con incorporación del area de costos y estimaciones bajo entornos ágiles, es decir, con soporte iterativo e incremental. La idea fue desarrollada como Trabajo Especial de Grado, por Gerardo Barcia Palacios y Jonathan Trujillo, y bajo la tutela de Honack Villanueva, para obtener el título de Ingeniería en Informática en la Universidad Católica Andrés Bello(Caracas-Venezuela).La incorporación de las estimaciones en este trabajo propone una idea innovadora para este tipo de herramientas, pues no se trata de introducir un valor y dejar un registro; se trata de la automatización y apoyo en los cálculos de estimaciones mediante una combinación entre tres de las técnicas más utilizadas en esta área: Juicio experto por analogía, Estadísticas de la velocidad del equipo y Juicio experto por analogía mediante el método Delphi, este último con la metáfora del popular juego de «Planning Poker». La linea base de AgileClockingIT se puede consultar en la siguiente dirección: https://github.com/ari/jobsworth
 
-The easiest way to get the source and easily update it from time to time is with git. You'll need to install that on your machine and then run:
+== Funcionalidades Incorporadas
+- Soporte Iterativo e Incremental.
+- Manejo de Iteraciones a través de historias de usuario.
+- Soporte para la generación del RoadMap del Proyecto y gestión de hitos.
+- Manejo de costos basados en tiempo planificado contra tiempo de realización de actividades(historias de usuario).
+- Cálculo y Presentación de los indicadores Financieros por Proyecto de: Valor Ganado,Valor Presente Neto, Radio Costo Beneficio, Tasa Interna de Retorno, índice de desempeno en costos e índice de desempeno en Agenda, con sus respectivos gráficos.
+- Cálculo y Presentación del avance del proyecto en puntos con los indicadores de: Valor de Negocio, Velocidad del Equipo, Velocidad del Equipo por hora y valor ganado con sus respectivos gráficos.
+- Presentación de un reporte consolidado de proyecto.
+- Soporte para estimaciones de velocidad del equipo, basado en promedios de iteraciones anteriores.
+- Soporte para realizar estimaciones mediante el juego de «Planning Poker» en tiempo real.
+- Combinación de las técnicas de juicio experto por analogia, velocidad del equipo y Planning Poker para obtener el estimado final, usando la técnica de valor esperado.
+- Transformación de puntos en tiempo de trabajo (semanas, dias, horas, minutos).
 
-  git clone git://github.com/ari/clockingit.git
-
-You will want to put the source somewhere sensible depending on your operating system. On OSX that might be ~/Sites/jobsworth and on FreeBSD /usr/local/www/jobsworth. We'll use the FreeBSD path in these instructions.
-
-=== Step 2: Prerequsites
-
-You need to be running some type of Unix: OSX, Linux, Solaris, BSD. Windows will probably not work. You will also need a database. MySQL has been heavily tested, and some people are running postgresql.
-
-Install the following packages:
-
-* ruby 1.9 (Ruby 1.9 is much faster than 1.8.)
-* ruby mysql driver (you could also choose postgresql but it is tested somewhat less)
-
-How to install these will differ on each platform. Some possibilities:
+Se puden apreciar ScreenShots de la herramienta en: https://github.com/gbarcia/agile-clockingIt/wiki/Screenshots
 
 
-==== FreeBSD with Ruby 1.9
+== Instalación (LINUX)
+=== Paso 1: Obtener los fuentes
 
-  echo "RUBY_DEFAULT_VER=1.9" >> /etc/make.conf
-  portmaster converters/ruby-iconv databases/ruby-mysql
+La manera más fácil de obtener el código más reciente es con Git. Necesitarás instalarlo en tu máquina y luego ejecutar:
 
+  git clone git://github.com/gbarcia/agile-clockingIt
 
-==== OSX
+Se recomienda colocar los fuentes en la carpeta /opt/
 
-First install the Macports system from http://www.macports.org. Then:
+=== Paso 2: Pre-requisitos
 
-  sudo port install ruby19 libxml2 libxslt
+* Manejador de Base de Datos MYSQL
 
-==== Linux, etc
+Instalar los siguientes paquetes:
 
-Under other operating systems use your favourite package manager to ensure you have Ruby, rubygems, Rake and the Ruby mysql driver installed. Something like:
+* ruby 1.9
+* ruby mysql driver
 
-  yum install ruby19
+=== Paso 3: Phusion Passenger
 
-=== Step 3: Phusion Passenger
-
-Install Phusion Passenger. You can instead use Mongrel, but it tends to be a little easier to set up with Phusion.
+Instalar Phusion Passenger como servidor web. También se puede usar de forma alternativa Mongrel, pero recomendamos Phusion Passenger.
 
   gem install passenger
   passenger-install-apache2-module
 
-And follow the instructions you'll be given about how to install the relevant config for Apache httpd.
+Seguir las instrucciones para la configuración del Apache httpd.
 
-Your Apache httpd virtual host DocumentRoot should point to the public directory in the installation directory.
+Luego, se debe generar un host virtual en el archivo /etc/apache2/httpd.conf de la siguiente forma:
 
   <VirtualHost *:80>
-    ServerName jobsworth.example.com.au
-    RailsEnv production
-    PassengerHighPerformance on
-
-    DocumentRoot /usr/local/www/jobsworth/public
-    CustomLog /var/log/www/myserver.example.com.au-access_log combined
-    ErrorLog /var/log/www/myserver.example.com.au-access_log
+    ServerName localhost
+    DocumentRoot /opt/agileClockingIt/public
   </VirtualHost>
-
-You'll need to allow access to the folder you specify if isn't already inside your global httpd DocumentRoot. And MultiViews is bad for a Rails application.
-
-  <Directory /usr/squish/public>
+ <Directory /opt/agilclockingit/public>
     AllowOverride All
     Options -MultiViews
     Order allow,deny
     Allow from all
   </Directory>
 
+Naturalmente, debes ajustar las rutas a tu propio directorio de alojamiento de la herramienta.
 
-Naturally adjust the paths to suit your own environment.
+=== Paso 4: Ruby gems
 
-
-=== Step 4: Setup configuration and database
-
-  cd /usr/local/www/jobsworth
-  ruby setup.rb
-  
-  
-=== Step 5: Ruby gems
-
-There are a few Ruby gems which are needed for running CIT. Change directory into the top of your CIT installation, then type:
+Se requiere de algunas gemas de Ruby para hacer funcionar AgilClockingIT. Cambia al directorio de instalación y escribe:
 
   rake gems:install
 
-That will install the gems you need.
-
-If you have trouble on OSX with the mysql gem (this seems to be an issue on 10.5), then try this
-  sudo env ARCHFLAGS="-arch i386" gem install mysql -- --with-mysql-include=/opt/local/include/mysql5 --with-mysql-lib=/opt/local/lib/mysql5 --with-mysql-config=/opt/local/lib/mysql5/bin/mysql_config
+Este comando instala las gemas que se necesitan.
 
 
+=== Paso 5: Instalación y Configuración de la base de datos
 
+  cd /opt/agileclockingit/
+  ruby setup.rb
 
-== Upgrading to a newer revision
+Seguir los pasos de la instalación en la cónsola.
+
+== Actualización de las nuevas versiones:
 
   git checkout db/schema.rb
   git pull
 
-Check that there aren't any updated gems or new gems to install. If there are, just follow the instructions you will be given on screen.
-
-  rake gems
-
-Next, make sure the database is updated:
+Luego, se debe realizar el upgrade la base de datos:
 
   rake db:migrate RAILS_ENV=production
 
-Depending on which environment you are updating, you can change the RAIL_ENV value to "test" or "development" and the appropriate database will be updated.
+Reiniciar apache para actualizar los cambios en el servidor:
 
-Restart the web server just to ensure anything cached is cleared
-
-  apachectl graceful
+  sudo /etc/init.d/apache2 restart
   
-Clear out cached asset files
+y borrar los siguientes archivos:
 
   rm public/javascripts/main.js
   rm public/javascripts/popup.js
@@ -119,45 +97,41 @@ Clear out cached asset files
   rm public/stylesheets/popup.css
 
 
-== Setting up Email Integration
+=== Instalación e Integración de correos
 
-When jobsworth sends outgoing emails for task updates, they will have a reply address which looks like this:
+Para la configuracion del envio de correos, se debe abrir el archivo environment.rb de la carpeta config y sustituir el puerto y dominio por el de su configuración predeterminada.
 
-  task-1234@acme.domain.com.au
-  
-If a user hits reply to that email, you want it to go back and be appended to the task comments. It isn't hard, but you'll need a mail server you have some control over in order to get the magic to work. Firstly, let's look at that email address. To the left of the @ we have a designator showing which task this email is relevant to. On the right 'acme' represents the name of the company you set up when you ran the setup.rb script and first installed jobsworth. And the final 'domain.com.au' part is defined in the environment.local.rb file in your config folder.
+=== Instalación y puesta en marcha de Juggernaut
 
-You need to set up your email software to pass all incoming emails for *@acme.domain.com.au to a special script. That '*' means a wildcard: that is, any username at that hostname will be forwarded.
+Para poder jugar Planning Poker en tiempo real, es necesario tener corriendo el servidor de Juggernaut, para ello se deben realizar los siguientes pasos:
+
+- Instalar node.js, se puede encontrar información sobre su instalación  y los archivos fuentes en http://nodejs.org/
+- Instalar redis, se pueden encontrar información sobre su instalación y los archivos fuentes en http://code.google.com/p/redis/
+- Instalación y descarga de la gema de Juggernaut y su aplicativo, mediante:
+
+git clone git://github.com/maccman/juggernaut.git --recursive
+
+  gem install juggernaut --pre
+
+== Puesta en marcha
+Una vez cumplido los tres pasos anteriores, se debe realizar:
+
+- Abrir el archivo config.yml de la carpeta config y colocar el ip de produccion donde correra la aplicacion.
+
+- Reiniciar el servidor de apache.
+
+- Ir a la carpeta de instalacion de redis, e iniciarlo:
+
+  ./redis-server redis.conf
+
+- Ir a la carpeta del servidor Juggernaut y ponerlo en marcha:
+
+  sudo node server.js
+
+NOTA: Juggernaut funciona con el puerto 8080, estar antentos para evitar bloqueos.
+
+=== Para los desarrolladores
+A los desarrolladores interesados en descargar esta versión y continuar con el trabajo para realizar mejoras, se pueden encontrar los diagramas de
+arquitectura, diseño y dominio de la herramienta en: https://github.com/gbarcia/agile-clockingIt/wiki/Diagramas-de-Arquitectura-y-Diseño
 
 
-=== Sendmail
-
-For example to configure sendmail, add an entry to /etc/mail/local-host-names for your hostname:
-
-  acme.domain.com.au
-
-Add an entry to /etc/mail/aliases to create an alias that will hand off emails to the mailman script
-
-  jobsworth: "|/path/to/cit/script/runner -e production 'Mailman.receive(STDIN.read)'"
-
-Add an entry to /etc/mail/virtusertable to redirect all emails to your domain to the above alias
-
-  @domain.com        jobsworth
-
-run "make; make restart" in /etc/mail
-
-=== Communigate Pro
-
-Communigate Pro puts it own headers on the top of each email which need to be stripped. A little script like this is dropped into /var/Communigate/Scripts and then added to the 'helpers' configuration with in the GUI. You'll need a rule inside Communigate to pass all email to the appropriate hostname to this script.
-
-  #!/bin/sh
-
-  RUBY=/usr/local/bin/ruby
-
-  # Make sure Ruby is on the path
-  export PATH=/usr/local/bin:/usr/local/sbin:$PATH
-
-  # Strip the first 6 lines which are specific to Communigate
-  /usr/bin/tail -n +7 $2 | ${RUBY} -W0 /usr/squish/script/runner -e production 'Mailman.receive(STDIN.read)' > /dev/null
-
-  exit 0;

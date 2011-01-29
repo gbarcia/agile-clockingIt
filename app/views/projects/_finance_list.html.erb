@@ -1,27 +1,27 @@
 <table class="content" id="finance_table" width="100%" style="margin-left:0;margin-right:0;">
   <tr>
-    <th><%=_ 'Iterations' %></th>
-    <th><%=_ 'Estimate Cost' %></th>
-    <th><%=_ "Real Cost" %></th>
-    <th><%=_ 'Balance' %></th>
-    <th><%=_ "Benefist" %></th>
-    <th><%=_ 'B/CR' %></th>
-    <th><%=_ 'NPV' %></th>
-    <th><%=_ 'EV' %></th>
-    <th><%=_ 'CPI' %></th>
-    <th><%=_ 'SPI' %></th>
-    <th><%=_ 'ROI' %></th>
+    <th title="Iteraciones del proyecto"><%=_ 'Iterations' %></th>
+    <th title="Costos Planeados"><%=_ 'Estimate Cost' %></th>
+    <th title="Costos Reales"><%=_ "Real Cost" %></th>
+    <th title="Balance"><%=_ 'Balance' %></th>
+    <th title="Beneficio Neto"><%=_ "Benefist" %></th>
+    <th title="Costo/Benificio"><%=_ 'B/CR' %></th>
+    <th title="Valor Actual Neto"><%=_ 'NPV' %></th>
+    <th title="Valor Ganado"><%=_ 'EV' %></th>
+    <th title="Indice de desempe&ntilde;o en Costos"><%=_ 'CPI' %></th>
+    <th title="Indice de desempe&ntilde;o en Agenda"><%=_ 'SPI' %></th>
+    <th title="Tasa Interna de Retorno"><%=_ 'ROI' %></th>
   </tr>
 
   <% count = 1  %>
   <% @project.milestones.each do |iteration| %>
     <% if count % 2 == 0 %>
-      <tr id="add_user" class="row_stripe" style="text-align: right">
+      <tr id="s" class="row_stripe" style="text-align: right"/>
       <% else %>
-      <tr id="add_user" style="text-align: right">
+      <tr id="s2" style="text-align: right">
       <% end %>
       <td style="text-align: center">
-        <%= 'Iteration ' + count.to_s %>
+        <%= 'Iteracion ' + count.to_s %>
       </td>
       <td>
         <%= iteration.get_estimate_cost %>

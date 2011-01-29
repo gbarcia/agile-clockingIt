@@ -15,9 +15,9 @@
   <% count = 1  %>
   <% @project.milestones.each do |iteration| %>
     <% if count % 2 == 0 %>
-      <tr id="add_user" class="row_stripe" style="text-align: right">
+      <tr id="p" class="row_stripe" style="text-align: right"/>
       <% else %>
-      <tr id="add_user" style="text-align: right">
+      <tr id="p1" style="text-align: right">
       <% end %>
       <td style="text-align: center">
         <%= 'Iteration ' + count.to_s %>
