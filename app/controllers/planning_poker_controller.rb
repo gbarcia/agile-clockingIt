@@ -103,7 +103,7 @@ class PlanningPokerController < ApplicationController
     actual_vote.save!
     Juggernaut.publish('list-' + game_id.to_s, current_user.id.to_s + '-0')
     user_stroy = game.task
-    redirect_to :controller => 'tasks', :action => 'edit', :id => user_stroy.id
+    redirect_to :controller => 'tasks', :action => 'edit', :id => user_stroy.task_num
   end
 
   #eventos para el juego
@@ -172,7 +172,7 @@ class PlanningPokerController < ApplicationController
     user_stroy = game.task
     user_stroy.points_planning_poker = points.to_f
     user_stroy.save!
-    redirect_to :controller => 'tasks', :action => 'edit', :id => user_stroy.id
+    redirect_to :controller => 'tasks', :action => 'edit', :id => user_stroy.task_num
   end
 
   private
