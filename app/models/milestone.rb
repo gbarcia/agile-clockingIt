@@ -79,7 +79,7 @@ class Milestone < ActiveRecord::Base
       user_stories.each do |user_story|
         total_cost += ((user_story.duration / 60.0) * self.project.cost_per_hour) rescue 0
       end
-      return total_cost
+      return (total_cost * 10**2).round.to_f / 10**2 #round two decimals
     end
   end
 
@@ -135,7 +135,7 @@ class Milestone < ActiveRecord::Base
       user_stories.each do |user_story|
         total_cost += ((user_story.worked_minutes / 60.0) * self.project.cost_per_hour) rescue 0
       end
-      return total_cost
+      return (total_cost * 10**2).round.to_f / 10**2
     end
   end
 
@@ -155,7 +155,7 @@ class Milestone < ActiveRecord::Base
           total_ev += ((user_story.duration / 60.0) * self.project.cost_per_hour) rescue 0
         end
       end
-      return total_ev
+      return (total_ev * 10**2).round.to_f / 10**2
     end
   end
   
@@ -180,7 +180,7 @@ class Milestone < ActiveRecord::Base
     if balance.nan?
       balance = 0.0
     end
-    return balance
+    return (balance * 10**2).round.to_f / 10**2
   end
   #get the balance in presentation for user interface
   def get_balance_presentation

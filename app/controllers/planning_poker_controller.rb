@@ -155,6 +155,10 @@ class PlanningPokerController < ApplicationController
         end
       end
     end
+    #arreglado para los votos interrogantes
+    if list_votes.empty?
+      list_votes << 0
+    end
     @mean_result = Statistics.mean(list_votes)
     @game = game
     @standard_desviation = Statistics.standard_desviation(list_votes)
