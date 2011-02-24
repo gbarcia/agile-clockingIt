@@ -57,6 +57,12 @@ Rails::Initializer.run do |config|
   config.gem 'gchartrb', :version => '0.8', :lib => 'google_chart'
   config.gem 'smurf', :version => '1.0.4'
   config.gem 'paperclip', :version => '2.3.3'
+  config.gem 'business_time', :version => '0.3.1'
+  config.gem 'gchartrb', :version => '0.8'
+  config.gem 'google_currency', :version => '1.0.2'
+  config.gem 'money', :version => '3.1.5'
+  config.gem 'redis', :version => '2.1.1'
+  config.gem 'juggernaut', :version => '2.0.0.beta3'
   config.gem 'acts_as_tree'
   config.gem 'acts_as_list'
 
@@ -146,7 +152,7 @@ load_from_env("SMTP_AUTHENTICATION", :authentication, ActionMailer::Base.smtp_se
 
 # Load any $CONFIG settings from ENV
 $CONFIG = {
-	:domain => "mail.cantv.net",  # The client specific hostname will be prepended to this domain
+	:domain => "smtp2.ucab.edu.ve",  # The client specific hostname will be prepended to this domain
 	:email_domain => "agileclockingit.com",
 	:replyto => "admin",  # Note that this is not a full email address, just the part before the @
 	:from => "admin",  # Note that this is not a full email address, just the part before the @
@@ -156,7 +162,7 @@ $CONFIG = {
 }
 
 ActionMailer::Base.smtp_settings = {
-  :address  => "mail.cantv.net",
+  :address  => "smtp2.ucab.edu.ve",
   :port  => 25,
   :domain  => 'aclocking.com'
 }
