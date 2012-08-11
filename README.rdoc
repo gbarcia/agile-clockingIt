@@ -1,6 +1,5 @@
 == Sobre AgileClockingIT
-AgileClockingIT es un rediseño de la herramienta ClockingIT(Actualmente Jobsworth), con incorporación del area de costos y estimaciones bajo entornos ágiles, es decir, con soporte iterativo e incremental. La idea fue desarrollada como Trabajo Especial de Grado, por Gerardo Barcia Palacios y Jonathan Trujillo, y bajo la tutela de Honack Villanueva, para obtener el título de Ingeniería en Informática en la Universidad Católica Andrés Bello(Caracas-Venezuela).La incorporación de las estimaciones en este trabajo propone una idea innovadora para este tipo de herramientas, pues no se trata de introducir un valor y dejar un registro; se trata de la automatización y apoyo en los cálculos de estimaciones mediante una combinación entre tres de las técnicas más utilizadas en esta área: Juicio experto por analogía, Estadísticas de la velocidad del equipo y Juicio experto por analogía mediante el método Delphi, este último con la metáfora del popular juego de «Planning Poker». La linea base de AgileClockingIT se puede consultar en la siguiente dirección: https://github.com/ari/jobsworth
-
+AgileClockingIT es un rediseño de la herramienta ClockingIT (Actualmente Jobsworth), con incorporación del area de costos y estimaciones bajo entornos ágiles, es decir, con soporte iterativo e incremental. La idea fue desarrollada como Trabajo Especial de Grado, por Gerardo Barcia Palacios y Jonathan Trujillo, y bajo la tutela de Honack Villanueva, para obtener el título de Ingeniería en Informática en la Universidad Católica Andrés Bello (Caracas, Venezuela). La incorporación de las estimaciones en este trabajo propone una idea innovadora para este tipo de herramientas, pues no se trata de introducir un valor y dejar un registro; se trata de la automatización y apoyo en los cálculos de estimaciones mediante una combinación entre tres de las técnicas más utilizadas en esta área: Juicio experto por analogía, Estadísticas de la velocidad del equipo y Juicio experto por analogía mediante el método Delphi, este último con la metáfora del popular juego de «Planning Poker». La linea base de AgileClockingIT se puede consultar en la siguiente dirección: https://github.com/ari/jobsworth. La presentación del proyecto se encuentra [disponible](https://speakerdeck.com/u/jonotrujillo/p/agileclockingit).
 == Funcionalidades Incorporadas
 - Soporte Iterativo e Incremental.
 - Manejo de Iteraciones a través de historias de usuario.
@@ -14,7 +13,7 @@ AgileClockingIT es un rediseño de la herramienta ClockingIT(Actualmente Jobswor
 - Combinación de las técnicas de juicio experto por analogia, velocidad del equipo y Planning Poker para obtener el estimado final, usando la técnica de valor esperado.
 - Transformación de puntos en tiempo de trabajo (semanas, dias, horas, minutos).
 
-Se puden apreciar ScreenShots de la herramienta en: https://github.com/gbarcia/agile-clockingIt/wiki/Screenshots
+Se puden apreciar las capturas de la herramienta en: https://github.com/gbarcia/agile-clockingIt/wiki/Screenshots
 
 
 == Instalación (LINUX)
@@ -133,5 +132,3 @@ NOTA: Juggernaut funciona con el puerto 8080, estar antentos para evitar bloqueo
 === Para los desarrolladores
 A los desarrolladores interesados en descargar esta versión y continuar con el trabajo para realizar mejoras, se pueden encontrar los diagramas de
 arquitectura, diseño y dominio de la herramienta en: https://github.com/gbarcia/agile-clockingIt/wiki/Diagramas-de-Arquitectura-y-Diseño
-
-
